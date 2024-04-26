@@ -43,8 +43,11 @@ const getContent = () => {
       <div id="editor" class="editor" style="padding: 1rem;"></div>
     </v-card>
     <v-btn @click="getContent">Show Output</v-btn>
+    <br><br>
     <div v-if="editorContent">
       <pre>{{ editorContent.blocks.map((block: any) => block.data.text).join('\n') }}</pre>
+      <hr>
+      <pre>{{ editorContent}}</pre>
     </div>
     
   </div>
