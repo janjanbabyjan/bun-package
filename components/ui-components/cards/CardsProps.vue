@@ -2,6 +2,7 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import EditorJS from '@editorjs/editorjs';
 import Header from '@editorjs/header';
+import List from '@editorjs/list';
 import LinkTool from '@editorjs/link';
 
 const editor = ref<EditorJS | null>(null);
@@ -12,12 +13,21 @@ onMounted(() => {
     holder: 'editor',
     tools: {
       header: Header,
+
+      list: {
+        class: List,
+        inlineToolbar: true,
+        config: {
+          defaultStyle: 'unordered'
+        }
+      },
       linkTool: {
         class: LinkTool,
         config: {
-          endpoint: 'http://localhost:3000',
+          defaultTargetBlank: true
         }
-      }
+      },
+
     },
   });
 });
@@ -43,12 +53,9 @@ const getContent = () => {
       <div id="editor" class="editor" style="padding: 1rem;"></div>
     </v-card>
     <v-btn @click="getContent">Show Output</v-btn>
-    <br><br>
     <div v-if="editorContent">
       <pre>{{ editorContent.blocks.map((block: any) => block.data.text).join('\n') }}</pre>
-      <hr>
-      <pre>{{ editorContent}}</pre>
     </div>
-    
+
   </div>
 </template>
