@@ -4,7 +4,6 @@ import EditorJS from '@editorjs/editorjs';
 import Header from '@editorjs/header';
 import LinkTool from '@editorjs/link';
 
-
 const editor = ref<EditorJS | null>(null);
 const editorContent = ref<any>(null);
 
@@ -13,7 +12,12 @@ onMounted(() => {
     holder: 'editor',
     tools: {
       header: Header,
-      link: Link,
+      linkTool: {
+        class: LinkTool,
+        config: {
+          endpoint: 'http://localhost:3000',
+        }
+      }
     },
   });
 });
@@ -35,15 +39,13 @@ const getContent = () => {
 
 <template>
   <div>
-    <v-card elevation="0" title="This is a title" subtitle="This is a subtitle" text="This is content">
+    <v-card elevation="0">
       <div id="editor" class="editor" style="padding: 1rem;"></div>
     </v-card>
     <v-btn @click="getContent">Show Output</v-btn>
     <div v-if="editorContent">
-      <pre>{{ editorContent }}</pre>
+      <pre>{{ editorContent.blocks.map((block: any) => block.data.text).join('\n') }}</pre>
     </div>
-    <div>
-      <!-- {{ editorContent.blocks.data.text }} -->
-    </div>
+    
   </div>
 </template>
