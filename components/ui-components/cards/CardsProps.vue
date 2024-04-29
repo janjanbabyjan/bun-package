@@ -10,6 +10,8 @@ import Table from "@editorjs/table";
 import Underline from "@editorjs/underline";
 import Quote from "@editorjs/quote";
 import SimpleImage from "@editorjs/simple-image";
+import NestedList from '@editorjs/nested-list';
+
 
 const editor = ref<EditorJS | null>(null);
 const editorContent = ref<any>(null);
@@ -48,6 +50,13 @@ const initOutputEditor = () => {
         shortcut: "CMD+SHIFT+O",
       },
       image: SimpleImage,
+      nestedList: {
+      class: NestedList,
+      inlineToolbar: true,
+      config: {
+        defaultStyle: 'unordered',
+      },
+    },
     },
     data: editorContent.value,
     readOnly: true,
