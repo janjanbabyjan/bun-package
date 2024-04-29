@@ -4,3 +4,5 @@ declare module '@editorjs/link' {
   export default Link;
 }
 declare module '@editorjs/list';
+declare module '@editorjs/embed';
+
