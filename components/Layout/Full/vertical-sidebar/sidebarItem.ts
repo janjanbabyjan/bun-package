@@ -24,19 +24,18 @@ import {
   }
   
   const sidebarItem: menu[] = [
-    // { header: 'Home' },
-    // {
-    //   title: 'Dashboard',
-    //   icon: LayoutDashboardIcon,
-    //   to: '/'
-    // },
+    { header: 'Home' },
+    {
+      title: 'Dashboard',
+      icon: LayoutDashboardIcon,
+      to: '/'
+    },
     // { header: 'ui' },
-    // {
-    //   title: "Alert",
-    //   icon: AlertCircleIcon,
-    //   to: "/ui-components/alerts",
-      
-    // },
+    {
+      title: "Alert",
+      icon: AlertCircleIcon,
+      to: "/ui-components/alerts",
+    },
     // {
     //   title: "Button",
     //   icon: CircleDotIcon,
@@ -47,12 +46,11 @@ import {
       icon: BoxMultiple1Icon,
       to: "/ui-components/cards",
     },
-  //   {
-  //     title: "Tables",
-  //     icon: BorderAllIcon,
-  //     to: "/ui-components/tables",
-  //   },
-  
+    // {
+    //   title: "Tables",
+    //   icon: BorderAllIcon,
+    //   to: "/ui-components/tables",
+    // },
   //   { header: 'Auth' },
   //   {
   //     title: 'Login',
