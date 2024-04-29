@@ -5,6 +5,8 @@ import Header from '@editorjs/header';
 import LinkTool from '@editorjs/link';
 import edjsHTML from 'editorjs-html';
 import List from '@editorjs/list';
+import Checklist from '@editorjs/checklist'
+
 
 const editor = ref<EditorJS | null>(null);
 const editorContent = ref<any>(null);
@@ -23,12 +25,16 @@ onMounted(() => {
           defaultStyle: 'unordered'
         }
       },
-      linkTool: {
-        class: LinkTool,
-        config: {
-          endpoint: '',
-        }
+      checklist: {
+        class: Checklist,
+        inlineToolbar: true,
       },
+      // linkTool: {
+      //   class: LinkTool,
+      //   config: {
+      //     endpoint: '',
+      //   }
+      // },
 
     },
   });
