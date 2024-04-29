@@ -10,11 +10,11 @@ import Table from "@editorjs/table";
 import Underline from "@editorjs/underline";
 import Quote from "@editorjs/quote";
 import SimpleImage from "@editorjs/simple-image";
+import InlineCode from "@editorjs/inline-code";
 
 const editor = ref<EditorJS | null>(null);
 const editorContent = ref<any>(null);
 const outputEditor = ref<EditorJS | null>(null);
-
 
 const initOutputEditor = () => {
   if (outputEditor.value) {
@@ -35,6 +35,10 @@ const initOutputEditor = () => {
       checklist: {
         class: Checklist,
         inlineToolbar: true,
+      },
+      inlineCode: {
+        class: InlineCode,
+        shortcut: "CMD+SHIFT+M",
       },
       raw: RawTool,
       table: {
@@ -70,11 +74,15 @@ onMounted(() => {
         class: Checklist,
         inlineToolbar: true,
       },
+      inlineCode: {
+        class: InlineCode,
+        shortcut: "CMD+SHIFT+M",
+      },
       raw: RawTool,
       table: {
         class: Table,
         inlineToolbar: true,
-    },
+      },
       underline: Underline,
       quote: {
         class: Quote,
