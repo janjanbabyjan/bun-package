@@ -5,7 +5,8 @@ import Header from '@editorjs/header';
 import LinkTool from '@editorjs/link';
 import edjsHTML from 'editorjs-html';
 import List from "@editorjs/list";
-
+import Checklist from '@editorjs/checklist'
+import RawTool from '@editorjs/raw';
 const editor = ref<EditorJS | null>(null);
 const editorContent = ref<any>(null);
 const edjsParser = edjsHTML(); // Initialize editorjs-html
@@ -22,12 +23,11 @@ onMounted(() => {
           defaultStyle: 'unordered'
         }
       },
-      linkTool: {
-        class: LinkTool,
-        config: {
-          endpoint: 'http://localhost:3000',
-        }
-      }
+      checklist: {
+        class: Checklist,
+        inlineToolbar: true,
+      },
+      raw: RawTool,
     },
   });
 });
@@ -48,7 +48,7 @@ const getContent = () => {
   }
 };
 
-const displayHTML = (html: string) => {
+const displayHTML = (html: any) => {
   const outputContainer = document.getElementById('output-container');
   if (outputContainer) {
     outputContainer.innerHTML = html;

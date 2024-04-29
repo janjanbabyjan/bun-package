@@ -1,0 +1,4 @@
+npm install editorjs-html
+bun add @editorjs/header
+bun add @editorjs/list
+bun add @editorjs/checklist
