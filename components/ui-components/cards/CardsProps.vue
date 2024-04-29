@@ -1,17 +1,18 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from "vue";
-import EditorJS from "@editorjs/editorjs";
-import Header from "@editorjs/header";
-import edjsHTML from "editorjs-html";
-import List from "@editorjs/list";
-import Checklist from "@editorjs/checklist";
-import RawTool from "@editorjs/raw";
-import Table from "@editorjs/table";
-import Underline from "@editorjs/underline";
-import Quote from "@editorjs/quote";
-import SimpleImage from "@editorjs/simple-image";
-import InlineCode from "@editorjs/inline-code";
-
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+import EditorJS from '@editorjs/editorjs';
+import Header from '@editorjs/header';
+import edjsHTML from 'editorjs-html';
+import List from '@editorjs/list';
+import Checklist from '@editorjs/checklist';
+import RawTool from '@editorjs/raw';
+import Table from '@editorjs/table';
+import Underline from '@editorjs/underline';
+import Quote from '@editorjs/quote';
+import SimpleImage from '@editorjs/simple-image';
+import InlineCode from '@editorjs/inline-code';
+import CodeTool from '@editorjs/code'; // Import CodeTool
+import NestedList from '@editorjs/nested-list';
 const editor = ref<EditorJS | null>(null);
 const editorContent = ref<any>(null);
 const outputEditor = ref<EditorJS | null>(null);
@@ -22,24 +23,32 @@ const initOutputEditor = () => {
   }
 
   outputEditor.value = new EditorJS({
-    holder: "output-editor",
+    holder: 'output-editor',
     tools: {
       header: Header,
       list: {
         class: List,
         inlineToolbar: true,
         config: {
-          defaultStyle: "unordered",
+          defaultStyle: 'unordered',
         },
       },
       checklist: {
         class: Checklist,
         inlineToolbar: true,
       },
+      nestedlist: {
+      class: NestedList,
+      inlineToolbar: true,
+      config: {
+        defaultStyle: ''
+      },
+    },
       inlineCode: {
         class: InlineCode,
-        shortcut: "CMD+SHIFT+M",
+        shortcut: 'CMD+SHIFT+M',
       },
+      code: CodeTool, // Add CodeTool to output editor
       raw: RawTool,
       table: {
         class: Table,
@@ -49,7 +58,7 @@ const initOutputEditor = () => {
       quote: {
         class: Quote,
         inlineToolbar: true,
-        shortcut: "CMD+SHIFT+O",
+        shortcut: 'CMD+SHIFT+O',
       },
       image: SimpleImage,
     },
@@ -60,14 +69,14 @@ const initOutputEditor = () => {
 
 onMounted(() => {
   editor.value = new EditorJS({
-    holder: "editor",
+    holder: 'editor',
     tools: {
       header: Header,
       list: {
         class: List,
         inlineToolbar: true,
         config: {
-          defaultStyle: "unordered",
+          defaultStyle: 'unordered',
         },
       },
       checklist: {
@@ -76,18 +85,26 @@ onMounted(() => {
       },
       inlineCode: {
         class: InlineCode,
-        shortcut: "CMD+SHIFT+M",
+        shortcut: 'CMD+SHIFT+M',
       },
+      code: CodeTool, // Add CodeTool to editor
       raw: RawTool,
       table: {
         class: Table,
         inlineToolbar: true,
       },
+      nestedlist: {
+      class: NestedList,
+      inlineToolbar: true,
+      config: {
+        defaultStyle: 'unordered'
+      },
+    },
       underline: Underline,
       quote: {
         class: Quote,
         inlineToolbar: true,
-        shortcut: "CMD+SHIFT+O",
+        shortcut: 'CMD+SHIFT+O',
       },
       image: SimpleImage,
     },
