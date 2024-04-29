@@ -1,7 +1,36 @@
 npm install editorjs-html
-bun add @editorjs/header
-bun add @editorjs/list
-bun add @editorjs/checklist
+import EditorJS from '@editorjs/editorjs';
 
+1.Header
+bun add @editorjs/header
+import Header from '@editorjs/header';
+
+2.list
+bun add @editorjs/list
+import List from "@editorjs/list";
+
+3.check-list
+bun add @editorjs/checklist
+import Checklist from '@editorjs/checklist'
+
+4.raw Html
 bun add @editorjs/raw
 import RawTool from '@editorjs/raw';
+
+5.table
+bun add @editorjs/table
+import Table from '@editorjs/table'
+
+6.Quote
+bun add @editorjs/quote
+import Quote from '@editorjs/quote';
+
+7.underline
+bun i --save @editorjs/underline
+yarn add @editorjs/underline
+import Underline from '@editorjs/underline';
+
+
+8.Simple Image
+bun add @editorjs/simple-image
+import SimpleImage from "@editorjs/simple-image";
