@@ -10,6 +10,8 @@ import RawTool from '@editorjs/raw';
 import Table from '@editorjs/table';
 import Underline from '@editorjs/underline';
 import Quote from '@editorjs/quote';
+import SimpleImage from "@editorjs/simple-image";
+
 
 const editor = ref<EditorJS | null>(null);
 const editorContent = ref<any>(null);
@@ -42,6 +44,7 @@ onMounted(() => {
         inlineToolbar: true,
         shortcut: 'CMD+SHIFT+O',
       },
+      image: SimpleImage,
     },
   });
 });
