@@ -15,27 +15,6 @@ const editor = ref<EditorJS | null>(null);
 const editorContent = ref<any>(null);
 const outputEditor = ref<EditorJS | null>(null);
 
-const checklist = {
-  checklist: {
-    parse: (checklist: { items: any[]; }) => {
-      return `
-        <ul class="checklist">
-          ${checklist.items
-          .map(
-            (item) =>
-              `<li class="${item.checked ? "checked" : ""}">
-                  <input type="checkbox" ${item.checked ? "checked" : ""} disabled>
-                  ${item.text}
-                </li>`
-          )
-          .join("")}
-        </ul>
-      `;
-    },
-  },
-};
-
-const edjsParser = edjsHTML({ ...checklist });
 
 const initOutputEditor = () => {
   if (outputEditor.value) {
