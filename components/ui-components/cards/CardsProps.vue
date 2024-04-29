@@ -14,6 +14,7 @@ import SimpleImage from "@editorjs/simple-image";
 const editor = ref<EditorJS | null>(null);
 const editorContent = ref<any>(null);
 const edjsParser = edjsHTML(); // Initialize editorjs-html
+import Embed from '@editorjs/embed';
 
 onMounted(() => {
   editor.value = new EditorJS({
@@ -36,6 +37,15 @@ onMounted(() => {
         class: Table,
         inlineToolbar: true,
       },
+      embed: {
+      class: Embed,
+      config: {
+        services: {
+          youtube: true,
+          coub: true
+        }
+      }
+    },
       underline: Underline,
       quote: {
         class: Quote,
