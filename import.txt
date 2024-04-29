@@ -34,3 +34,16 @@ import Underline from '@editorjs/underline';
 8.Simple Image
 bun add @editorjs/simple-image
 import SimpleImage from "@editorjs/simple-image";
+
+9.Nested List Tool for Editor.js
+bun add @editorjs/nested-list
+import NestedList from '@editorjs/nested-list';
+
+10.Code Tool for Editor.js
+bun add @editorjs/code
+import CodeTool from '@editorjs/code';
+
+11.InlineCode Tool
+bun add @editorjs/inline-code
+import InlineCode from '@editorjs/inline-code';
+
