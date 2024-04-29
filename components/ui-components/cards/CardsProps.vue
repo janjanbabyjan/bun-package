@@ -2,32 +2,34 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import EditorJS from '@editorjs/editorjs';
 import Header from '@editorjs/header';
-import List from '@editorjs/list';
 import LinkTool from '@editorjs/link';
+import Embed from '@editorjs/embed';
+
 
 const editor = ref<EditorJS | null>(null);
 const editorContent = ref<any>(null);
+
 
 onMounted(() => {
   editor.value = new EditorJS({
     holder: 'editor',
     tools: {
       header: Header,
-
-      list: {
-        class: List,
-        inlineToolbar: true,
-        config: {
-          defaultStyle: 'unordered'
-        }
-      },
       linkTool: {
         class: LinkTool,
         config: {
-          defaultTargetBlank: true
+          endpoint: '',
         }
       },
-
+      embed: {
+        class: Embed,
+        config: {
+          services: {
+            youtube: true,
+            coub: true
+          }
+        }
+      }
     },
   });
 });
@@ -54,7 +56,12 @@ const getContent = () => {
     </v-card>
     <v-btn @click="getContent">Show Output</v-btn>
     <div v-if="editorContent">
+      <br>
+      <br>
       <pre>{{ editorContent.blocks.map((block: any) => block.data.text).join('\n') }}</pre>
+      <hr>
+      <pre>{{ editorContent }}</pre>
+
     </div>
 
   </div>
