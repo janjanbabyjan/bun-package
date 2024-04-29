@@ -23,6 +23,7 @@
     "@nuxt/vite-builder": "^3.7.4",
     "@types/editorjs__header": "^2.6.3",
     "apexcharts": "3.36.3",
+    "editorjs-html": "^3.4.3",
     "sass": "^1.49.9",
     "vue": "3.3.4",
     "vue-tabler-icons": "2.9.0",

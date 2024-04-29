@@ -2,32 +2,24 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import EditorJS from '@editorjs/editorjs';
 import Header from '@editorjs/header';
-import List from '@editorjs/list';
 import LinkTool from '@editorjs/link';
+import edjsHTML from 'editorjs-html';
 
 const editor = ref<EditorJS | null>(null);
 const editorContent = ref<any>(null);
+const edjsParser = edjsHTML(); // Initialize editorjs-html
 
 onMounted(() => {
   editor.value = new EditorJS({
     holder: 'editor',
     tools: {
       header: Header,
-
-      list: {
-        class: List,
-        inlineToolbar: true,
-        config: {
-          defaultStyle: 'unordered'
-        }
-      },
       linkTool: {
         class: LinkTool,
         config: {
-          defaultTargetBlank: true
+          endpoint: 'http://localhost:3000',
         }
-      },
-
+      }
     },
   });
 });
@@ -41,8 +33,17 @@ onBeforeUnmount(() => {
 const getContent = () => {
   if (editor.value) {
     editor.value.save().then((outputData: any) => {
-      editorContent.value = outputData;
+      editorContent.value = outputData; // Save JSON data
+      const htmlContent: string = edjsParser.parse(outputData).join('');
+      displayHTML(htmlContent);
     });
+  }
+};
+
+const displayHTML = (html: string) => {
+  const outputContainer = document.getElementById('output-container');
+  if (outputContainer) {
+    outputContainer.innerHTML = html;
   }
 };
 </script>
@@ -53,9 +54,7 @@ const getContent = () => {
       <div id="editor" class="editor" style="padding: 1rem;"></div>
     </v-card>
     <v-btn @click="getContent">Show Output</v-btn>
-    <div v-if="editorContent">
-      <pre>{{ editorContent.blocks.map((block: any) => block.data.text).join('\n') }}</pre>
-    </div>
-
+    <br>
+    <div id="output-container"></div> <!-- Display HTML output here -->
   </div>
 </template>
