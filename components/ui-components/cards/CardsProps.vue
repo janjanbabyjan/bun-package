@@ -2,11 +2,15 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import EditorJS from '@editorjs/editorjs';
 import Header from '@editorjs/header';
-import LinkTool from '@editorjs/link';
+// import LinkTool from '@editorjs/link';
 import edjsHTML from 'editorjs-html';
 import List from "@editorjs/list";
 import Checklist from '@editorjs/checklist'
 import RawTool from '@editorjs/raw';
+import Table from '@editorjs/table';
+import Underline from '@editorjs/underline';
+import Quote from '@editorjs/quote';
+
 const editor = ref<EditorJS | null>(null);
 const editorContent = ref<any>(null);
 const edjsParser = edjsHTML(); // Initialize editorjs-html
@@ -28,6 +32,16 @@ onMounted(() => {
         inlineToolbar: true,
       },
       raw: RawTool,
+      table: {
+        class: Table,
+        inlineToolbar: true,
+      },
+      underline: Underline,
+      quote: {
+        class: Quote,
+        inlineToolbar: true,
+        shortcut: 'CMD+SHIFT+O',
+      },
     },
   });
 });
