@@ -2,3 +2,6 @@ npm install editorjs-html
 bun add @editorjs/header
 bun add @editorjs/list
 bun add @editorjs/checklist
+
+bun add @editorjs/raw
+import RawTool from '@editorjs/raw';
