@@ -4,10 +4,7 @@ import EditorJS from '@editorjs/editorjs';
 import Header from '@editorjs/header';
 import LinkTool from '@editorjs/link';
 import edjsHTML from 'editorjs-html';
-<<<<<<< HEAD
-=======
-import List from '@editorjs/list';
->>>>>>> 7dbcc70a9cb5f0ac9331694124f7ce8017f9721f
+import List from "@editorjs/list";
 
 const editor = ref<EditorJS | null>(null);
 const editorContent = ref<any>(null);
@@ -28,16 +25,9 @@ onMounted(() => {
       linkTool: {
         class: LinkTool,
         config: {
-<<<<<<< HEAD
           endpoint: 'http://localhost:3000',
         }
       }
-=======
-          endpoint: '',
-        }
-      },
-
->>>>>>> 7dbcc70a9cb5f0ac9331694124f7ce8017f9721f
     },
   });
 });
@@ -71,7 +61,7 @@ const displayHTML = (html: string) => {
     <v-card elevation="0">
       <div id="editor" class="editor" style="padding: 1rem;"></div>
     </v-card>
-    <v-btn @click="getContent">Show Output</v-btn>
+    <v-btn @click="getContent">Show Output.</v-btn>
     <br>
     <div id="output-container"></div> <!-- Display HTML output here -->
   </div>
