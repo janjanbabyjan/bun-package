@@ -27,7 +27,7 @@ import Quote from '@editorjs/quote';
 
 7.underline
 bun i --save @editorjs/underline
-yarn add @editorjs/underline
+bun add @editorjs/underline
 import Underline from '@editorjs/underline';
 
 

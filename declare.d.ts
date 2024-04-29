@@ -10,3 +10,5 @@ declare module '@editorjs/raw';
 declare module '@editorjs/table';
 declare module '@editorjs/underline';
 declare module '@editorjs/quote';
+declare module '@editorjs/simple-image';
+
