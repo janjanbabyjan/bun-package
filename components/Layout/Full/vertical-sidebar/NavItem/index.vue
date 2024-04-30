@@ -1,14 +1,17 @@
 <script setup>
 import Icon from '../Icon.vue';
 const props = defineProps({ item: Object, level: Number });
+console.log("🚀 ~ props:", props)
 </script>
 
 <template>
     <!---Single Item-->
     <div class="mb-1">
-        <v-list-item  :to="item.type === 'external' ? '' : item.to" :href="item.type === 'external' ? item.to : ''" rounded
+        <v-list-item  
+        :to="item.type === 'external' ? '' : item.to" :href="item.type === 'external' ?  item.to : ''" rounded
             class="bg-hover-primary" color="primary" :ripple="false" :disabled="item.disabled"
-            :target="item.type === 'external' ? '_blank' : ''">
+            :target="item.type === 'external' ? '_blank' : ''"
+            >
             <!---If icon-->
             <template v-slot:prepend>
                 <div class="navbox  bg-hover-primary" >

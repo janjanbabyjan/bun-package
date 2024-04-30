@@ -1,4 +1,7 @@
 <script setup lang="ts">
+definePageMeta({
+  layout: "admin",
+});
 import { ref } from 'vue';
 /*import tabler icons*/
 import { TrashIcon, SendIcon, BellIcon } from 'vue-tabler-icons';

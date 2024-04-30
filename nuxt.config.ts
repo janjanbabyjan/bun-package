@@ -1,4 +1,5 @@
 export default defineNuxtConfig({
+  devtools: { enabled: true },
   ssr: false,
   typescript: {
     shim: false,
@@ -8,6 +9,7 @@ export default defineNuxtConfig({
       title:
         "Spikeadmin Free Nuxt 3 Dashboard",
     },
+    
   },
   build: {
     transpile: ["vuetify"],
@@ -16,5 +18,5 @@ export default defineNuxtConfig({
     serveStatic: true,
   },
   sourcemap: { server: false, client: false },
-  devServerHandlers: [],
+  devServerHandlers: []
 });

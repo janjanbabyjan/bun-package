@@ -1,4 +1,7 @@
 <script setup lang="ts">
+definePageMeta({
+  layout: "admin",
+});
 import { ref } from 'vue';
 import UiParentCard from '@/components/shared/UiParentCard.vue';
 import UiChildCard from '@/components/shared/UiChildCard.vue';
