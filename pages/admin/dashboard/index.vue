@@ -1,4 +1,7 @@
 <script setup lang="ts">
+definePageMeta({
+  layout: "admin",
+});
 import { ref } from "vue";
 import ProfitExpanse from "@/components/dashboards/ProfitExpense.vue";
 import TrafficDistribution from "@/components/dashboards/TrafficDistribution.vue";

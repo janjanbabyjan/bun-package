@@ -28,7 +28,7 @@ import {
     {
       title: 'Dashboard',
       icon: LayoutDashboardIcon,
-      to: '/'
+      to: '/dashboard'
     },
     // { header: 'ui' },
     {

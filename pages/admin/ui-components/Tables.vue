@@ -1,4 +1,7 @@
 <script setup>
+definePageMeta({
+  layout: "admin",
+});
 import { ref } from 'vue';
 import UiChildCard from '@/components/shared/UiChildCard.vue';
 const desserts = ref([

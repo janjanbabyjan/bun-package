@@ -47,3 +47,5 @@ import CodeTool from '@editorjs/code';
 bun add @editorjs/inline-code
 import InlineCode from '@editorjs/inline-code';
 
+12. middleware install
+bun install --save-dev nuxt3

@@ -6,9 +6,13 @@ import ProductSales from "@/components/dashboards/ProductSales.vue";
 import UpcommingSchedule from "@/components/dashboards/UpcommingSchedule.vue";
 import TopPayingClients from "@/components/dashboards/TopPayingClients.vue";
 import ProductCards from "@/components/dashboards/ProductCards.vue";
+definePageMeta({
+  layout: "admin",
+});
 </script>
 
 <template>
+    <!-- <div></div> -->
     <v-row>
         <v-col cols="12" sm="12" lg="8">
             <ProfitExpanse />

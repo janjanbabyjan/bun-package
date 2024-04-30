@@ -16,3 +16,7 @@ declare module '@editorjs/inline-code';
 declare module '@editorjs/code';
 declare module '@editorjs/nested-list';
 
+
+// middlware
+declare module '@nuxt/bridge';
+
