@@ -1,6 +1,18 @@
+import { useRouter } from 'vue-router';
 <script setup lang="ts">
-import { ref } from 'vue';
+const router = useRouter();
 const checkbox = ref(false);
+const userName = ref('')
+const passWord = ref('')
+
+const getLogin = () => {
+    console.log(userName.value,passWord.value)
+    if(userName && passWord) {
+        localStorage.setItem("isLogin","true");
+        router.push('/admin/dashboard');
+        
+    } 
+}
 </script>
 
 <template>
@@ -13,14 +25,14 @@ const checkbox = ref(false);
         <v-row class="mb-3">
             <v-col cols="12">
                 <v-label class="font-weight-medium mb-1">Username</v-label>
-                <v-text-field variant="outlined" class="pwdInput" hide-details color="primary"></v-text-field>
+                <v-text-field variant="outlined" v-model="userName" class="pwdInput" hide-details color="primary"></v-text-field>
             </v-col>
             <v-col cols="12">
                 <v-label class="font-weight-medium mb-1">Password</v-label>
-                <v-text-field variant="outlined" class="border-borderColor" type="password" hide-details
+                <v-text-field variant="outlined" v-model="passWord" class="border-borderColor" type="password" hide-details
                     color="primary"></v-text-field>
             </v-col>
-            <v-col cols="12 " class="py-0">
+            <!-- <v-col cols="12 " class="py-0">
                 <div class="d-flex flex-wrap align-center w-100 ">
                     <v-checkbox hide-details color="primary">
                         <template v-slot:label class="">Remeber this Device</template>
@@ -31,9 +43,9 @@ const checkbox = ref(false);
                             Forgot Password ?</RouterLink>
                     </div>
                 </div>
-            </v-col>
+            </v-col> -->
             <v-col cols="12">
-                <v-btn size="large" rounded="pill" color="primary" class="rounded-pill" block type="submit" flat>Sign
+                <v-btn size="large" rounded="pill" color="primary" class="rounded-pill" block type="submit" @click="getLogin" flat>Sign
                     In</v-btn>
             </v-col>
         </v-row>

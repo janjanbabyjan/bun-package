@@ -9,6 +9,11 @@ useHead({
       : "spikeadmin Nuxt 3 - Vuetify 3 - vite - Typescript Based Free Dashboard";
   },
 });
+
+defineComponent({
+  middleware: 'admin-route',
+
+});
 </script>
 
 <template>

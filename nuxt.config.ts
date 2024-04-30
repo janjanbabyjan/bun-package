@@ -1,3 +1,4 @@
+
 export default defineNuxtConfig({
   // devtools: { enabled: true },
   ssr: false,
@@ -18,5 +19,5 @@ export default defineNuxtConfig({
     serveStatic: true,
   },
   sourcemap: { server: false, client: false },
-  devServerHandlers: []
+  devServerHandlers: [],
 });

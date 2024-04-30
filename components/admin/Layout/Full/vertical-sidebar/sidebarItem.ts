@@ -30,6 +30,11 @@ import {
       icon: LayoutDashboardIcon,
       to: '/dashboard'
     },
+    {
+      title: 'Content',
+      icon: LayoutDashboardIcon,
+      to: '/content'
+    },
     // { header: 'ui' },
     {
       title: "Alert",
@@ -55,7 +60,7 @@ import {
     {
       title: 'Login',
       icon: LoginIcon,
-      to: '/auth/login'
+      to: '/login'
   },
   // {
   //     title: 'Register',

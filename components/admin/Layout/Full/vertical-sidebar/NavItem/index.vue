@@ -1,14 +1,26 @@
 <script setup>
 import Icon from '../Icon.vue';
 const props = defineProps({ item: Object, level: Number });
-console.log("🚀 ~ props:", props)
+// console.log("🚀 ~ props:", props.item)
+
+const checkRoute = (link) => {
+    // console.log("🚀 ~ checkRoute ~ link:", link)
+    // '/admin' + item.to
+    if(link.includes('login') || link.includes("logout")){
+        // console.log("🚀 ~ checkRoute ~ link:", link)
+        return "/auth" + link
+    } else {
+        return '/admin' + link
+    }
+}
+
 </script>
 
 <template>
     <!---Single Item-->
     <div class="mb-1">
         <v-list-item  
-        :to="item.type === 'external' ? '' : '/admin' + item.to" :href="item.type === 'external' ?  item.to : ''" rounded
+        :to="item.type === 'external' ? '' : checkRoute(item.to)" :href="item.type === 'external' ?  item.to : ''" rounded
             class="bg-hover-primary" color="primary" :ripple="false" :disabled="item.disabled"
             :target="item.type === 'external' ? '_blank' : '' " >
             
