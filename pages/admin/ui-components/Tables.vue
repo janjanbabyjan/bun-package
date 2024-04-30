@@ -3,7 +3,7 @@ definePageMeta({
   layout: "admin",
 });
 import { ref } from 'vue';
-import UiChildCard from '@/components/shared/UiChildCard.vue';
+import UiChildCard from '@/components/admin/shared/UiChildCard.vue';
 const desserts = ref([
     {
         name: "Frozen Yogurt",

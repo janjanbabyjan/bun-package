@@ -3,12 +3,12 @@ definePageMeta({
   layout: "admin",
 });
 import { ref } from 'vue';
-import UiParentCard from '@/components/shared/UiParentCard.vue';
-import UiChildCard from '@/components/shared/UiChildCard.vue';
+import UiParentCard from '@/components/admin/shared/UiParentCard.vue';
+import UiChildCard from '@/components/admin/shared/UiChildCard.vue';
 
-import Basic from '@/components/ui-components/alert/Basic.vue';
-import Filled from '@/components/ui-components/alert/Filled.vue';
-import Closable from '@/components/ui-components/alert/Closable.vue';
+import Basic from '@/components/admin/ui-components/alert/Basic.vue';
+import Filled from '@/components/admin/ui-components/alert/Filled.vue';
+import Closable from '@/components/admin/ui-components/alert/Closable.vue';
 
 </script>
 

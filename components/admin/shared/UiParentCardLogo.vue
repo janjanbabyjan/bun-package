@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import Logo from "@/layouts/full/logo/Logo.vue";
+import Logo from "@/components/admin/Layout/Full/logo/Logo.vue";
 </script>
 
 // ===============================|| Ui Parent Card||=============================== //

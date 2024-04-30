@@ -14,7 +14,7 @@ useHead({
 <template>
     <v-locale-provider >
         <v-app>
-            <LayoutMain/>
+            <AdminLayoutMain/>
             <v-main>
                 <v-container fluid class="page-wrapper bg-background px-sm-5 px-4 pt-12 rounded-xl">
                     <div class="maxWidth">

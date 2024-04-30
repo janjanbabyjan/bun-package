@@ -3,12 +3,12 @@ definePageMeta({
   layout: "admin",
 });
 import { ref } from "vue";
-import ProfitExpanse from "@/components/dashboards/ProfitExpense.vue";
-import TrafficDistribution from "@/components/dashboards/TrafficDistribution.vue";
-import ProductSales from "@/components/dashboards/ProductSales.vue";
-import UpcommingSchedule from "@/components/dashboards/UpcommingSchedule.vue";
-import TopPayingClients from "@/components/dashboards/TopPayingClients.vue";
-import ProductCards from "@/components/dashboards/ProductCards.vue";
+import ProfitExpanse from "@/components/admin/dashboards/ProfitExpense.vue";
+import TrafficDistribution from "@/components/admin/dashboards/TrafficDistribution.vue";
+import ProductSales from "@/components/admin/dashboards/ProductSales.vue";
+import UpcommingSchedule from "@/components/admin/dashboards/UpcommingSchedule.vue";
+import TopPayingClients from "@/components/admin/dashboards/TopPayingClients.vue";
+import ProductCards from "@/components/admin/dashboards/ProductCards.vue";
 </script>
 
 <template>

@@ -5,15 +5,15 @@ definePageMeta({
 import { ref } from 'vue';
 /*import tabler icons*/
 import { TrashIcon, SendIcon, BellIcon } from 'vue-tabler-icons';
-import UiChildCard from '@/components/shared/UiChildCard.vue';
+import UiChildCard from '@/components/admin/shared/UiChildCard.vue';
 // icons
 import { AccessPointIcon } from 'vue-tabler-icons';
-import BaseButtons from '@/components/ui-components/button/BaseButtons.vue';
-import ColorsButtons from '@/components/ui-components/button/ColorsButtons.vue';
-import OutlinedButtons from '@/components/ui-components/button/OutlinedButtons.vue';
-import SizeButtons from '@/components/ui-components/button/SizeButtons.vue';
-import TextButtons from '@/components/ui-components/button/TextButtons.vue';
-import IconColorSizes from '@/components/ui-components/button/IconColorSizes.vue';
+import BaseButtons from '@/components/admin/ui-components/button/BaseButtons.vue';
+import ColorsButtons from '@/components/admin/ui-components/button/ColorsButtons.vue';
+import OutlinedButtons from '@/components/admin/ui-components/button/OutlinedButtons.vue';
+import SizeButtons from '@/components/admin/ui-components/button/SizeButtons.vue';
+import TextButtons from '@/components/admin/ui-components/button/TextButtons.vue';
+import IconColorSizes from '@/components/admin/ui-components/button/IconColorSizes.vue';
 // buttons color data
 const btnsColor = ref(['primary', 'secondary', 'success', 'error', 'warning']);
 

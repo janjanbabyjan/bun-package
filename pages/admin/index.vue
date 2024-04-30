@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import ProfitExpanse from "@/components/dashboards/ProfitExpense.vue";
-import TrafficDistribution from "@/components/dashboards/TrafficDistribution.vue";
-import ProductSales from "@/components/dashboards/ProductSales.vue";
-import UpcommingSchedule from "@/components/dashboards/UpcommingSchedule.vue";
-import TopPayingClients from "@/components/dashboards/TopPayingClients.vue";
-import ProductCards from "@/components/dashboards/ProductCards.vue";
+import ProfitExpanse from "@/components/admin/dashboards/ProfitExpense.vue";
+import TrafficDistribution from "@/components/admin/dashboards/TrafficDistribution.vue";
+import ProductSales from "@/components/admin/dashboards/ProductSales.vue";
+import UpcommingSchedule from "@/components/admin/dashboards/UpcommingSchedule.vue";
+import TopPayingClients from "@/components/admin/dashboards/TopPayingClients.vue";
+import ProductCards from "@/components/admin/dashboards/ProductCards.vue";
+import MainLayout from "@/components/admin/Layout/Main.vue";
 definePageMeta({
   layout: "admin",
 });
@@ -38,4 +39,5 @@ definePageMeta({
             <p class="text-muted">Design and Developed by <a flat variant="text" href="https://www.wrappixel.com/" target="_blank" class="pl-1 text-primary">wrappixel.com</a></p>
         </v-col>
     </v-row>
+
 </template>
