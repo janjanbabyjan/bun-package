@@ -3,7 +3,7 @@ definePageMeta({
   layout: "admin",
 });
 import { ref } from 'vue';
-import UiParentCard from '@/components/shared/UiParentCard.vue';
+import UiParentCard from '@/components/admin/shared/UiParentCard.vue';
 // theme breadcrumb
 const page = ref({ title: 'Tabler Icons' });
 const breadcrumbs = ref([

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, shallowRef } from 'vue';
-import sidebarItems from '@/components/Layout/Full/vertical-sidebar/sidebarItem';
+import sidebarItems from '@/components/admin/Layout/Full/vertical-sidebar/sidebarItem';
 // Icon Imports
 import { Menu2Icon, BellRingingIcon } from 'vue-tabler-icons';
 const sidebarMenu = shallowRef(sidebarItems);
@@ -12,7 +12,7 @@ const sDrawer = ref(true);
     <v-navigation-drawer left v-model="sDrawer" app class="leftSidebar ml-sm-5 mt-sm-5 bg-containerBg" elevation="10"
         width="270">
         <div class="pa-5 pl-4 ">
-            <LayoutFullLogoDark />
+            <AdminLayoutFullLogoDark />
         </div>
         <!-- ---------------------------------------------- -->
         <!---Navigation -->
@@ -22,9 +22,9 @@ const sDrawer = ref(true);
                 <!---Menu Loop -->
                 <template v-for="(item, i) in sidebarMenu">
                     <!---Item Sub Header -->
-                    <LayoutFullVerticalSidebarNavGroup :item="item" v-if="item.header" :key="item.title" />
+                    <AdminLayoutFullVerticalSidebarNavGroup :item="item" v-if="item.header" :key="item.title" />
                     <!---Single Item-->
-                    <LayoutFullVerticalSidebarNavItem :item="item" v-else class="leftPadding" />
+                    <AdminLayoutFullVerticalSidebarNavItem :item="item" v-else class="leftPadding" />
                     <!---End Single Item-->
                 </template>
                 <!-- <Moreoption/> -->
@@ -46,7 +46,7 @@ const sDrawer = ref(true);
                             <Menu2Icon size="20" stroke-width="1.5" />
                         </v-btn>
                         <!-- Notification -->
-                        <LayoutFullVerticalHeaderNotificationDD />
+                        <AdminLayoutFullVerticalHeaderNotificationDD />
                     </div>
                     <div>
                         <!-- Upgrade button -->
@@ -54,7 +54,7 @@ const sDrawer = ref(true);
                             href="https://www.wrappixel.com/templates/spike-nuxtjs-admin-template/"
                             target="_blank">Upgrade to Pro</v-btn>
                         <!-- User Profile -->
-                        <LayoutFullVerticalHeaderProfileDD />
+                        <AdminLayoutFullVerticalHeaderProfileDD />
                     </div>
                 </div>
             </v-app-bar>

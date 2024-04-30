@@ -4,14 +4,14 @@ definePageMeta({
 });
 import { ref } from "vue";
 
-import UiChildCard from '@/components/shared/UiChildCard.vue';
+import UiChildCard from '@/components/admin/shared/UiChildCard.vue';
 
-import CardsProps from "@/components/ui-components/cards/CardsProps.vue";
-import CardsSlots from "@/components/ui-components/cards/CardsSlots.vue";
-import CardsContentWrap from "@/components/ui-components/cards/CardsContentWrap.vue";
-import CardsMedia from "@/components/ui-components/cards/CardsMedia.vue";
-import CardsWeather from "@/components/ui-components/cards/CardsWeather.vue";
-import CardsTwitter from "@/components/ui-components/cards/CardsTwitter.vue";
+import CardsProps from "@/components/admin/ui-components/cards/CardsProps.vue";
+import CardsSlots from "@/components/admin/ui-components/cards/CardsSlots.vue";
+import CardsContentWrap from "@/components/admin/ui-components/cards/CardsContentWrap.vue";
+import CardsMedia from "@/components/admin/ui-components/cards/CardsMedia.vue";
+import CardsWeather from "@/components/admin/ui-components/cards/CardsWeather.vue";
+import CardsTwitter from "@/components/admin/ui-components/cards/CardsTwitter.vue";
 </script>
 
 <template>
