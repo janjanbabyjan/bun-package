@@ -7,7 +7,8 @@ console.log("🚀 ~ props:", props)
 <template>
     <!---Single Item-->
     <div class="mb-1">
-        <v-list-item  :to="item.type === 'external' ? '' : item.to" :href="item.type === 'external' ?  item.to : ''" rounded
+        <v-list-item  
+        :to="item.type === 'external' ? '' : '/admin' + item.to" :href="item.type === 'external' ?  item.to : ''" rounded
             class="bg-hover-primary" color="primary" :ripple="false" :disabled="item.disabled"
             :target="item.type === 'external' ? '_blank' : '' " >
             

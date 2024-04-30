@@ -51,12 +51,12 @@ import {
     //   icon: BorderAllIcon,
     //   to: "/ui-components/tables",
     // },
-  //   { header: 'Auth' },
-  //   {
-  //     title: 'Login',
-  //     icon: LoginIcon,
-  //     to: '/auth/login'
-  // },
+    { header: 'Auth' },
+    {
+      title: 'Login',
+      icon: LoginIcon,
+      to: '/auth/login'
+  },
   // {
   //     title: 'Register',
   //     icon: UserPlusIcon,
