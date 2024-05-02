@@ -1,7 +1,49 @@
+@use 'sass:math';
+@use 'sass:map';
+@use 'sass:meta';
+@use 'vuetify/lib/styles/tools/functions' as *;
+
+$color-pack: false;
+
+$font-size-root: 1rem;
+$border-radius-root: 4px;
+$body-font-family: "Noto Sans Thai", sans-serif !default;
+$heading-font-family: $body-font-family !default;
+$btn-font-weight: 400 !default;
+$btn-letter-spacing: 0 !default;
+
+// Global Radius as per breakeven point
+$rounded: (
+    ) !default;
+$rounded: map-deep-merge((0: 0,
+            'sm': $border-radius-root * 0.5,
+            null: $border-radius-root,
+            'md': $border-radius-root * 1,
+            'lg': $border-radius-root * 2,
+            'xl': $border-radius-root * 6,
+            'pill': 9999px,
+            'circle': 50%,
+            'shaped': $border-radius-root * 6 0),
+        $rounded
+);
+
+// Custom Variables
+// colors
+$white: #fff !default;
+
+
+// Global Shadow
+$box-shadow: rgb(145 158 171 / 20%) 0px 0px 2px 0px, rgb(145 158 171 / 12%) 0px 12px 24px -4px;
+
+
+
 /*This is for the logo*/
+
+
 .leftSidebar {
     box-shadow: none !important;
-    border-right: 1px solid rgb(var(--v-theme-borderColor));
+    border-right: 1px solid #e5eaef;
+
     .logo {
         padding-left: 7px;
     }
@@ -15,9 +57,24 @@
     }
 }
 
+.v-navigation-drawer {
+    height: 100vh !important;
+}
+
+.logoes {
+    display: flex;
+    justify-content: center;
+    vertical-align: middle;
+
+    img {
+        width: 60%;
+    }
+}
+
 /*This is for the Vertical sidebar*/
-.scrollnavbar {
-    height: calc(100vh - 80px);
+.public-scrollnavbar {
+    // border-radius: 0%;
+    // height: 100vh;
 
     .userbottom {
         position: fixed;
@@ -26,11 +83,11 @@
     }
 
     .smallCap {
-        padding: 3px 12px !important;
+        // padding: 3px 12px !important;
         font-size: 0.875rem;
         font-weight: 500;
         margin-top: 24px;
-        color: rgb(var(--v-theme-textPrimary));
+        color: #2A3547;
 
         &:first-child {
             margin-top: 0 !important;
@@ -40,17 +97,23 @@
     /*General Menu css*/
     .v-list-group__items .v-list-item,
     .v-list-item {
+
         border-radius: $border-radius-root + 4;
         padding-inline-start: calc(12px + var(--indent-padding) / 10) !important;
+
 
         margin: 0 0 2px;
 
         &:hover {
-            color: rgb(var(--v-theme-primary));
+            color: #5D87FF;
+            background-color: #2a354706;
+            transition: 0.3s;
         }
 
         .v-list-item__prepend {
-            margin-inline-end: 13px;
+            margin-inline-end: 8px;
+            padding: 0.7rem;
+
         }
 
         .v-list-item__append {
@@ -65,32 +128,49 @@
             font-size: 0.875rem;
         }
     }
-    .v-list {
-        color: rgb(var(--v-theme-textSecondary));
 
-        > .v-list-item.v-list-item--active,
-        .v-list-item--active > .v-list-item__overlay {
-            background: rgb(var(--v-theme-primary));
+    .v-list {
+        color: #2A3547;
+
+        >.v-list-item.v-list-item--active,
+        .v-list-item--active>.v-list-item__overlay {
+            background: #5D87FF;
             color: white !important;
+            // padding: 0.7rem !important;
+
         }
 
-        > .v-list-group {
+        >.v-list-group {
             position: relative;
 
-            > .v-list-item--active,
-            > .v-list-item--active:hover {
-                background: rgb(var(--v-theme-primary));
+            >.v-list-item--active,
+            >.v-list-item--active:hover {
+                background: #5D87FF;
                 color: white;
             }
 
             .v-list-group__items .v-list-item.v-list-item--active,
-            .v-list-group__items .v-list-item.v-list-item--active > .v-list-item__overlay {
+            .v-list-group__items .v-list-item.v-list-item--active>.v-list-item__overlay {
                 background: transparent;
-                color: rgb(var(--v-theme-primary));
+                color: #5D87FF;
+                // padding: 0.7rem !important;
+
             }
         }
     }
 }
+
+
+.v-navigation-drawer__scrim.fade-transition-leave-to {
+    display: none;
+}
+
+
+.public-scrollnavbar {
+    overflow-y: auto; 
+    max-height: calc(100vh - 150px); 
+}
+
 
 @media only screen and (min-width: 1170px) {
     .mini-sidebar {
@@ -136,3 +216,4 @@
         }
     }
 }
+

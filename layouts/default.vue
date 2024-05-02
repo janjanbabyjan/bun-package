@@ -26,7 +26,3 @@ useHead({
     </v-locale-provider>
 </template>
 
-<style>
-@import '/scss/style.scss';
-
-</style>

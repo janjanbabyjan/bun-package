@@ -1,7 +1,7 @@
 import {
     ApertureIcon,
     CopyIcon,
-    LayoutDashboardIcon, LoginIcon, MoodHappyIcon, TypographyIcon, UserPlusIcon
+    LayoutDashboardIcon, LoginIcon, MoodHappyIcon, TypographyIcon, UserPlusIcon ,PhotoIcon
 } from 'vue-tabler-icons';
 
 export interface menu {
@@ -24,41 +24,41 @@ const sidebarItem: menu[] = [
     {
         title: 'Dashboard',
         icon: LayoutDashboardIcon,
-        to: '/'
+        to: '/public/dashboard'
     },
     { header: 'utilities' },
     {
-        title: 'Typography',
-        icon: TypographyIcon,
-        to: '/ui/typography'
+        title: 'Gallery',
+        icon: PhotoIcon,
+        to: '/public/ui-components/gallery'
     },
-    {
-        title: 'Shadow',
-        icon: CopyIcon,
-        to: '/ui/shadow'
-    },
-    { header: 'auth' },
-    {
-        title: 'Login',
-        icon: LoginIcon,
-        to: '/auth/login'
-    },
-    {
-        title: 'Register',
-        icon: UserPlusIcon,
-        to: '/auth/register'
-    },
-    { header: 'Extra' },
-    {
-        title: 'Icons',
-        icon: MoodHappyIcon,
-        to: '/icons'
-    },
-    {
-        title: 'Sample Page',
-        icon: ApertureIcon,
-        to: '/sample-page'
-    },
+    // {
+    //     title: 'Shadow',
+    //     icon: CopyIcon,
+    //     to: '/ui/shadow'
+    // },
+    // { header: 'auth' },
+    // {
+    //     title: 'Login',
+    //     icon: LoginIcon,
+    //     to: '/auth/login'
+    // },
+    // {
+    //     title: 'Register',
+    //     icon: UserPlusIcon,
+    //     to: '/auth/register'
+    // },
+    // { header: 'Extra' },
+    // {
+    //     title: 'Icons',
+    //     icon: MoodHappyIcon,
+    //     to: '/icons'
+    // },
+    // {
+    //     title: 'Sample Page',
+    //     icon: ApertureIcon,
+    //     to: '/sample-page'
+    // },
 ];
 
 export default sidebarItem;
