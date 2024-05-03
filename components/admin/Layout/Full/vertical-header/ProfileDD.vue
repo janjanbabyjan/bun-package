@@ -6,8 +6,8 @@ const Logout = () => {
     // console.log(userName.value,passWord.value)
     // if(userName && passWord) {
     //     localStorage.setItem("isLogin","true");
-        router.push('/auth/login'); 
-    } 
+    router.push('/auth/login');
+}
 // }
 </script>
 
@@ -25,11 +25,11 @@ const Logout = () => {
         </template>
         <v-sheet rounded="xl" width="200" elevation="10" class="mt-2">
             <v-list class="py-0" lines="one" density="compact">
-                <v-list-item value="item1" color="primary" >
+                <!-- <v-list-item value="item1" color="primary" >
                     <template v-slot:prepend>
                         <UserIcon stroke-width="1.5" size="20"/>
                     </template>
-                    <v-list-item-title class="pl-4 text-body-1">My Profile</v-list-item-title>
+                    <v-list-item-title class="pl-4 text-body-1">Logout</v-list-item-title>
                 </v-list-item>
                 <v-list-item value="item2" color="primary">
                     <template v-slot:prepend>
@@ -42,10 +42,12 @@ const Logout = () => {
                         <ListCheckIcon stroke-width="1.5"  size="20"/>
                     </template>
                     <v-list-item-title class="pl-4 text-body-1">My Task</v-list-item-title>
-                </v-list-item>
+                </v-list-item> -->
             </v-list>
-            <div class="pt-4 pb-4 px-5 text-center">
-                <v-btn to="" color="primary" variant="outlined" class="rounded-pill" block @click="Logout" flat>Logout</v-btn>
+            <div class="pt-4 pb-4 px-10 text-center">
+                <v-btn to="" color="primary" variant="outlined" class="rounded-pill" block @click="Logout" flat>
+                    <v-icon left>mdi-logout</v-icon> Logout
+                </v-btn>
             </div>
         </v-sheet>
     </v-menu>
