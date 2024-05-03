@@ -3,7 +3,10 @@ import {
     AlertCircleIcon,
     CircleDotIcon,
     BoxMultiple1Icon,
-    LoginIcon, MoodHappyIcon, ApertureIcon, UserPlusIcon
+    LoginIcon, MoodHappyIcon, ApertureIcon, UserPlusIcon,
+    Pennant2Icon,
+    PaintIcon,
+    BallpenIcon
   } from 'vue-tabler-icons';
   
   export interface menu {
@@ -31,9 +34,9 @@ import {
       to: '/dashboard'
     },
     {
-      title: 'Content',
-      icon: LayoutDashboardIcon,
-      to: '/content'
+      title: 'Article',
+      icon: BallpenIcon,
+      to: '/content/article/add'
     },
     // { header: 'ui' },
     {
