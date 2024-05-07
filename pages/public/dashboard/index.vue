@@ -7,4 +7,6 @@
 
 <template>
 <PublicDashboardHeaders/>
+<PublicDashboardDetails/>
+<PublicDashboardGallery/>
 </template>

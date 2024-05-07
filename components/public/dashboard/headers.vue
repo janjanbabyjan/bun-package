@@ -13,14 +13,18 @@
                 </v-col>
                 <v-col cols="12" md="6" class="mt-md-0 mt-3">
                     <div class="position-relative text-center text-lg-start">
-                        <img src="/public/images/shape/shapeline-2.png" alt="shape" class="img-fluid position-absolute top-0 right-0 mt-n10 mr-n16" />
+                        <!-- <img src="/public/images/shape/shapeline-2.png" alt="shape" class="img-fluid position-absolute top-0 right-0 mt-n10 mr-n16" /> -->
                         <div class="position-relative z-index1 rounded-md overflow-hidden">
                             <img src="/public/images/corporate/corporate-banner.jpg" alt="banner" class="img-fluid rounded-md"/>
                         </div>
-                        <img src="/public/images/shape/circle-line-3.png" alt="shape" class="img-fluid position-absolute bottom-0 left-0 mb-n10 ml-n12 " />
+                        <!-- <img src="/public/images/shape/circle-line-3.png" alt="shape" class="img-fluid position-absolute bottom-0 left-0 mb-n10 ml-n12 " /> -->
                     </div>
                 </v-col>
             </v-row>
         </v-container>
     </div>
 </template>
+
+<style>
+
+</style>
