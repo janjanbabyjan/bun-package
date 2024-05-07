@@ -34,9 +34,9 @@ import {
       to: '/dashboard'
     },
     {
-      title: 'Article',
+      title: 'Manage single page',
       icon: BallpenIcon,
-      to: '/content/article/add'
+      to: '/content/manage-single-page'
     },
     // { header: 'ui' },
     {
