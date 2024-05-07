@@ -6,5 +6,5 @@
 </script>
 
 <template>
-<div>5555555534563453</div>
+<PublicDashboardHeaders/>
 </template>

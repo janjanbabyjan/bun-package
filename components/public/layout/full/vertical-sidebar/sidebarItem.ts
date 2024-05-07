@@ -1,7 +1,12 @@
 import {
     ApertureIcon,
     CopyIcon,
-    LayoutDashboardIcon, LoginIcon, MoodHappyIcon, TypographyIcon, UserPlusIcon ,PhotoIcon
+    LayoutDashboardIcon,
+    LoginIcon,
+    MoodHappyIcon,
+    TypographyIcon,
+    UserPlusIcon,
+    PhotoIcon,
 } from 'vue-tabler-icons';
 
 export interface menu {
@@ -17,48 +22,30 @@ export interface menu {
     disabled?: boolean;
     type?: string;
     subCaption?: string;
+    active?: boolean; // Add this line
 }
 
 const sidebarItem: menu[] = [
     { header: 'Home' },
-    {
-        title: 'Dashboard',
-        icon: LayoutDashboardIcon,
-        to: '/public/dashboard'
-    },
+    { title: 'Dashboard', icon: LayoutDashboardIcon, to: '/public/dashboard' },
     { header: 'utilities' },
     {
-        title: 'Gallery',
+        title: 'Block',
         icon: PhotoIcon,
-        to: '/public/ui-components/gallery'
+        to: '/public/ui-components/gallery',
+        active: true, // กำหนดให้แสดงเมนูย่อยเริ่มต้น
+        children: [
+            { title: 'Child Item 1', to: '/child-1' },
+            { title: 'Child Item 2', to: '/child-2' },
+            {
+                title: 'Nested Child',
+                children: [
+                    { title: 'Nested Child Item 1', to: '/nested-child-1' },
+                    { title: 'Nested Child Item 2', to: '/nested-child-2' },
+                ],
+            },
+        ],
     },
-    // {
-    //     title: 'Shadow',
-    //     icon: CopyIcon,
-    //     to: '/ui/shadow'
-    // },
-    // { header: 'auth' },
-    // {
-    //     title: 'Login',
-    //     icon: LoginIcon,
-    //     to: '/auth/login'
-    // },
-    // {
-    //     title: 'Register',
-    //     icon: UserPlusIcon,
-    //     to: '/auth/register'
-    // },
-    // { header: 'Extra' },
-    // {
-    //     title: 'Icons',
-    //     icon: MoodHappyIcon,
-    //     to: '/icons'
-    // },
-    // {
-    //     title: 'Sample Page',
-    //     icon: ApertureIcon,
-    //     to: '/sample-page'
-    // },
 ];
 
 export default sidebarItem;
