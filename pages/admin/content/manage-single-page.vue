@@ -12,17 +12,20 @@ const getBreadcrumbText = (index: number) => {
     return breadcrumbs[index].text;
 };
 
-
 import { ref } from 'vue';
 import { productPerformance } from '@/data/dashboard/dashboardData';
-const items = ref([
-    { title: "Action" },
-    { title: "Another action" },
-    { title: "Something else here" },
-]);
 
 const isOpen = ref(false); // เริ่มต้นเปิดปิด
 
+const dialog = ref(false);
+
+const openDialog = () => {
+    dialog.value = true;
+};
+
+const closeDialog = () => {
+    dialog.value = false;
+};
 </script>
 
 <template>
@@ -40,25 +43,46 @@ const isOpen = ref(false); // เริ่มต้นเปิดปิด
             <div class="d-flex align-center justify-space-between pt-sm-2">
                 <v-card-title class="text-h5">รายชื่อหน้าเว็บไซต์</v-card-title>
                 <!-- Move the Create Page button to the right -->
-                <v-btn color="primary" class="ml-auto">สร้างหน้าใหม่</v-btn>
+                <v-btn color="primary" class="ml-auto" @click="openDialog">สร้าง Content ใหม่</v-btn>
+                <v-dialog v-model="dialog" max-width="500px">
+                    <v-card>
+                        <v-card-title>เลือกสร้าง Content</v-card-title>
+                        <v-card-text>
+                            <div class="buttons-container">
+                                <router-link to="/admin/content/article/add">
+                                    <v-btn color="primary" class="ml-5"
+                                    :style="{ width: '150px', 'max-width': '200px', height: '50px' }">เพิ่มคำบรรยาย</v-btn>
+                                </router-link>
+                                <router-link to="/other-page">
+                                    <v-btn color="primary" class="ml-5"
+                                        :style="{ width: '150px', 'max-width': '200px', height: '50px' }">เพิ่มรูป</v-btn>
+                                </router-link>
+                            </div>
+                        </v-card-text>
+                        <v-card-actions>
+                            <v-btn color="primary" @click="closeDialog">ปิด</v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
             </div>
 
             <!-- Search inputs -->
-            <v-row class="mt-3">
-                <v-col cols="12" md="4">
+            <v-row class="mt-2">
+                <v-col cols="12" md="4" style="max-width: 200px;">
                     <v-text-field label="ค้นหาชื่อ"></v-text-field>
                 </v-col>
-                <v-col cols="12" md="4">
+                <v-col cols="12" md="4" style="max-width: 200px;">
                     <v-select label="สถานะ"></v-select>
                 </v-col>
-                <v-col cols="12" md="4">
+                <v-col cols="12" md="4" class="d-flex justify-between align-center" style="max-width: 200px;">
                     <v-select label="ประเภท"></v-select>
                 </v-col>
-                <v-col cols="12" class="d-flex justify-end align-end mt-n5">
-                    <v-btn color="primary" class="mx-2">ค้นหา</v-btn>
-                    <v-btn color="error" class="mx-2">ล้าง</v-btn>
-                </v-col>
+                <div class="d-flex justify-between align-center" style="margin-top: -5px;">
+                    <v-btn color="primary" class="ml-3">ค้นหา</v-btn>
+                    <v-btn color="error" class="ml-3">ล้าง</v-btn>
+                </div>
             </v-row>
+
         </v-card-item>
 
         <!-- ตาราง -->
@@ -90,11 +114,11 @@ const isOpen = ref(false); // เริ่มต้นเปิดปิด
                         <!-- <v-chip :class="'text-body-2 bg-' + item.statuscolor" color="white" size="small">{{
                             item.status
                         }}</v-chip> -->
-                        <v-switch v-model="isOpen" color="primary" class="d-flex align-center"></v-switch>
+                        <v-switch id="isOpenSwitch" v-model="isOpen" class="d-flex custom-switch"></v-switch>
                     </td>
-                    <td class="d-flex align-center">
+                    <td>
                         <!-- <h6 class="text-h6 text-right">{{ item.budget }}</h6> -->
-                        <v-icon >mdi-pencil</v-icon> <!-- ใช้ไอคอนแก้ไข -->
+                        <v-icon class="ml-3" style="color: red;">mdi-pencil</v-icon> <!-- ใช้ไอคอนแก้ไข -->
                     </td>
 
                 </tr>
@@ -103,8 +127,25 @@ const isOpen = ref(false); // เริ่มต้นเปิดปิด
     </v-card>
 </template>
 
-<style scoped>
+<style>
 .breadcrumb-item {
     cursor: pointer;
+}
+
+.custom-switch {
+    --v-switch-width: 48px;
+    --v-switch-height: 24px;
+    --v-switch-track-color: #e0e0e0;
+    --v-switch-thumb-color: #4caf50;
+    --v-switch-thumb-size: 20px;
+    --v-switch-thumb-offset: 2px;
+    --v-switch-thumb-transition: transform 0.3s;
+}
+
+.buttons-container {
+    display: flex;
+    justify-content: center; /* จัดวางตรงกลางแนวนอน */
+    align-items: center; /* จัดวางตรงกลางแนวตั้ง */
+    height: 100%; /* กำหนดความสูงเท่ากับพอกับปุ่ม */
 }
 </style>

@@ -1,4 +1,3 @@
-
 <script setup lang="ts">
 
 definePageMeta({
@@ -68,12 +67,12 @@ const initOutputEditor = () => {
       },
       image: SimpleImage,
       nestedList: {
-      class: NestedList,
-      inlineToolbar: true,
-      config: {
-        defaultStyle: 'unordered',
+        class: NestedList,
+        inlineToolbar: true,
+        config: {
+          defaultStyle: 'unordered',
+        },
       },
-    },
     },
     data: editorContent.value,
     readOnly: true,
@@ -144,6 +143,7 @@ const getContent = () => {
 
 const breadcrumbs = [
   { text: 'หน้าแรก', href: '/admin' },
+  { text: 'รายชื่อหน้าเว็บไซต์', href: '/admin/content/manage-single-page' },
   { text: 'เพิ่มคำบรรยาย', href: '/admin/content/article/add' },
 ];
 
@@ -157,18 +157,27 @@ const getBreadcrumbText = (index: number) => {
   <div>
     <!-- Breadcrumb navigation -->
     <v-breadcrumbs>
-      <v-breadcrumbs-item v-for="(breadcrumb, index) in breadcrumbs" :key="index" @click="navigateTo(breadcrumb.href)" class="breadcrumb-item">
+      <v-breadcrumbs-item v-for="(breadcrumb, index) in breadcrumbs" :key="index" @click="navigateTo(breadcrumb.href)"
+        class="breadcrumb-item">
         {{ getBreadcrumbText(index) }}
         <template v-if="index < breadcrumbs.length - 1"> > </template>
       </v-breadcrumbs-item>
     </v-breadcrumbs>
 
-    <!-- Content area -->
-    <v-card elevation="0">
-      <div id="editor" class="editor" style="padding: 1rem"></div>
-      <v-btn @click="getContent">Show Output</v-btn>
-      <br />
-      <div id="output-editor"></div>
+
+    <v-card elevation="10" class="withbg">
+      <v-card-item class="pa-6">
+        <div class="d-flex align-center justify-space-between pt-sm-2">
+          <v-card-title class="text-h5">เพิ่มคำบรรยาย</v-card-title>
+        </div>
+
+        <!-- Content area -->
+        <div id="editor" class="editor" style="padding: 1rem"></div>
+        <v-btn @click="getContent">Show Output</v-btn>
+        <br />
+        <div id="output-editor"></div>
+
+      </v-card-item>
     </v-card>
   </div>
 </template>
