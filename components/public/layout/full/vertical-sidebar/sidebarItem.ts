@@ -26,19 +26,20 @@ export interface menu {
 }
 
 const sidebarItem: menu[] = [
-    { header: 'Home' },
+    // { header: 'Home' },
     { title: 'Dashboard', icon: LayoutDashboardIcon, to: '/public/dashboard' },
-    { header: 'utilities' },
+    // { header: 'utilities' },
     {
         title: 'Block',
         icon: PhotoIcon,
-        to: '/public/ui-components/gallery',
-        active: true, // กำหนดให้แสดงเมนูย่อยเริ่มต้น
+        // to: '/public/ui-components/gallery',
+        active: true, // Set this to true for the parent group you want to be initially open
         children: [
-            { title: 'Child Item 1', to: '/child-1' },
-            { title: 'Child Item 2', to: '/child-2' },
+            { title: 'Child Item 1', to: '/public/ui-components/output' },
+            { title: 'Child Item 2', to: '/public/ui-components/gallery' },
             {
                 title: 'Nested Child',
+                active: true,
                 children: [
                     { title: 'Nested Child Item 1', to: '/nested-child-1' },
                     { title: 'Nested Child Item 2', to: '/nested-child-2' },

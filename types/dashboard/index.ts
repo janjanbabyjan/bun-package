@@ -30,4 +30,21 @@ type productsCards = {
     rating: number;
 };
 
-export type { recentTrans, productPerformanceType, productsCards }
+type BlogSection = {
+    img: string;
+    badge: string;
+    date: string;
+    view: string;
+    title: string;
+    desc: string;
+    name: string;
+};
+
+type PortfolioSection = {
+    img: string;
+    title: string;
+    desc: string;
+};
+
+
+export type { recentTrans, productPerformanceType, productsCards, BlogSection, PortfolioSection }

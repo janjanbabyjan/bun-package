@@ -1,4 +1,4 @@
-import type { recentTrans, productPerformanceType, productsCards } from '@/types/dashboard/index';
+import type { recentTrans, productPerformanceType, productsCards, BlogSection,PortfolioSection } from '@/types/dashboard/index';
 
 /*--Recent Transaction--*/
 const recentTransaction: recentTrans[] = [
@@ -149,4 +149,89 @@ const productsCard: productsCards[] = [
 ];
 
 
-export { recentTransaction, productPerformance, productsCard }
+export { recentTransaction, productPerformance, productsCard, Blog, Portfolio };
+
+
+
+//Blog
+
+import blog1 from '/images/products/test1.png';
+import blog2 from '/images/products/test2.png';
+import blog3 from '/images/products/test3.png';
+
+const Blog: BlogSection[] = [
+    {
+        img: blog1,
+        badge: 'CSR',
+        date: 'Apr 16, 2023',
+        view: '27,567 Views',
+        title: 'Banpu and Mahidol Invite High School and Vocational School',
+        desc: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry',
+        name: 'Mark R. Freeman'
+    },
+    {
+        img: blog2,
+        badge: 'Bussiness',
+        date: 'Apr 16, 2023',
+        view: '29,567 Views',
+        title: 'Banpu Signs THB 2.4 Billion Deal with ADB to Bolster E-Mobility and Battery Businesses',
+        desc: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry',
+        name: 'James Robert'
+    },
+    {
+        img: blog3,
+        badge: 'Digital and Innovention',
+        date: 'Apr 16, 2023',
+        view: '28,567 Views',
+        title: 'Banpu Shapes Digital & Innovation Team, Transforming “Personnel and Organization”',
+        desc: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry',
+        name: 'David William'
+    },
+
+
+];
+
+
+//Portfolio
+
+import s1 from '/images/portfolio/portfolio-1.jpg';
+import s2 from '/images/portfolio/portfolio-2.png';
+import s3 from '/images/portfolio/portfolio-3.jpg';
+import s4 from '/images/portfolio/portfolio-4.jpg';
+import s5 from '/images/portfolio/portfolio-5.jpg';
+import s6 from '/images/portfolio/portfolio-6.jpg';
+
+const Portfolio: PortfolioSection[] = [
+    {
+        img: s1,
+        title: 'White Theming Background',
+        desc: '3D Render',
+
+    },
+    {
+        img: s2,
+        title: 'The Heritage',
+        desc: 'Illustration',
+    },
+    {
+        img: s3,
+        title: 'Belforte Fall',
+        desc: 'Photography',
+    },
+    {
+        img: s4,
+        title: 'Ipsum neque libero',
+        desc: 'React',
+    },
+    {
+        img: s5,
+        title: 'White Theming',
+        desc: 'Graphics Design',
+    },
+    {
+        img: s6,
+        title: 'luctus neque purus',
+        desc: 'Html',
+    },
+    
+];
