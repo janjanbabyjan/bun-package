@@ -3,6 +3,7 @@ definePageMeta({
     layout: "admin",
 });
 
+// ตัวบอกหน้า
 const breadcrumbs = [
     { text: 'หน้าแรก', href: '/admin' },
     { text: 'รายชื่อหน้าเว็บไซต์', href: '/admin/content/manage-single-page' },
@@ -17,16 +18,17 @@ import { productPerformance } from '@/data/dashboard/dashboardData';
 
 const isOpen = ref(false); // เริ่มต้นเปิดปิด
 
+// ตัวป๊อปอัพ
 const dialog = ref(false);
 
 const openDialog = () => {
     dialog.value = true;
 };
-
 const closeDialog = () => {
     dialog.value = false;
 };
 </script>
+
 
 <template>
     <!-- Breadcrumb navigation -->
@@ -46,14 +48,14 @@ const closeDialog = () => {
                 <v-btn color="primary" class="ml-auto" @click="openDialog">สร้าง Content ใหม่</v-btn>
                 <v-dialog v-model="dialog" max-width="500px">
                     <v-card>
-                        <v-card-title>เลือกสร้าง Content</v-card-title>
+                        <v-card-title class="mt-2">เลือกสร้าง Content</v-card-title>
                         <v-card-text>
                             <div class="buttons-container">
                                 <router-link to="/admin/content/article/add">
                                     <v-btn color="primary" class="ml-5"
-                                    :style="{ width: '150px', 'max-width': '200px', height: '50px' }">เพิ่มคำบรรยาย</v-btn>
+                                        :style="{ width: '150px', 'max-width': '200px', height: '50px' }">เพิ่มคำบรรยาย</v-btn>
                                 </router-link>
-                                <router-link to="/other-page">
+                                <router-link to="/admin/content/gallery/add">
                                     <v-btn color="primary" class="ml-5"
                                         :style="{ width: '150px', 'max-width': '200px', height: '50px' }">เพิ่มรูป</v-btn>
                                 </router-link>
@@ -117,10 +119,12 @@ const closeDialog = () => {
                         <v-switch id="isOpenSwitch" v-model="isOpen" class="d-flex custom-switch"></v-switch>
                     </td>
                     <td>
+                        <router-link to="/admin/content/article/edit/[id]">
+                            <v-icon class="ml-3" style="color: red;">mdi-pencil</v-icon>
+                        </router-link>
                         <!-- <h6 class="text-h6 text-right">{{ item.budget }}</h6> -->
-                        <v-icon class="ml-3" style="color: red;">mdi-pencil</v-icon> <!-- ใช้ไอคอนแก้ไข -->
+                        <!-- ใช้ไอคอนแก้ไข -->
                     </td>
-
                 </tr>
             </tbody>
         </v-table>
@@ -132,20 +136,13 @@ const closeDialog = () => {
     cursor: pointer;
 }
 
-.custom-switch {
-    --v-switch-width: 48px;
-    --v-switch-height: 24px;
-    --v-switch-track-color: #e0e0e0;
-    --v-switch-thumb-color: #4caf50;
-    --v-switch-thumb-size: 20px;
-    --v-switch-thumb-offset: 2px;
-    --v-switch-thumb-transition: transform 0.3s;
-}
-
 .buttons-container {
     display: flex;
-    justify-content: center; /* จัดวางตรงกลางแนวนอน */
-    align-items: center; /* จัดวางตรงกลางแนวตั้ง */
-    height: 100%; /* กำหนดความสูงเท่ากับพอกับปุ่ม */
+    justify-content: center;
+    /* จัดวางตรงกลางแนวนอน */
+    align-items: center;
+    /* จัดวางตรงกลางแนวตั้ง */
+    height: 100%;
+    /* กำหนดความสูงเท่ากับพอกับปุ่ม */
 }
 </style>

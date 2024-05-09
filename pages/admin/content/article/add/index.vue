@@ -123,6 +123,7 @@ onMounted(() => {
   });
 });
 
+// น่าจะเกี่ยวกับตัว input คำบรรยาย
 onBeforeUnmount(() => {
   if (editor.value) {
     editor.value.destroy();
@@ -132,7 +133,9 @@ onBeforeUnmount(() => {
   }
 });
 
-const getContent = () => {
+
+// ปุ่มบันทึก
+const getsave = () => {
   if (editor.value) {
     editor.value.save().then((outputData: any) => {
       editorContent.value = outputData;
@@ -141,6 +144,8 @@ const getContent = () => {
   }
 };
 
+
+// ตัวบอกหน้า
 const breadcrumbs = [
   { text: 'หน้าแรก', href: '/admin' },
   { text: 'รายชื่อหน้าเว็บไซต์', href: '/admin/content/manage-single-page' },
@@ -150,6 +155,22 @@ const breadcrumbs = [
 const getBreadcrumbText = (index: number) => {
   return breadcrumbs[index].text;
 };
+
+// ปุ่มเปิดปิด
+const isOpen = ref(false); // เริ่มต้นเปิดให้เป็น false
+
+// Default data
+// const myData = {
+//   data() {
+//     return {
+//       isOpen: false,
+//       selectedDate: null,
+//     };
+//   },
+// };
+
+// Export default data
+// export default myData;
 
 </script>
 
@@ -164,26 +185,70 @@ const getBreadcrumbText = (index: number) => {
       </v-breadcrumbs-item>
     </v-breadcrumbs>
 
+    <div class="center-container">
+      <v-card elevation="10" class="withbg center-card" style="max-width: 1000px;">
+        <v-card-item class="pa-6">
 
-    <v-card elevation="10" class="withbg">
-      <v-card-item class="pa-6">
-        <div class="d-flex align-center justify-space-between pt-sm-2">
-          <v-card-title class="text-h5">เพิ่มคำบรรยาย</v-card-title>
+          <v-row class="mt-2">
+            <v-col cols="12" md="4" style="max-width: 500px;">
+              <v-text-field label="หัวข้อ"></v-text-field>
+
+              <!-- ปุ่มเพื่อเปิด -->
+              <v-switch id="isOpenSwitch" v-model="isOpen" class="ml-3 d-flex custom-switch"
+                label="เปิด/ปิด"></v-switch>
+            </v-col>
+            <!-- date  -->
+            <!-- <v-col>
+              <v-date-picker v-model="selectedDate" label="เลือกวันที่"></v-date-picker>
+            </v-col> -->
+          </v-row>
+        </v-card-item>
+      </v-card>
+    </div>
+
+    <div class="center-container">
+      <v-card class="withbg mt-4 " style="max-width: 1000px;">
+        <div class="title-section">
+          <v-card-title class="text-h5 ml-3">เพิ่มคำบรรยาย</v-card-title>
+          <!-- <v-btn @click="getContent" class="show-output-btn">Show Output</v-btn> -->
         </div>
-
         <!-- Content area -->
-        <div id="editor" class="editor" style="padding: 1rem"></div>
-        <v-btn @click="getContent">Show Output</v-btn>
-        <br />
-        <div id="output-editor"></div>
+        <div class="editor-wrapper">
+          <div id="editor" class="editor"></div>
+        </div>
+        <v-btn color="primary" class="ml-5 mb-6" @click="getsave">บันทึก</v-btn>
+      </v-card>
+    </div>
 
-      </v-card-item>
-    </v-card>
   </div>
+
 </template>
 
 <style scoped>
 .breadcrumb-item {
   cursor: pointer;
+}
+
+.description {
+  text-align: center;
+  margin-top: 20px;
+}
+
+
+.title-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 8px;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-bottom: 10px;
+}
+
+.center-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
 }
 </style>
