@@ -122,6 +122,7 @@ $box-shadow: rgb(145 158 171 / 20%) 0px 0px 2px 0px, rgb(145 158 171 / 12%) 0px 
             .v-icon {
                 margin-inline-start: 13px;
             }
+
         }
 
         .v-list-item-title {
@@ -161,14 +162,28 @@ $box-shadow: rgb(145 158 171 / 20%) 0px 0px 2px 0px, rgb(145 158 171 / 12%) 0px 
 }
 
 
+
+
+
+.v-list-group .v-list-group__items .v-list-item .v-list-item__append {
+    display: none;
+}
+
+.v-list-group .v-list-group__items .v-list-group--prepend .v-list-item {
+    color: rgba(var(--v-theme-primary));
+}
+
+
+
+
 .v-navigation-drawer__scrim.fade-transition-leave-to {
     display: none;
 }
 
 
 .public-scrollnavbar {
-    overflow-y: auto; 
-    max-height: calc(100vh - 150px); 
+    overflow-y: auto;
+    max-height: calc(100vh - 150px);
 }
 
 
@@ -216,4 +231,3 @@ $box-shadow: rgb(145 158 171 / 20%) 0px 0px 2px 0px, rgb(145 158 171 / 12%) 0px 
         }
     }
 }
-
