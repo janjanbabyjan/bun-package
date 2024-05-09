@@ -158,16 +158,17 @@ const getBreadcrumbText = (index: number) => {
 
 // ปุ่มเปิดปิด
 const isOpen = ref(false); // เริ่มต้นเปิดให้เป็น false
+const selectedDate = ref([]);
 
 // Default data
-// const myData = {
-//   data() {
-//     return {
-//       isOpen: false,
-//       selectedDate: null,
-//     };
-//   },
-// };
+const myData = {
+  data() {
+    return {
+      isOpen: false,
+      selectedDate: null,
+    };
+  },
+};
 
 // Export default data
 // export default myData;
@@ -198,9 +199,9 @@ const isOpen = ref(false); // เริ่มต้นเปิดให้เ�
                 label="เปิด/ปิด"></v-switch>
             </v-col>
             <!-- date  -->
-            <!-- <v-col>
+            <v-col>
               <v-date-picker v-model="selectedDate" label="เลือกวันที่"></v-date-picker>
-            </v-col> -->
+            </v-col>
           </v-row>
         </v-card-item>
       </v-card>
