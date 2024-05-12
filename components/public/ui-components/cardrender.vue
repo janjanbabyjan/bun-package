@@ -20,9 +20,10 @@ import { Blog } from '@/data/dashboard/dashboardData';
             </v-row>
             <v-row class="justify-center">
                 <v-col cols="12" md="4" sm="6" v-for="card in Blog" :key="card.title" class="mb-4">
+
                     <v-card elevation="0" variant="outlined" class="card-with-min-height">
                         <div class="hover-card overflow-hidden lh-10 rounded-md rounded-be-0 position-relative">
-                            <NuxtLink to="/" class="text-decoration-none">
+                            <NuxtLink :to="`/public/ui-components/content/${card.id}`" class="text-decoration-none">
                                 <v-img :src="card.img" height="250px" alt="post" cover class="zoom-in w-100">
                                 </v-img>
                             </NuxtLink>
@@ -32,15 +33,15 @@ import { Blog } from '@/data/dashboard/dashboardData';
                                 <p class="text-muted text-subtitle-1">{{ card.date }} </p>
                                 <v-chip color="primary" height="auto" size="small" variant="tonal" rounded="md">{{
                                     card.badge
-                                    }}</v-chip>
+                                }}</v-chip>
                             </div>
                             <div class="mt-4">
                                 <h5 class="text-h5 font-weight-bold mb-3 lh-normal title-line-clamp">
-                                    <NuxtLink class="text-decoration-none text-dark hover-primary" to="/">{{ card.title
+                                    <NuxtLink class="text-decoration-none text-dark hover-primary"
+                                        :to="`/public/ui-components/content/${card.id}`">{{ card.title
                                         }}</NuxtLink>
                                 </h5>
-                                <p class="text-muted text-subtitle-1 font-weight-regular mb-3">{{ card.desc }}</p>
-                                <!-- <span>By<NuxtLink to="/" class="text-dark ml-1"> {{ card.name }}</NuxtLink></span> -->
+                                <!-- <p class="text-muted text-subtitle-1 font-weight-regular mb-3">{{ card.desc }}</p> -->
                             </div>
                         </div>
                     </v-card>

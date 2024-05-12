@@ -1,6 +1,6 @@
 <script lang="ts">
 import { shallowRef } from 'vue';
-import cards from '@/components/public/ui-components/image';
+import cards from '~/components/public/ui-components/image';
 
 export default {
     data() {

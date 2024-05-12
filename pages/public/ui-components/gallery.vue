@@ -13,7 +13,7 @@ import Closable from '~/components/public/ui-components/boximage.vue';
         <v-col cols="12">
             <v-row>
                 <v-col cols="12">
-                    <PublicUiComponentsBoximage/>
+                    <PublicUiComponentsGallery/>
                 </v-col>
             </v-row>
         </v-col>

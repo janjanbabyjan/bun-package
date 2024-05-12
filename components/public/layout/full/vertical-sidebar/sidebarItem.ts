@@ -7,6 +7,9 @@ import {
     TypographyIcon,
     UserPlusIcon,
     PhotoIcon,
+    AdIcon,
+    PageBreakIcon,
+    PackageIcon,
 } from 'vue-tabler-icons';
 
 export interface menu {
@@ -26,18 +29,24 @@ export interface menu {
 }
 
 const sidebarItem: menu[] = [
-    { title: 'Dashboard', icon: LayoutDashboardIcon, to: '/public/dashboard' },
     {
-        title: 'Block',
-        icon: PhotoIcon,
+        title: 'Dashboard',
+        icon: LayoutDashboardIcon,
+        to: '/public/dashboard'
+    },
+
+    // chidren1
+    {
+        title: 'Page',
+        icon: PackageIcon,
         active: true,
         children: [
             {
-                title: 'Child Item 1',
-                to: '/public/ui-components/output'
+                title: 'Render Page',
+                to: '/public/ui-components/cardrender'
             },
             {
-                title: 'Child Item 2',
+                title: 'Gallery',
                 to: '/public/ui-components/gallery'
             },
             {
@@ -56,6 +65,7 @@ const sidebarItem: menu[] = [
 
         ],
     },
+    // chidren2
     {
         title: 'New',
         icon: UserPlusIcon,
@@ -69,19 +79,7 @@ const sidebarItem: menu[] = [
                 title: 'Child Item 2',
                 to: '/public/ui-components/gallery'
             },
-            {
-                title: 'Nested Child',
-                children: [
-                    {
-                        title: 'Nested Child Item 1',
-                        to: '/nested-child-1'
-                    },
-                    {
-                        title: 'Nested Child Item 2',
-                        to: '/nested-child-2'
-                    },
-                ],
-            },
+
 
         ],
     },

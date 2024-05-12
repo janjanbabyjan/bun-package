@@ -135,8 +135,8 @@ $box-shadow: rgb(145 158 171 / 20%) 0px 0px 2px 0px, rgb(145 158 171 / 12%) 0px 
 
         >.v-list-item.v-list-item--active,
         .v-list-item--active>.v-list-item__overlay {
-            background: #5D87FF;
-            color: white !important;
+            background: none;
+            color: #000000 !important;
             // padding: 0.7rem !important;
 
         }
@@ -146,14 +146,14 @@ $box-shadow: rgb(145 158 171 / 20%) 0px 0px 2px 0px, rgb(145 158 171 / 12%) 0px 
 
             >.v-list-item--active,
             >.v-list-item--active:hover {
-                background: #5D87FF;
-                color: white;
+                // background: #5D87FF;
+                color: rgb(0, 0, 0);
             }
 
             .v-list-group__items .v-list-item.v-list-item--active,
             .v-list-group__items .v-list-item.v-list-item--active>.v-list-item__overlay {
                 background: transparent;
-                color: #5D87FF;
+                color: #000000 !important;
                 // padding: 0.7rem !important;
 
             }
@@ -163,11 +163,18 @@ $box-shadow: rgb(145 158 171 / 20%) 0px 0px 2px 0px, rgb(145 158 171 / 12%) 0px 
 
 
 
-
-
-.v-list-group .v-list-group__items .v-list-item .v-list-item__append {
-    display: none;
+.v-list-group__items .v-list-item--link .v-list-item__content .v-list-item-title{
+    color: #000000;
 }
+.v-list-group  .v-list-item  .v-list-item__append i{
+    color: #656565;
+}
+.v-list-group  .v-list-item  .v-list-item__append i::after{
+    color: #ffffff;
+}
+// .v-list-group .v-list-group__items .v-list-item .v-list-item__append {
+//     display: none;
+// }
 
 .v-list-group .v-list-group__items .v-list-group--prepend .v-list-item {
     color: rgba(var(--v-theme-primary));
@@ -176,9 +183,9 @@ $box-shadow: rgb(145 158 171 / 20%) 0px 0px 2px 0px, rgb(145 158 171 / 12%) 0px 
 
 
 
-.v-navigation-drawer__scrim.fade-transition-leave-to {
-    display: none;
-}
+// .v-navigation-drawer__scrim.fade-transition-leave-to {
+//     display: none;
+// }
 
 
 .public-scrollnavbar {
