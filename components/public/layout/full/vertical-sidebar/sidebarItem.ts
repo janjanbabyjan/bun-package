@@ -82,7 +82,6 @@ const sidebarItem: menu[] = [
                 to: '/public/ui-components/gallery'
             },
 
-
         ],
     },
 
