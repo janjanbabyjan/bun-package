@@ -149,7 +149,7 @@ const getsave = () => {
 const breadcrumbs = [
   { text: 'หน้าแรก', href: '/admin' },
   { text: 'รายชื่อหน้าเว็บไซต์', href: '/admin/content/manage-single-page' },
-  { text: 'เพิ่มคำบรรยาย', href: '/admin/content/article/add' },
+  { text: 'เพิ่มรูป', href: '/admin/content/gallery/add' },
 ];
 
 const getBreadcrumbText = (index: number) => {
@@ -159,18 +159,57 @@ const getBreadcrumbText = (index: number) => {
 // ปุ่มเปิดปิด
 const isOpen = ref(false); // เริ่มต้นเปิดให้เป็น false
 
-// Default data
-// const myData = {
-//   data() {
-//     return {
-//       isOpen: false,
-//       selectedDate: null,
-//     };
-//   },
-// };
+// ประกาศ ref สำหรับเก็บข้อความที่ผู้ใช้ป้อน
+const inputText = ref<string>('');
 
-// Export default data
-// export default myData;
+// ประกาศ ref สำหรับเก็บ Tag ที่เพิ่มขึ้นมา
+const tags = ref<string[]>([]);
+
+const addTag = () => {
+  if (inputText.value.trim() !== '') {
+    tags.value.push(inputText.value.trim());
+    inputText.value = '';
+  }
+};
+
+// รูป
+const imageUrl = ref<string>(''); // เก็บ URL ของรูปที่อัปโหลด
+const fileInput = ref<HTMLInputElement | null>(null);
+
+// Function to handle file upload
+const handleFileUpload = (event: Event) => {
+  const target = event.target as HTMLInputElement;
+  const file = target.files?.[0];
+  if (file && file.type.startsWith('image/')) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === 'string') {
+        imageUrl.value = reader.result;
+      }
+    };
+    reader.readAsDataURL(file);
+  } else {
+    alert('โปรดเลือกไฟล์รูปภาพเท่านั้น');
+  }
+};
+
+// Compute the style for the content area background
+const contentAreaStyle = ref({
+  backgroundImage: `url(${imageUrl.value})`,
+  width: '100%',
+  height: '300px', // Set the desired height here
+});
+
+// Update content area style when imageUrl changes
+watchEffect(() => {
+  contentAreaStyle.value.backgroundImage = `url(${imageUrl.value})`;
+});
+
+
+const saveImage = () => {
+  // บันทึกรูปภาพได้ที่ imageUrl.value
+  // ตัวอย่างการบันทึกรูปภาพ: axios.post('/upload', { image: imageUrl.value })
+};
 
 </script>
 
@@ -197,27 +236,36 @@ const isOpen = ref(false); // เริ่มต้นเปิดให้เ�
               <v-switch id="isOpenSwitch" v-model="isOpen" class="ml-3 d-flex custom-switch"
                 label="เปิด/ปิด"></v-switch>
             </v-col>
-            <!-- date  -->
-            <!-- <v-col>
-              <v-date-picker v-model="selectedDate" label="เลือกวันที่"></v-date-picker>
-            </v-col> -->
-            
-            <v-textarea label="เนื้อหา" v-model="content" rows="3"></v-textarea>
-            
+            <div>
+              <div>
+                <input type="text" v-model="inputText" placeholder="เพิ่มข้อความ">
+                <button @click="addTag">เพิ่ม</button>
+              </div>
+              <div v-for="(tag, index) in tags" :key="index" class="tag">{{ tag }}</div>
+            </div>
+
           </v-row>
         </v-card-item>
       </v-card>
     </div>
 
     <div class="center-container">
-      <v-card class="withbg mt-4 " style="max-width: 1000px;">
+      <v-card class="withbg mt-4" style="max-width: 1000px;">
         <div class="title-section">
           <v-card-title class="text-h5 ml-3">เพิ่มรูป</v-card-title>
-          <!-- <v-btn @click="getContent" class="show-output-btn">Show Output</v-btn> -->
         </div>
         <!-- Content area -->
-        
-        <v-btn color="primary" class="ml-5 mb-6" @click="getsave">บันทึก</v-btn>
+        <div class="content-area" :style="contentAreaStyle">
+          <input type="file" @change="handleFileUpload" accept="image/*">
+        </div>
+
+        <div class="image-container">
+          <div class="image-frame">
+            <img :src="imageUrl" alt="Uploaded Image" v-if="imageUrl" class="image-preview">
+          </div>
+        </div>
+
+        <v-btn color="primary" class="ml-5 mb-6" @click="saveImage">บันทึก</v-btn>
       </v-card>
     </div>
 
@@ -251,5 +299,36 @@ const isOpen = ref(false); // เริ่มต้นเปิดให้เ�
   justify-content: center;
   align-items: center;
 
+}
+
+.content-area {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  /* กำหนดขอบให้เป็นสี่เหลี่ยม */
+  max-width: 90%;
+  margin-left: 35px;
+  background-size: contain;
+  /* แสดงตามสัดส่วนจริงของรูปภาพ */
+  background-position: center;
+  background-repeat: no-repeat;
+  /* ป้องกันการทำซ้ำของรูปภาพ */
+}
+
+.image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.image-frame {
+  border: 2px solid #ccc;
+  padding: 10px;
+}
+
+.image-preview {
+  max-width: 100%;
+  max-height: 100%;
 }
 </style>

@@ -53,13 +53,38 @@ const sidebarItem: menu[] = [
                     },
                 ],
             },
-            
+
         ],
     },
+    {
+        title: 'New',
+        icon: UserPlusIcon,
+        active: true,
+        children: [
+            {
+                title: 'Child Item 1',
+                to: '/public/ui-components/output'
+            },
+            {
+                title: 'Child Item 2',
+                to: '/public/ui-components/gallery'
+            },
+            {
+                title: 'Nested Child',
+                children: [
+                    {
+                        title: 'Nested Child Item 1',
+                        to: '/nested-child-1'
+                    },
+                    {
+                        title: 'Nested Child Item 2',
+                        to: '/nested-child-2'
+                    },
+                ],
+            },
 
-
-    
-
+        ],
+    },
 
 ];
 

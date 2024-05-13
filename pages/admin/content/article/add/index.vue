@@ -22,6 +22,7 @@ const editor = ref<EditorJS | null>(null);
 const editorContent = ref<any>(null);
 const outputEditor = ref<EditorJS | null>(null);
 
+
 const initOutputEditor = () => {
   if (outputEditor.value) {
     outputEditor.value.destroy();
@@ -159,18 +160,26 @@ const getBreadcrumbText = (index: number) => {
 // ปุ่มเปิดปิด
 const isOpen = ref(false); // เริ่มต้นเปิดให้เป็น false
 
-// Default data
-// const myData = {
-//   data() {
-//     return {
-//       isOpen: false,
-//       selectedDate: null,
-//     };
-//   },
-// };
+// วันที่
 
-// Export default data
-// export default myData;
+const dialog = ref(false); // ตัวแปรสำหรับการเปิดปิด dialog
+const selectedDate = ref(null); // ตัวแปรสำหรับเก็บวันที่ที่เลือก
+
+const openDialog = () => {
+  dialog.value = true; // เปิด dialog เมื่อกดปุ่ม
+};
+
+const saveDate = () => {
+  // บันทึกวันที่ที่เลือกไว้ใน selectedDate
+  selectedDate.value = selectedDate.value;
+  // ปิด dialog เมื่อกดปุ่ม "บันทึก"
+  dialog.value = false;
+};
+
+const closeDialog = () => {
+  // ปิด dialog เมื่อกดปุ่ม "ยกเลิก"
+  dialog.value = false;
+};
 
 </script>
 
@@ -197,22 +206,39 @@ const isOpen = ref(false); // เริ่มต้นเปิดให้เ�
               <v-switch id="isOpenSwitch" v-model="isOpen" class="ml-3 d-flex custom-switch"
                 label="เปิด/ปิด"></v-switch>
             </v-col>
-            <!-- date  -->
-            <!-- <v-col>
-              <v-date-picker v-model="selectedDate" label="เลือกวันที่"></v-date-picker>
-            </v-col> -->
 
-            
+            <div>
+              <v-btn color="primary" class="ml-auto" @click="openDialog">สร้าง Content ใหม่</v-btn>
+
+              <v-dialog v-model="dialog" max-width="350px" hide-overlay overlay-color="transparent">
+                <v-card>
+                  <v-container>
+                    <v-row justify="center">
+                      <v-date-picker elevation="12" v-model="selectedDate" width="350px"></v-date-picker>
+                      <!-- ลดขนาดโดยกำหนด width -->
+                    </v-row>
+                  </v-container>
+                  <v-card-actions>
+                    <v-btn color="primary" @click="saveDate">บันทึก</v-btn>
+                    <v-btn @click="closeDialog">ยกเลิก</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            </div>
+            <!-- แสดงวันที่ที่เลือก -->
+            <div v-if="selectedDate">
+              <p>วันที่ที่เลือก: {{ selectedDate }}</p>
+            </div>
           </v-row>
         </v-card-item>
       </v-card>
     </div>
 
+
     <div class="center-container">
       <v-card class="withbg mt-4 " style="max-width: 1000px;">
         <div class="title-section">
           <v-card-title class="text-h5 ml-3">เพิ่มคำบรรยาย</v-card-title>
-          <!-- <v-btn @click="getContent" class="show-output-btn">Show Output</v-btn> -->
         </div>
         <!-- Content area -->
         <div class="editor-wrapper">
@@ -221,10 +247,10 @@ const isOpen = ref(false); // เริ่มต้นเปิดให้เ�
         <v-btn color="primary" class="ml-5 mb-6" @click="getsave">บันทึก</v-btn>
       </v-card>
     </div>
-
   </div>
-
 </template>
+
+
 
 <style scoped>
 .breadcrumb-item {
@@ -252,5 +278,10 @@ const isOpen = ref(false); // เริ่มต้นเปิดให้เ�
   justify-content: center;
   align-items: center;
 
+}
+
+.v-date-picker__title {
+  font-size: 14px;
+  /* ปรับขนาด font ของ title */
 }
 </style>

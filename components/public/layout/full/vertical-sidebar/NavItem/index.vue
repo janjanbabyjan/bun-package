@@ -44,7 +44,6 @@ const toggleGroup = (group, value) => {
                 <template v-slot:prepend>
                     <Icon :item="item.icon" :level="level" />
                 </template>
-                
             </v-list-item>
 
             <template v-for="(sub, index) in item.children">
@@ -82,18 +81,3 @@ const toggleGroup = (group, value) => {
     </v-list-group>
 </template>
 
-
-<!-- <style>
-.v-list-group--open i a .v-list-item__append{
-    color: aliceblue;
-}
-</style> -->
-<!-- <template v-for="(insub, i) in sub.children">
-                        <v-list-group v-if="sub.children" :value="openGroups.includes(insub)"
-                            @update:modelValue="(value) => toggleGroup(insub, value)" :disabled="insub.disabled">
-                            <v-list-item v-if="sub.children" :to="insub.to" rounded class="mb-1" active-color="primary"
-                                :disabled="insub.disabled" :target="insub.type === 'external' ? '_blank' : ''">
-                                <v-list-item-title>{{ insub.title }}</v-list-item-title>
-                            </v-list-item>
-                        </v-list-group>
-                    </template> -->
