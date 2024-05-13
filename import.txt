@@ -49,3 +49,6 @@ import InlineCode from '@editorjs/inline-code';
 
 12. middleware install
 bun install --save-dev nuxt3
+
+13. วันที่
+yarn add vuetify@next
