@@ -10,6 +10,8 @@ import {
     AdIcon,
     PageBreakIcon,
     PackageIcon,
+    NewsIcon,
+    NewSectionIcon,
 } from 'vue-tabler-icons';
 
 export interface menu {
@@ -38,7 +40,7 @@ const sidebarItem: menu[] = [
     // chidren1
     {
         title: 'Page',
-        icon: PackageIcon,
+        icon: NewSectionIcon,
         active: true,
         children: [
             {
@@ -50,14 +52,14 @@ const sidebarItem: menu[] = [
                 to: '/public/ui-components/gallery'
             },
             {
-                title: 'Nested Child',
+                title: 'About',
                 children: [
                     {
-                        title: 'Nested Child Item 1',
+                        title: 'Contact',
                         to: '/nested-child-1'
                     },
                     {
-                        title: 'Nested Child Item 2',
+                        title: 'Marketing',
                         to: '/nested-child-2'
                     },
                 ],
@@ -67,16 +69,16 @@ const sidebarItem: menu[] = [
     },
     // chidren2
     {
-        title: 'New',
-        icon: UserPlusIcon,
+        title: 'News',
+        icon: NewsIcon,
         active: true,
         children: [
             {
-                title: 'Child Item 1',
+                title: 'Activity',
                 to: '/public/ui-components/output'
             },
             {
-                title: 'Child Item 2',
+                title: 'Gallery',
                 to: '/public/ui-components/gallery'
             },
 

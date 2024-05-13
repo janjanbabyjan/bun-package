@@ -1,0 +1,38 @@
+.footer {
+
+    background-color: transparent;
+    
+    font-size: 14px;
+
+
+    ul {
+        li {
+            list-style: none;
+
+            a {
+                z-index: 2;
+
+                &:hover {
+                    color: rgb(var(--v-theme-primary)) !important;
+                }
+            }
+        }
+    }
+
+    .newsletter {
+        .v-field--active {
+            z-index: 2;
+            background: rgb(var(--v-theme-surface));
+        }
+
+        .v-field__outline__end {
+            border-radius: 0 0px 0px 0 !important;
+        }
+
+        .v-btn {
+            border-bottom-left-radius: 0 !important;
+            border-top-left-radius: 0 !important;
+            z-index: 2;
+        }
+    }
+}

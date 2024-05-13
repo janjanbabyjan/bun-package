@@ -84,5 +84,10 @@ const zoomOut = () => {
 .image-container img {
     max-width: 100%;
     max-height: 100%;
+    transition: transform .3s ease-in-out;
+}
+
+.image-container img:hover {
+    transform: scale(1.2); /* Zoom in by 20% on hover */
 }
 </style>
