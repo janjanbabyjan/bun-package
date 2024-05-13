@@ -7,6 +7,6 @@
 
 <template>
 <PublicDashboardHeaders/>
-<PublicDashboardDetails/>
-<PublicDashboardGallery/>
+<PublicUiComponentsCardrender/>
+<PublicUiComponentsGallery/>
 </template>

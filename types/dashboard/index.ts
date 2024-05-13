@@ -30,7 +30,8 @@ type productsCards = {
     rating: number;
 };
 
-type BlogSection = {
+type ContentSection = {
+    id: number;
     img: string;
     badge: string;
     date: string;
@@ -47,4 +48,4 @@ type PortfolioSection = {
 };
 
 
-export type { recentTrans, productPerformanceType, productsCards, BlogSection, PortfolioSection }
+export type { recentTrans, productPerformanceType, productsCards, ContentSection, PortfolioSection }
