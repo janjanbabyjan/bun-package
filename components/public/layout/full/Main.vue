@@ -11,7 +11,7 @@ const sDrawer = ref(true);
     <v-navigation-drawer class="v-navigation-drawer leftSidebar" left elevation="0" app  v-model="sDrawer" :style="{ borderRadius: '0' }">
         <!---Logo part -->
         <div class="pa-3 logoes">
-            <img src="/public/images/logos/digix.jpeg" alt="">
+            <img src="/images/logos/banpulogo.png" alt="">
             <!-- <PublicLayoutFullLogo /> -->
         </div>
         <!-- ---------------------------------------------- -->

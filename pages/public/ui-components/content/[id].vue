@@ -37,21 +37,6 @@ const content = Blog.find((item) => item.id === contentId);
     </div>
   </div>
 
-
-  <v-footer class=" bg-indigo-lighten-1 text-center d-flex flex-column">
-
-    <div class="pt-0">
-      footer footer footer
-    </div>
-
-    <v-divider></v-divider>
-
-    <div>
-      {{ new Date().getFullYear() }} — <strong>digix</strong>
-    </div>
-  </v-footer>
-
-
 </template>
 
 

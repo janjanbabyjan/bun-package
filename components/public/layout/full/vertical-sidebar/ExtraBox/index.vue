@@ -8,7 +8,7 @@
                 <v-btn to="/" size="small" color="primary" flat>Upgrade</v-btn>
             </div>
             <div class="mt-n7 ml-2">
-                <img src="/public/images/logos/digix.jpeg"  alt="background"/>
+                <img src="/public/images/logos/digix.jpeg" alt="background" />
             </div>
         </div>
     </v-sheet>
@@ -17,6 +17,7 @@
 .ExtraBox {
     position: relative;
 }
+
 .line-height-none {
     line-height: normal;
 }
