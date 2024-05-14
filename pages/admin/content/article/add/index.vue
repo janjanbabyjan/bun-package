@@ -161,7 +161,6 @@ const getBreadcrumbText = (index: number) => {
 const isOpen = ref(false); // เริ่มต้นเปิดให้เป็น false
 
 // วันที่
-
 const dialog = ref(false); // ตัวแปรสำหรับการเปิดปิด dialog
 const selectedDate = ref(null); // ตัวแปรสำหรับเก็บวันที่ที่เลือก
 
@@ -181,6 +180,19 @@ const closeDialog = () => {
   dialog.value = false;
 };
 
+// ประกาศ ref สำหรับเก็บข้อความที่ผู้ใช้ป้อน
+const inputText = ref<string>('');
+
+// ประกาศ ref สำหรับเก็บ Tag ที่เพิ่มขึ้นมา
+const tags = ref<string[]>([]);
+
+const addTag = () => {
+  if (inputText.value.trim() !== '') {
+    tags.value.push(inputText.value.trim());
+    inputText.value = '';
+  }
+};
+
 </script>
 
 <template>
@@ -194,46 +206,11 @@ const closeDialog = () => {
       </v-breadcrumbs-item>
     </v-breadcrumbs>
 
-    <div class="center-container">
-      <v-card elevation="10" class="withbg center-card" style="max-width: 1000px;">
-        <v-card-item class="pa-6">
+    <AdminHeadingInputHeading/>
+    
+    <AdminHeadingTaginput/>
 
-          <v-row class="mt-2">
-            <v-col cols="12" md="4" style="max-width: 500px;">
-              <v-text-field label="หัวข้อ"></v-text-field>
-
-              <!-- ปุ่มเพื่อเปิด -->
-              <v-switch id="isOpenSwitch" v-model="isOpen" class="ml-3 d-flex custom-switch"
-                label="เปิด/ปิด"></v-switch>
-            </v-col>
-
-            <div>
-              <v-btn color="primary" class="ml-auto" @click="openDialog">สร้าง Content ใหม่</v-btn>
-
-              <v-dialog v-model="dialog" max-width="350px" hide-overlay overlay-color="transparent">
-                <v-card>
-                  <v-container>
-                    <v-row justify="center">
-                      <v-date-picker elevation="12" v-model="selectedDate" width="350px"></v-date-picker>
-                      <!-- ลดขนาดโดยกำหนด width -->
-                    </v-row>
-                  </v-container>
-                  <v-card-actions>
-                    <v-btn color="primary" @click="saveDate">บันทึก</v-btn>
-                    <v-btn @click="closeDialog">ยกเลิก</v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
-            </div>
-            <!-- แสดงวันที่ที่เลือก -->
-            <div v-if="selectedDate">
-              <p>วันที่ที่เลือก: {{ selectedDate }}</p>
-            </div>
-          </v-row>
-        </v-card-item>
-      </v-card>
-    </div>
-
+    
 
     <div class="center-container">
       <v-card class="withbg mt-4 " style="max-width: 1000px;">
