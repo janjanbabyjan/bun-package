@@ -12,6 +12,7 @@ import {
     PackageIcon,
     NewsIcon,
     NewSectionIcon,
+    FilesIcon,
 } from 'vue-tabler-icons';
 
 export interface menu {
@@ -75,7 +76,7 @@ const sidebarItem: menu[] = [
         children: [
             {
                 title: 'Activity',
-                to: '/public/ui-components/output'
+                to: '/public/ui-components/activiry'
             },
             {
                 title: 'Gallery',
@@ -83,6 +84,11 @@ const sidebarItem: menu[] = [
             },
 
         ],
+    },
+    {
+        title: 'Output',
+        icon: FilesIcon,
+        to: '/public/ui-components/output'
     },
 
 ];
