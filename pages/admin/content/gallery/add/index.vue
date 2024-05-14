@@ -4,144 +4,9 @@ definePageMeta({
   layout: "admin",
 });
 
-import { ref, onMounted, onBeforeUnmount } from "vue";
-import EditorJS from "@editorjs/editorjs";
-import Header from "@editorjs/header";
-import edjsHTML from "editorjs-html";
-import List from "@editorjs/list";
-import Checklist from "@editorjs/checklist";
-import RawTool from "@editorjs/raw";
-import Table from "@editorjs/table";
-import Underline from "@editorjs/underline";
-import Quote from "@editorjs/quote";
-import SimpleImage from "@editorjs/simple-image";
-import InlineCode from "@editorjs/inline-code";
-import CodeTool from "@editorjs/code"; // Import CodeTool
-import NestedList from "@editorjs/nested-list";
-const editor = ref<EditorJS | null>(null);
-const editorContent = ref<any>(null);
-const outputEditor = ref<EditorJS | null>(null);
-
-const initOutputEditor = () => {
-  if (outputEditor.value) {
-    outputEditor.value.destroy();
-  }
-
-  outputEditor.value = new EditorJS({
-    holder: "output-editor",
-    tools: {
-      header: Header,
-      list: {
-        class: List,
-        inlineToolbar: true,
-        config: {
-          defaultStyle: "unordered",
-        },
-      },
-      checklist: {
-        class: Checklist,
-        inlineToolbar: true,
-      },
-      nestedlist: {
-        class: NestedList,
-        inlineToolbar: true,
-        config: {
-          defaultStyle: "ordered", // This is set to 'ordered'
-        },
-      },
-      inlineCode: {
-        class: InlineCode,
-        shortcut: "CMD+SHIFT+M",
-      },
-      code: CodeTool, // Add CodeTool to output editor
-      raw: RawTool,
-      table: {
-        class: Table,
-        inlineToolbar: true,
-      },
-      underline: Underline,
-      quote: {
-        class: Quote,
-        inlineToolbar: true,
-        shortcut: "CMD+SHIFT+O",
-      },
-      image: SimpleImage,
-      nestedList: {
-        class: NestedList,
-        inlineToolbar: true,
-        config: {
-          defaultStyle: 'unordered',
-        },
-      },
-    },
-    data: editorContent.value,
-    readOnly: true,
-  });
-};
-
-onMounted(() => {
-  editor.value = new EditorJS({
-    holder: "editor",
-    tools: {
-      header: Header,
-      list: {
-        class: List,
-        inlineToolbar: true,
-        config: {
-          defaultStyle: "unordered",
-        },
-      },
-      checklist: {
-        class: Checklist,
-        inlineToolbar: true,
-      },
-      inlineCode: {
-        class: InlineCode,
-        shortcut: "CMD+SHIFT+M",
-      },
-      code: CodeTool, // Add CodeTool to editor
-      raw: RawTool,
-      table: {
-        class: Table,
-        inlineToolbar: true,
-      },
-      nestedlist: {
-        class: NestedList,
-        inlineToolbar: true,
-        config: {
-          defaultStyle: "ordered",
-        },
-      },
-      underline: Underline,
-      quote: {
-        class: Quote,
-        inlineToolbar: true,
-        shortcut: "CMD+SHIFT+O",
-      },
-      image: SimpleImage,
-    },
-  });
-});
-
-// น่าจะเกี่ยวกับตัว input คำบรรยาย
-onBeforeUnmount(() => {
-  if (editor.value) {
-    editor.value.destroy();
-  }
-  if (outputEditor.value) {
-    outputEditor.value.destroy();
-  }
-});
-
-
 // ปุ่มบันทึก
 const getsave = () => {
-  if (editor.value) {
-    editor.value.save().then((outputData: any) => {
-      editorContent.value = outputData;
-      initOutputEditor();
-    });
-  }
+  
 };
 
 
@@ -211,6 +76,26 @@ const saveImage = () => {
   // ตัวอย่างการบันทึกรูปภาพ: axios.post('/upload', { image: imageUrl.value })
 };
 
+// วันที่
+const dialog = ref(false); // ตัวแปรสำหรับการเปิดปิด dialog
+const selectedDate = ref(null); // ตัวแปรสำหรับเก็บวันที่ที่เลือก
+
+const openDialog = () => {
+  dialog.value = true; // เปิด dialog เมื่อกดปุ่ม
+};
+
+const saveDate = () => {
+  // บันทึกวันที่ที่เลือกไว้ใน selectedDate
+  selectedDate.value = selectedDate.value;
+  // ปิด dialog เมื่อกดปุ่ม "บันทึก"
+  dialog.value = false;
+};
+
+const closeDialog = () => {
+  // ปิด dialog เมื่อกดปุ่ม "ยกเลิก"
+  dialog.value = false;
+};
+
 </script>
 
 <template>
@@ -227,25 +112,69 @@ const saveImage = () => {
     <div class="center-container">
       <v-card elevation="10" class="withbg center-card" style="max-width: 1000px;">
         <v-card-item class="pa-6">
-
           <v-row class="mt-2">
             <v-col cols="12" md="4" style="max-width: 500px;">
               <v-text-field label="หัวข้อ"></v-text-field>
-
-              <!-- ปุ่มเพื่อเปิด -->
-              <v-switch id="isOpenSwitch" v-model="isOpen" class="ml-3 d-flex custom-switch"
-                label="เปิด/ปิด"></v-switch>
-            </v-col>
-            <div>
-              <div>
-                <input type="text" v-model="inputText" placeholder="เพิ่มข้อความ">
-                <button @click="addTag">เพิ่ม</button>
+              <input type = "date" />
+              
+              <!-- Switch and content to the right -->
+              <div class="d-flex align-center justify-between">
+                <!-- ปุ่มเพื่อเปิด -->
+                <v-switch id="isOpenSwitch" v-model="isOpen" class="ml-3 d-flex custom-switch"
+                  label="เปิด/ปิด"></v-switch>
               </div>
-              <div v-for="(tag, index) in tags" :key="index" class="tag">{{ tag }}</div>
-            </div>
 
+            </v-col>
+
+            <div>
+              <v-btn color="primary" class="ml-auto mt-4" @click="openDialog">เลือกวันที่</v-btn>
+
+              <!-- Content below the button -->
+              <div v-if="selectedDate" class="text-center mt-2">
+                <p>วันที่เลือก: {{ selectedDate }}</p>
+              </div>
+
+              <v-dialog v-model="dialog" max-width="350px" hide-overlay overlay-color="transparent">
+                <v-card>
+                  <v-container>
+                    <v-row justify="center">
+                      <v-date-picker elevation="12" v-model="selectedDate" width="350px"></v-date-picker>
+                      <!-- ลดขนาดโดยกำหนด width -->
+                    </v-row>
+                  </v-container>
+                  <v-card-actions>
+                    <v-btn color="primary" @click="saveDate">บันทึก</v-btn>
+                    <v-btn @click="closeDialog">ยกเลิก</v-btn>
+                  </v-card-actions>
+                </v-card>
+                <div v-if="selectedDate" class="text-center mt-2"> <!-- Added text-center and mt-2 for styling -->
+                  <p>วันที่เลือก: {{ selectedDate }}</p>
+                </div>
+              </v-dialog>
+            </div>
           </v-row>
         </v-card-item>
+      </v-card>
+    </div>
+
+    <div class="center-container">
+      <v-card class="withbg mt-4 " style="max-width: 1000px;">
+        <div class="title-section">
+          <v-card-title class="text-h5 ml-3">เพิ่ม Tag ข่าว</v-card-title>
+        </div>
+        <!-- Content to the right of the switch -->
+        <div class="d-flex flex-column ml-7 mb-5 ">
+          <div class="d-flex align-center">
+            <v-text-field type="text" v-model="inputText" label="เพิ่มข้อความ" style="max-width: 300px;"></v-text-field>
+            <v-btn color="primary" class="ml-3 mt-1 align-self-start" @click="addTag">
+              <v-icon left>mdi-plus</v-icon>
+              เพิ่ม
+            </v-btn>
+          </div>
+          <div class="d-flex flex-wrap-reverse">
+            <div v-for="(tag, index) in tags" :key="index" class="tag mr-2">{{ tag }}</div>
+          </div>
+        </div>
       </v-card>
     </div>
 
@@ -259,11 +188,11 @@ const saveImage = () => {
           <input type="file" @change="handleFileUpload" accept="image/*">
         </div>
 
-        <div class="image-container">
+        <!-- <div class="image-container">
           <div class="image-frame">
             <img :src="imageUrl" alt="Uploaded Image" v-if="imageUrl" class="image-preview">
           </div>
-        </div>
+        </div> -->
 
         <v-btn color="primary" class="ml-5 mb-6" @click="saveImage">บันทึก</v-btn>
       </v-card>
