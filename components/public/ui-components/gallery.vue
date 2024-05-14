@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { Portfolio } from '@/data/dashboard/dashboardData';
 import Icon from '../layout/full/vertical-sidebar/Icon.vue';
+// import Image from 'primevue/image';
+
 
 const selectedImageUrl = ref('');
 const showImageModal = ref(false);
@@ -50,7 +52,7 @@ const zoomOut = () => {
         </v-container>
 
         <!-- Add a Vuetify modal or dialog component -->
-        <v-dialog v-model="showImageModal" max-width="400">
+        <v-dialog v-model="showImageModal" max-width="500">
             <v-card>
                 <div class="image-container">
                     <img :src="selectedImageUrl" :style="{
@@ -91,6 +93,7 @@ const zoomOut = () => {
 }
 
 .image-container img:hover {
-    transform: scale(1.2); /* Zoom in by 20% on hover */
+    transform: scale(1.2);
+    /* Zoom in by 20% on hover */
 }
 </style>

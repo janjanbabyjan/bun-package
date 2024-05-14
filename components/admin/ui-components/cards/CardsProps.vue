@@ -1,4 +1,4 @@
-<script setup lang="ts">
+z<script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from "vue";
 import EditorJS from "@editorjs/editorjs";
 import Header from "@editorjs/header";
@@ -127,12 +127,20 @@ onBeforeUnmount(() => {
   }
 });
 
+const emit = defineEmits(['contentUpdated'])
+
 const getContent = () => {
   if (editor.value) {
-    editor.value.save().then((outputData: any) => {
-      editorContent.value = outputData;
-      initOutputEditor();
-    });
+    editor.value
+      .save()
+      .then((outputData: any) => {
+        editorContent.value = outputData;
+        initOutputEditor();
+        console.log('Article data: ', outputData);
+      })
+      .catch((error: any) => {
+        console.log('Saving failed: ', error);
+      });
   }
 };
 </script>
@@ -145,5 +153,6 @@ const getContent = () => {
     <v-btn @click="getContent">Show Output</v-btn>
     <br />
     <div id="output-editor"></div>
+    <pre>{{ editorContent }}</pre>
   </div>
 </template>

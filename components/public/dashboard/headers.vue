@@ -26,6 +26,12 @@
 </template>
 
 <style>
+.corporate-banner{
+    height: 80vh;
+    display: flex;
+    align-items: center;
+}
+
 .corporate-banner .v-container img{
     width: 550px;
 }
