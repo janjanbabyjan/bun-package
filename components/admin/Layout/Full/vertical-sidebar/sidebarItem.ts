@@ -44,11 +44,11 @@ import {
       icon: AlertCircleIcon,
       to: "/ui-components/alerts",
     },
-    // {
-    //   title: "Button",
-    //   icon: CircleDotIcon,
-    //   to: "/ui-components/buttons",
-    // },
+    {
+      title: "Button",
+      icon: CircleDotIcon,
+      to: "/ui-components/buttons",
+    },
     {
       title: "Cards",
       icon: BoxMultiple1Icon,

@@ -51,4 +51,4 @@ import InlineCode from '@editorjs/inline-code';
 bun install --save-dev nuxt3
 
 13. วันที่
-yarn add vuetify@next
+bun add vuetify@next
