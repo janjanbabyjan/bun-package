@@ -21,7 +21,7 @@ const zoomOut = () => {
 </script>
 
 <template>
-    <div class="py-md-15 py-8">
+    <div class="py-md-15 py-8 gallery">
         <v-container>
             <v-row class="justify-center">
                 <v-col cols="12" sm="8">
@@ -74,6 +74,9 @@ const zoomOut = () => {
 
 
 <style scoped>
+/* .gallery .v-container{
+    background-color: antiquewhite;
+} */
 .image-container {
     display: flex;
     justify-content: center;
