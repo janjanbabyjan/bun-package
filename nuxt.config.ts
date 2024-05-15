@@ -20,4 +20,9 @@ export default defineNuxtConfig({
   },
   sourcemap: { server: false, client: false },
   devServerHandlers: [],
+  runtimeConfig: {
+    public: {
+      apiBase: process.env.API_URL, // can be overridden by NUXT_PUBLIC_API_BASE environment variable
+    }
+  },
 });

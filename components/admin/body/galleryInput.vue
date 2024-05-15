@@ -75,6 +75,7 @@ const saveImages = () => {
 </script>
 
 <style scoped>
+
 .center-container {
     display: flex;
     justify-content: center;
