@@ -2,6 +2,7 @@
 import { Portfolio } from '@/data/dashboard/dashboardData';
 import Icon from '../layout/full/vertical-sidebar/Icon.vue';
 // import Image from 'primevue/image';
+import Image from 'primevue/image';
 
 
 const selectedImageUrl = ref('');
@@ -23,7 +24,12 @@ const zoomOut = () => {
 </script>
 
 <template>
+
+
+
+
     <div class="py-md-15 py-8 gallery">
+
         <v-container>
             <v-row class="justify-center">
                 <v-col cols="12" sm="8">
@@ -52,8 +58,9 @@ const zoomOut = () => {
         </v-container>
 
         <!-- Add a Vuetify modal or dialog component -->
-        <v-dialog v-model="showImageModal" max-width="500">
-            <v-card>
+        <v-dialog v-model="showImageModal" max-width="800" max-height="1000">
+            <!-- <v-card> -->
+            <v-container>
                 <div class="image-container">
                     <img :src="selectedImageUrl" :style="{
                         transform: `scale(${zoom})`,
@@ -68,7 +75,8 @@ const zoomOut = () => {
                         <v-icon>mdi-magnify-plus-outline</v-icon>
                     </v-btn>
                 </v-card-actions>
-            </v-card>
+            </v-container>
+            <!-- </v-card> -->
         </v-dialog>
     </div>
 </template>
@@ -76,9 +84,6 @@ const zoomOut = () => {
 
 
 <style scoped>
-/* .gallery .v-container{
-    background-color: antiquewhite;
-} */
 .image-container {
     display: flex;
     justify-content: center;
@@ -95,5 +100,19 @@ const zoomOut = () => {
 .image-container img:hover {
     transform: scale(1.2);
     /* Zoom in by 20% on hover */
+}
+
+.v-icon {
+    /* color: #000000; */
+    color: #ffffff;
+}
+
+/* .v-dialog .v-container {
+    background-color: #ffffff;
+} */
+
+.v-dialog .v-container .v-card-actions{
+    justify-content: center;
+    align-items: center;
 }
 </style>
