@@ -3,12 +3,9 @@ const router = useRouter();
 import { UserIcon, MailIcon, ListCheckIcon } from 'vue-tabler-icons';
 
 const Logout = () => {
-    // console.log(userName.value,passWord.value)
-    // if(userName && passWord) {
-    //     localStorage.setItem("isLogin","true");
+    localStorage.setItem("isLogin",false);
     router.push('/auth/login');
 }
-// }
 </script>
 
 <template>

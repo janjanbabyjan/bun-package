@@ -1,18 +1,34 @@
-import { useRouter } from 'vue-router';
-<script setup lang="ts">
+<script setup >
+import { getLogin } from "~/plugins/api/authService";
 const router = useRouter();
 const checkbox = ref(false);
 const userName = ref('')
 const passWord = ref('')
 
-const getLogin = () => {
-    console.log(userName.value,passWord.value)
-    if(userName && passWord) {
-        localStorage.setItem("isLogin","true");
-        router.push('/admin/dashboard');
+// const Login = async () => {
+//     const loginData = 
+//     console.log("🚀 ~ Login ~ loginData:", loginData)
+//     // if(userName && passWord) {
+//     //     localStorage.setItem("isLogin","true");
+//     //     router.push('/admin/dashboard');
         
-    } 
-}
+//     // } 
+// }
+
+const Login = async () => {
+   const data = {
+    username:userName.value,
+    password:passWord.value
+   }
+   console.log(data)
+   await getLogin(data).then((result) => {
+    console.log(result)
+    if(result.statusCode === 200) {
+        localStorage.setItem("isLogin",true);
+        router.push('/admin/dashboard');
+    }
+   })
+};
 </script>
 
 <template>
@@ -45,7 +61,7 @@ const getLogin = () => {
                 </div>
             </v-col> -->
             <v-col cols="12">
-                <v-btn size="large" rounded="pill" color="primary" class="rounded-pill" block type="submit" @click="getLogin" flat>Sign
+                <v-btn size="large" rounded="pill" color="primary" class="rounded-pill" block type="submit" @click="Login" flat>Sign
                     In</v-btn>
             </v-col>
         </v-row>
