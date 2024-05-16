@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<!-- <script setup lang="ts">
 import { Blog } from '@/data/dashboard/dashboardData';
 import { useRoute } from 'vue-router';
 
@@ -42,7 +42,6 @@ const content = Blog.find((item) => item.id === contentId);
 
 
 <style>
-
 img {
   width: 700px;
 }
@@ -50,7 +49,80 @@ img {
 .v-footer {
   width: 100%;
 }
+</style> -->
 
-</style>
 
 
+<script setup>
+import { onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
+import EditorJS from "@editorjs/editorjs";
+import Header from "@editorjs/header";
+import List from "@editorjs/list";
+import Checklist from "@editorjs/checklist";
+import RawTool from "@editorjs/raw";
+import Table from "@editorjs/table";
+import Underline from "@editorjs/underline";
+import Quote from "@editorjs/quote";
+import SimpleImage from "@editorjs/simple-image";
+import InlineCode from "@editorjs/inline-code";
+import CodeTool from "@editorjs/code";
+import NestedList from "@editorjs/nested-list";
+import axios from 'axios';
+
+
+const baseApiUrl = useRuntimeConfig().public.apiBase
+
+
+const editorId = ref('editorjs');
+const contentData = ref(null);
+const route = useRoute();
+
+onMounted(async () => {
+  const id = route.params.id;
+  try {
+    const response = await axios.get(`${baseApiUrl}/singlepage/${id}`);
+    const jsonData = response.data;
+
+    if (jsonData.data && jsonData.data.content) {
+      contentData.value = JSON.stringify(jsonData.data.content);
+
+      const editor = new EditorJS({
+        holder: editorId.value,
+        readOnly: true,
+        tools: {
+          header: Header,
+          list: {
+            class: List,
+            inlineToolbar: true,
+            config: {
+              defaultStyle: "unordered",
+            },
+          },
+          checklist: Checklist,
+          nestedlist: NestedList,
+          inlineCode: InlineCode,
+          code: CodeTool,
+          raw: RawTool,
+          table: Table,
+          underline: Underline,
+          quote: Quote,
+          image: SimpleImage,
+          nestedList: NestedList,
+        },
+        data: jsonData.data.content,
+      });
+    } else {
+      console.error('Data not found');
+    }
+  } catch (error) {
+    console.error('fetchError', error);
+  }
+});
+</script>
+
+<template>
+  <v-card>
+    <div :id="editorId"></div>
+  </v-card>
+</template>
