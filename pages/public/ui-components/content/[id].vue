@@ -68,11 +68,7 @@ import SimpleImage from "@editorjs/simple-image";
 import InlineCode from "@editorjs/inline-code";
 import CodeTool from "@editorjs/code";
 import NestedList from "@editorjs/nested-list";
-import axios from 'axios';
-
-
-const baseApiUrl = useRuntimeConfig().public.apiBase
-
+import { fetchSinglePage } from '~/plugins/api/sPageService.js';
 
 const editorId = ref('editorjs');
 const contentData = ref(null);
@@ -80,43 +76,38 @@ const route = useRoute();
 
 onMounted(async () => {
   const id = route.params.id;
-  try {
-    const response = await axios.get(`${baseApiUrl}/singlepage/${id}`);
-    const jsonData = response.data;
+  const jsonData = await fetchSinglePage(id);
 
-    if (jsonData.data && jsonData.data.content) {
-      contentData.value = JSON.stringify(jsonData.data.content);
+  if (jsonData && jsonData.data && jsonData.data.content) {
+    contentData.value = JSON.stringify(jsonData.data.content);
 
-      const editor = new EditorJS({
-        holder: editorId.value,
-        readOnly: true,
-        tools: {
-          header: Header,
-          list: {
-            class: List,
-            inlineToolbar: true,
-            config: {
-              defaultStyle: "unordered",
-            },
+    const editor = new EditorJS({
+      holder: editorId.value,
+      readOnly: true,
+      tools: {
+        header: Header,
+        list: {
+          class: List,
+          inlineToolbar: true,
+          config: {
+            defaultStyle: "unordered",
           },
-          checklist: Checklist,
-          nestedlist: NestedList,
-          inlineCode: InlineCode,
-          code: CodeTool,
-          raw: RawTool,
-          table: Table,
-          underline: Underline,
-          quote: Quote,
-          image: SimpleImage,
-          nestedList: NestedList,
         },
-        data: jsonData.data.content,
-      });
-    } else {
-      console.error('Data not found');
-    }
-  } catch (error) {
-    console.error('fetchError', error);
+        checklist: Checklist,
+        nestedlist: NestedList,
+        inlineCode: InlineCode,
+        code: CodeTool,
+        raw: RawTool,
+        table: Table,
+        underline: Underline,
+        quote: Quote,
+        image: SimpleImage,
+        nestedList: NestedList,
+      },
+      data: jsonData.data.content,
+    });
+  } else {
+    console.error('Data not found');
   }
 });
 </script>
