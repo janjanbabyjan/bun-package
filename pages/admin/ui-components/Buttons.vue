@@ -4,7 +4,6 @@ definePageMeta({
 });
 
 import { ref } from "vue";
-import { productPerformance } from "@/data/dashboard/dashboardData";
 
 // Breadcrumbs setup
 const breadcrumbs = [
@@ -24,12 +23,17 @@ const newMenu = ref({
 });
 const isActive = ref(false);
 
-// Link menu options
+// Path selection dialog state
+const pathDialog = ref(false);
 const linkOptions = ref([
   { label: "หน้าหลัก", value: "/" },
   { label: "เกี่ยวกับเรา", value: "/about" },
   { label: "ติดต่อเรา", value: "/contact" },
 ]);
+
+// Category and search state
+const category = ref("");
+const searchQuery = ref("");
 
 // Methods
 const openDialog = () => {
@@ -43,11 +47,32 @@ const closeDialog = () => {
 };
 
 const addMenu = () => {
-  // Logic to add menu using newMenu.value.name and newMenu.value.link
   console.log("Menu added:", newMenu.value);
   closeDialog();
 };
+
+const selectLink = (item: { value: string }) => {
+  newMenu.value.link = item.value;
+  pathDialog.value = false;
+};
+
+// Open path dialog
+const openPathDialog = () => {
+  pathDialog.value = true;
+};
+
+// Clear search
+const clearSearch = () => {
+  searchQuery.value = "";
+  category.value = "";
+};
+
+// Search function (placeholder)
+const search = () => {
+  console.log("Search query:", searchQuery.value, "Category:", category.value);
+};
 </script>
+
 <template>
   <div>
     <!-- Breadcrumb navigation -->
@@ -67,11 +92,10 @@ const addMenu = () => {
       <v-card-item class="pa-6">
         <div class="d-flex align-center justify-space-between pt-sm-2">
           <v-card-title class="text-h5">จัดการเมนู</v-card-title>
-          <!-- Move the Create Page button to the right -->
           <v-btn color="primary" class="ml-auto" @click="openDialog"
             >เพิ่มเมนูหลัก</v-btn
           >
-          <v-dialog v-model="dialog" max-width="500px">
+          <v-dialog v-model="dialog" class="custom-dialog">
             <v-card>
               <v-card-title class="mt-2">เพิ่มเมนู</v-card-title>
 
@@ -82,14 +106,17 @@ const addMenu = () => {
                   outlined
                 ></v-text-field>
                 <v-row>
-                  <v-col cols="12">
-                    <v-autocomplete
+                  <v-col cols="10">
+                    <v-text-field
                       v-model="newMenu.link"
-                      :items="linkOptions"
-                      item-text="label"
-                      item-value="value"
                       label="ลิงก์"
-                      outlined                    ></v-autocomplete>
+                      outlined
+                      readonly
+                      @click="openPathDialog"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="2">
+                    <v-btn color="primary" @click="openPathDialog">เลือก</v-btn>
                   </v-col>
                 </v-row>
                 <v-switch
@@ -106,20 +133,61 @@ const addMenu = () => {
               </v-card-actions>
             </v-card>
           </v-dialog>
+
+          <!-- Path Selection Dialog -->
+          <v-dialog v-model="pathDialog" class="custom-path-dialog align-center">
+            <v-card>
+              <v-card-title class="mt-2">เลือกเส้นทาง</v-card-title>
+              <v-card-text class="scrollable-content">
+                <v-row class="align-center">
+                  <v-col cols="3">
+                    <v-select
+                      v-model="category"
+                      :items="['หมวดหมู่ 1', 'หมวดหมู่ 2', 'หมวดหมู่ 3']"
+                      label="เลือกหมวดหมู่"
+                      outlined
+                    ></v-select>
+                  </v-col>
+                  <v-col cols="4">
+                    <v-text-field
+                      v-model="searchQuery"
+                      label="ค้นหา"
+                      outlined
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="3" class="btn-ss">
+                    <v-btn class="btn" color="primary" @click="search">ค้นหา</v-btn>
+                    <v-btn  color="secondary" @click="clearSearch" class="ml-3">ล้าง</v-btn>
+                  </v-col>
+                </v-row>
+                <v-list>
+                  <v-list-item
+                    v-for="(item, index) in linkOptions"
+                    :key="index"
+                    @click="selectLink(item)"
+                  >
+                    <v-list-item-title>{{ item.label }}</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-card-text>
+              <v-card-actions>
+                <v-btn color="error" @click="pathDialog = false">ยกเลิก</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
         </div>
       </v-card-item>
-
-      <!-- Table -->
     </v-card>
   </div>
 </template>
+
 <style>
 .breadcrumb-item {
   cursor: pointer;
 }
 
 .withbg {
-  background-color: #ffffff;
+  background-color: #fcfcfc;
 }
 
 .buttons-container {
@@ -129,7 +197,23 @@ const addMenu = () => {
   height: 100%;
 }
 
-.v-text-field .v-input__append-inner {
-  cursor: pointer;
+.custom-dialog {
+  max-width: 600px !important;
+  width: 90%;
+  height: auto;
+}
+
+.custom-path-dialog {
+  max-width: 800px !important;
+  width: 90%;
+  height: 850px !important;
+}
+
+.scrollable-content {
+  height: 350px; /* Adjust this value to fit your design */
+  overflow-y: auto;
+}
+.btn-ss{
+  margin-top: -1.6rem
 }
 </style>
