@@ -2,28 +2,20 @@
 // ฟังก์ชันการทำงาน ------------------------------------
 
 // ประกาศ ref สำหรับเก็บ Tag ที่เพิ่มขึ้นมา เริ่มต้นด้วย array ที่ว่างเปล่า
-const tags = ref<string[]>([]);
-
 const addTag = () => {
   if (inputText.value.trim() !== '') {
     tags.value.push(inputText.value.trim());
-    inputText.value = ''; // ล้าง input หลังจากเพิ่ม tag เสร็จสิ้น
+    inputText.value = ''; // Clear input after adding tag
   }
 };
 
 const editTag = (index: number) => {
   inputText.value = tags.value[index];
   removeTag(index); // Remove the tag before editing
-  console.log('Tag edited:', tags.value); // ล็อกค่า tags หลังจากแก้ไข tag
-  // เพิ่มชื่อฟังก์ชันการทำงานลงใน array actions
-  emits('tag', inputText.value.trim());
 };
 
 const removeTag = (index: number) => {
   tags.value.splice(index, 1);
-  console.log('Tag removed:', tags.value); // ล็อกค่า tags หลังจากลบ tag
-  // เพิ่มชื่อฟังก์ชันการทำงานลงใน array actions
-  emits('tag', inputText.value.trim());
 };
 
 
@@ -31,37 +23,26 @@ const removeTag = (index: number) => {
 
 // ใช้ defineProps เพื่อรับค่า props จาก component ตัวแม่ โดยระบุชนิดของ props
 const props = defineProps({
-  // กำหนด props ที่ต้องการรับ
-  name: {
-    type: String,
-    default: ''
-  },
-  status: {
-    type: Boolean,
-    default: true
-  },
-  day: {
-    type: String,
-    default: ''
-  },
-  tag: {
-    type: String,
-    default: ''
-  },
-  addTag: {
-    type: String,
-    default: ''
-  }
+  name: { type: String, default: '' },
+  status: { type: Boolean, default: true },
+  day: { type: String, default: '' },
+  tag: { type: String, default: '' },
+  addTag: { type: String, default: '' },
+  editTag: { type: String, default: '' },
+  removeTag: { type: String, default: '' },
 });
 
 // ใช้ defineEmits เพื่อส่งอีเวนต์ไปยัง component ตัวแม่
-const emits = defineEmits(['name', 'status', 'day', 'tag','addTag', 'editTag', 'removeTag']); // กำหนด emit ที่ต้องการใช้
+const emits = defineEmits(['name', 'status', 'day', 'tag', 'addTag', 'editTag', 'removeTag']); // กำหนด emit ที่ต้องการใช้
 
 const saveName = ref(props.name);
 const saveStatus = ref(props.status);
 const saveDate = ref(props.day);
 const inputText = ref(props.tag);
-const Text = ref(props.addTag);
+
+
+const tags = ref<string[]>([]);
+
 
 // ใช้ watch เพื่อตรวจสอบการเปลี่ยนแปลงของข้อมูล
 watch(saveName, (newValue) => {
@@ -81,16 +62,17 @@ watch(saveDate, (newValue) => {
   emits('day', newValue);
 });
 
-watch(inputText, (newValue) => {
-  console.log(newValue)
-  emits('tag', newValue);
+watch(inputText, (newValue, oldValue) => {
+  if (newValue !== oldValue) {
+    if (props.addTag !== '') {
+      emits('addTag', newValue);
+    } else if (props.editTag !== '') {
+      emits('editTag', newValue);
+    } else {
+      emits('tag', newValue);
+    }
+  }
 });
-
-watch(Text, (newValue) => {
-  console.log(newValue)
-  emits('addTag', newValue);
-});
-
 
 </script>
 
@@ -113,7 +95,7 @@ watch(Text, (newValue) => {
               <div class="d-flex align-center">
                 <v-text-field type="text" v-model="inputText" label="เพิ่ม Tag ข่าว"
                   style="max-width: 200px;"></v-text-field>
-                  <v-btn color="primary" class="ml-5 mt-2 align-self-start" v-model="inputText" @click="addTag">
+                <v-btn color="primary" class="ml-5 mt-2 align-self-start" v-model="inputText" @click="addTag">
                   <v-icon left>mdi-plus</v-icon>
                 </v-btn>
               </div>

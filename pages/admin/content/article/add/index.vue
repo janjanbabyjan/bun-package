@@ -157,8 +157,6 @@ const status = ref(true);
 const saveDate = ref('');
 const inputText = ref('');
 
-
-
 const handleSave = (data:any) => {
   console.log("🚀 ~ handleSave ~ data:", data)
   // เก็บข้อมูลที่ได้รับจาก component ตัวลูกเมื่อกดบันทึก
@@ -177,11 +175,15 @@ const handleDate = (data:any) => {
   saveDate.value = data;
 };
 
-const handleTag = (data:any) => {
-  console.log("🚀 ~ handleTag ~ data:", data)
+
+const handleTag = (data: any) => {
+  console.log("🚀 ~ handleTag ~ data:", data);
   // เก็บข้อมูลที่ได้รับจาก component ตัวลูกเมื่อกดบันทึก
   inputText.value = data;
+  // ส่งข้อมูลกลับไปยัง component ตัวแม่ เมื่อข้อมูลเปลี่ยนแปลง
 };
+
+
 
 
 const getsave = () => {
@@ -190,13 +192,30 @@ const getsave = () => {
     status: status.value,
     day: saveDate.value,
     tag: inputText.value,
-    
+    editorContent: editorContent.value, // เพิ่มข้อมูลจาก EditorJS ไปยัง body
   }
   console.log("🚀 ~ getsave ~ body.savedData.value:", saveName.value)
-  console.log("🚀 ~ getsave ~ body:", body)
- 
-  
+  console.log("🚀 ~ getsave ~ body:", body);
+
+  saveEditorContent(); // เรียกใช้งานฟังก์ชัน saveEditorContent ที่นี่
 };
+
+
+
+const saveEditorContent = async () => {
+  if (editor.value) {
+    try {
+      const savedData = await editor.value.save();
+      // นำข้อมูลที่ได้มาใช้งานต่อได้ที่นี่ เช่น การเก็บข้อมูลในตัวแปรหรือส่งไปยัง API
+      console.log("Saved data from EditorJS:", savedData);
+    } catch (error) {
+      console.error("Error saving editor content:", error);
+    }
+  } else {
+    console.warn("Editor instance is not available.");
+  }
+};
+
 </script>
 
 <template>
@@ -211,7 +230,7 @@ const getsave = () => {
     </v-breadcrumbs>
 
     <!-- เพิ่มตัวแปลด้วย ถ้าจะดึงจากลูก -->
-    <AdminHeadingInputHeading :name="saveName" @name="handleSave" @status="handleStatus" @day="handleDate" @tag="handleTag" />
+    <AdminHeadingInputHeading :name="saveName" @name="handleSave" @status="handleStatus" @day="handleDate" @tag="handleTag"  />
 
     <div class="center-container">
       <v-card class="withbg mt-4 " style="max-width: 1000px;">
