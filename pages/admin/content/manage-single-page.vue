@@ -47,7 +47,7 @@ const closeDialog = () => {
                 <!-- Move the Create Page button to the right -->
                 <v-btn color="primary" class="ml-auto" @click="openDialog">สร้าง Content ใหม่</v-btn>
                 <v-dialog v-model="dialog" max-width="500px">
-                    <v-card>
+                    <v-card cols>
                         <v-card-title class="mt-2">เลือกสร้าง Content</v-card-title>
                         <v-card-text>
                             <div class="buttons-container">
