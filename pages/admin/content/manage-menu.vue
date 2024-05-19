@@ -1,0 +1,290 @@
+
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue';
+import { getAllManageMenus ,deleteMenu,updateMenu } from '@/plugins/api/authService';
+
+definePageMeta({
+  layout: "admin",
+});
+// Dialog and menu states
+const dialog = ref(false);
+const newMenu = ref({
+  name: "",
+  link: "",
+});
+const isActive = ref(false);
+
+// Path selection dialog state
+const pathDialog = ref(false);
+const linkOptions = ref([
+  { label: "หน้าหลัก", value: "/" },
+  { label: "เกี่ยวกับเรา", value: "/about" },
+  { label: "ติดต่อเรา", value: "/contact" },
+]);
+
+// Category and search state
+const category = ref("");
+const searchQuery = ref("");
+
+// Methods
+const openDialog = () => {
+  dialog.value = true;
+};
+
+const closeDialog = () => {
+  dialog.value = false;
+  newMenu.value = { name: "", link: "" };
+  isActive.value = false;
+};
+
+const addMenu = () => {
+  console.log("Menu added:", newMenu.value);
+  closeDialog();
+};
+
+const selectLink = (item: { value: string }) => {
+  newMenu.value.link = item.value;
+  pathDialog.value = false;
+};
+
+// Open path dialog
+const openPathDialog = () => {
+  pathDialog.value = true;
+};
+
+// Clear search
+const clearSearch = () => {
+  searchQuery.value = "";
+  category.value = "";
+};
+
+// Search function (placeholder)
+const search = () => {
+  console.log("Search query:", searchQuery.value, "Category:", category.value);
+};
+
+// ตัวบอกหน้า
+const breadcrumbs = [
+  { text: 'หน้าแรก', href: '/admin' },
+  { text: 'รายชื่อหน้าเว็บไซต์', href: '/admin/content/manage-single-page' },
+];
+
+const getBreadcrumbText = (index: number) => {
+  return breadcrumbs[index].text;
+};
+
+// Data and methods for fetching and displaying manage menus
+const manageMenus = ref([]);
+
+const fetchManageMenus = async () => {
+  try {
+    const response = await getAllManageMenus();
+    console.log('Fetched manage menus:', response); // ตรวจสอบข้อมูลที่ได้รับ
+    manageMenus.value = response.result.manageMenus;
+  } catch (error) {
+    console.error('Error fetching manage menus:', error);
+  }
+};
+
+onMounted(() => {
+  fetchManageMenus();
+});
+
+// Function to build menu tree from flat list
+const buildMenuTree = (menuItems: any[]) => {
+  const menuMap = new Map();
+  const roots: any[] = [];
+
+  menuItems.forEach(item => {
+    menuMap.set(item.id, { ...item, children: [] });
+  });
+
+  menuMap.forEach(item => {
+    if (item.parentId === null) {
+      roots.push(item);
+    } else {
+      menuMap.get(item.parentId).children.push(item);
+    }
+  });
+
+  return roots;
+};
+
+const menuTree = computed(() => buildMenuTree(manageMenus.value));
+</script>
+
+<template>
+  <div>
+    <!-- Breadcrumb navigation -->
+    <v-breadcrumbs>
+      <v-breadcrumbs-item
+        v-for="(breadcrumb, index) in breadcrumbs"
+        :key="index"
+        @click="navigateTo(breadcrumb.href)"
+        class="breadcrumb-item"
+      >
+        {{ getBreadcrumbText(index) }}
+        <template v-if="index < breadcrumbs.length - 1"> > </template>
+      </v-breadcrumbs-item>
+    </v-breadcrumbs>
+
+    <v-card elevation="10" class="withbg">
+      <v-card-item class="pa-6">
+        <div class="d-flex align-center justify-space-between pt-sm-2">
+          <v-card-title class="text-h5">จัดการเมนู</v-card-title>
+          <v-btn color="primary" class="ml-auto" @click="openDialog"
+            >เพิ่มเมนูหลัก</v-btn
+          >
+          <v-dialog v-model="dialog" class="custom-dialog">
+            <v-card>
+              <v-card-title class="mt-2">เพิ่มเมนู</v-card-title>
+
+              <v-card-text>
+                <v-text-field
+                  v-model="newMenu.name"
+                  label="ชื่อเมนู"
+                  outlined
+                ></v-text-field>
+                <v-row>
+                  <v-col cols="10">
+                    <v-text-field
+                      v-model="newMenu.link"
+                      label="ลิงก์"
+                      outlined
+                      readonly
+                      @click="openPathDialog"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="2">
+                    <v-btn color="primary" @click="openPathDialog">เลือก</v-btn>
+                  </v-col>
+                </v-row>
+                <v-switch
+                  v-model="isActive"
+                  label="แสดงเมนู"
+                  :input-value="true"
+                  :false-value="false"
+                  class="toggle-switch"
+                ></v-switch>
+              </v-card-text>
+              <v-card-actions>
+                <v-btn color="primary" @click="addMenu">เพิ่ม</v-btn>
+                <v-btn color="error" @click="closeDialog">ยกเลิก</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+
+          <!-- Path Selection Dialog -->
+          <v-dialog v-model="pathDialog" class="custom-path-dialog align-center">
+            <v-card>
+              <v-card-title class="mt-2">เลือกเส้นทาง</v-card-title>
+              <v-card-text class="scrollable-content">
+                <v-row class="align-center">
+                  <v-col cols="3">
+                    <v-select
+                      v-model="category"
+                      :items="['หมวดหมู่ 1', 'หมวดหมู่ 2', 'หมวดหมู่ 3']"
+                      label="เลือกหมวดหมู่"
+                      outlined
+                    ></v-select>
+                  </v-col>
+                  <v-col cols="4">
+                    <v-text-field
+                      v-model="searchQuery"
+                      label="ค้นหา"
+                      outlined
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="5" class="btn-ss">
+                    <v-btn class="btn" color="primary" @click="search">ค้นหา</v-btn>
+                    <v-btn  color="secondary" @click="clearSearch" class="ml-3">ล้าง</v-btn>
+                  </v-col>
+                </v-row>
+                <v-list>
+                  <v-list-item
+                    v-for="(item, index) in linkOptions"
+                    :key="index"
+                    @click="selectLink(item)"
+                  >
+                    <v-list-item-title>{{ item.label }}</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-card-text>
+              <v-card-actions>
+                <v-btn color="error" @click="pathDialog = false">ยกเลิก</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </div>
+      </v-card-item>
+    </v-card>
+  </div>
+  <div v-for="menu in menuTree" :key="menu.id" class="menu-item">
+  {{ menu.menuName }}
+  <!-- ตรวจสอบว่ามีเมนูย่อยหรือไม่ -->
+  <div v-if="menu.children.length" class="submenu-list">
+    <div v-for="child in menu.children" :key="child.id" class="submenu-item">
+      <span>{{ child.menuName }}</span>
+      <!-- ไอคอน "ลบ" ด้วย HTML entity -->
+      <span class="edit-icon" @click="updateMenu(child.id)">&#9998;</span>
+      <span class="delete-icon" @click="deleteMenu(child.id)">&#128465;</span>
+    </div>
+  </div>
+  <!-- ไอคอน "ลบ" สำหรับ root menu ด้วย Font Awesome -->
+  <span v-if="!menu.children.length" class="delete-icon" @click="deleteMenu(menu.id)">
+    <i class="fas fa-trash-alt"></i> <!-- หรือใช้ HTML entity ได้เช่นกัน &#xf2ed; -->
+  </span>
+</div>
+
+
+
+</template>
+
+<style>
+.edit-icon,
+.delete-icon {
+  cursor: pointer;
+  margin-left: 10px;
+  color: #333;
+}
+
+.edit-icon:hover,
+.delete-icon:hover {
+  color: red;
+}
+
+.breadcrumb-item {
+  cursor: pointer;
+}
+
+.withbg {
+  background-color: #fcfcfc;
+}
+
+.buttons-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.custom-dialog {
+  max-width: 600px !important;
+  width: 90%;
+  height: auto;
+}
+
+.custom-path-dialog {
+  max-width: 800px !important;
+  width: 90%;
+  height: 850px !important;
+}
+
+.scrollable-content {
+  height: 350px; /* Adjust this value to fit your design */
+  overflow-y: auto;
+}
+.btn-ss{
+  margin-top: -1.6rem
+}
+</style>
