@@ -1,7 +1,42 @@
 <script setup lang="ts">
+
+//ดึงเข้าดาต้า เเต่ดึงไม่ได้ 
+import { createSinglePage } from "~/plugins/api/authService"
+
+const router = useRouter();
+
+const getsave = async () => {
+  const data = {
+    title: saveName.value,
+    status: saveStatus.value,
+    day: saveDate.value,
+    tag: inputText.value
+  };
+
+  try {
+    const result = await createSinglePage(data);
+    console.log(result);
+
+    if (result.statusCode === 200) {
+      
+      router.push('/admin/dashboard');
+    } else {
+      
+      console.error("Error creating article:", result);
+    }
+  } catch (error) {
+    console.error("Error creating article:", error);
+    
+  }
+};
+
+getsave();
+
+
+
 // ฟังก์ชันการทำงาน ------------------------------------
 
-// ประกาศ ref สำหรับเก็บ Tag ที่เพิ่มขึ้นมา เริ่มต้นด้วย array ที่ว่างเปล่า
+// Function to add a tag
 const addTag = () => {
   if (inputText.value.trim() !== '') {
     tags.value.push(inputText.value.trim());
@@ -9,11 +44,13 @@ const addTag = () => {
   }
 };
 
+// Function to edit a tag
 const editTag = (index: number) => {
   inputText.value = tags.value[index];
   removeTag(index); // Remove the tag before editing
 };
 
+// Function to remove a tag
 const removeTag = (index: number) => {
   tags.value.splice(index, 1);
 };
@@ -62,6 +99,7 @@ watch(saveDate, (newValue) => {
   emits('day', newValue);
 });
 
+// Watch for changes in inputText
 watch(inputText, (newValue, oldValue) => {
   if (newValue !== oldValue) {
     if (props.addTag !== '') {

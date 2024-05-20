@@ -1,7 +1,7 @@
 <script setup>
 import { getLogin } from "~/plugins/api/authService";
 const router = useRouter();
-const checkbox = ref(false);
+// const checkbox = ref(false);
 const userName = ref('')
 const passWord = ref('')
 

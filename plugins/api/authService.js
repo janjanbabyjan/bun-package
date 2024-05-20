@@ -21,4 +21,32 @@ const getLogin = async ( data) => {
       return jsonData;
 }
 
-export {getLogin}
+const createSinglePage = async (data) => {
+  try {
+      const token = localStorage.getItem('token')
+      let headers = {
+          "Content-Type": "application/json; charset=utf-8",
+          // Authorization: `Bearer ${token}`,
+      }
+
+      let res = await fetch(`${baseApiUrl}/admin/content/article/add`, {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify(data)
+      });
+
+      if (!res.ok) {
+          throw new Error(`HTTP error! Status: ${res.status}`);
+      }
+
+      const jsonData = await res.json();
+      console.log("🚀 ~ createSinglePage ~ jsonData:", jsonData);
+      return jsonData;
+  } catch (error) {
+      console.error("Error creating single page:", error);
+      throw error;
+  }
+}
+export {getLogin,createSinglePage }
+
+
