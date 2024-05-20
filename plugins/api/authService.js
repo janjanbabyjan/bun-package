@@ -1,5 +1,7 @@
 const baseApiUrl = useRuntimeConfig().public.apiBase
 // import axios from 'axios';
+import axios from 'axios';
+
 
 const getLogin = async ( data) => {
 

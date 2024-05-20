@@ -39,6 +39,7 @@
     "date-fns": "^3.6.0",
     "dotenv": "^16.4.5",
     "editorjs-html": "^3.4.3",
+    "nuxt3": "^3.8.0-28284309.b3d3d7f4",
     "primevue": "3",
     "sass": "^1.49.9",
     "v-calendar": "^3.1.2",
