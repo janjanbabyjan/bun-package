@@ -47,13 +47,13 @@ const createNewMenu = async (newMenuData) => {
   try {
     const response = await axios.post(`${baseApiUrl}/manage-menu`, newMenuData);
     console.log('Created new menu:', response.data);
-    fetchManageMenus(); // เรียกใช้ function ในการดึงข้อมูลเมนูอัตโนมัติหลังจากสร้างเมนูใหม่
+    getAllManageMenus(); // เรียกใช้ function ในการดึงข้อมูลเมนูอัตโนมัติหลังจากสร้างเมนูใหม่
+    closeDialog(); // ปิด Dialog หลังจากสร้างเมนูเสร็จ
   } catch (error) {
     console.error('Error creating new menu:', error);
   }
 };
 
-// สร้าง function สำหรับการอัปเดตเมนู
 const updateMenu = async (id, updatedMenuData) => {
   try {
     const response = await axios.post(`${baseApiUrl}/manage-menu/${id}`, updatedMenuData);
@@ -64,12 +64,12 @@ const updateMenu = async (id, updatedMenuData) => {
   }
 };
 
-// สร้าง function สำหรับการลบเมนู
 const deleteMenu = async (id) => {
   try {
     const response = await axios.delete(`${baseApiUrl}/manage-menu/${id}`);
     console.log('Deleted menu:', response.data);
-    fetchManageMenus(); // เรียกใช้ function ในการดึงข้อมูลเมนูอัตโนมัติหลังจากลบเมนู
+    // location.reload(); //reหน้า
+    getAllManageMenus(); // เรียกใช้ function ในการดึงข้อมูลเมนูอัตโนมัติหลังจากลบเมนู
   } catch (error) {
     console.error('Error deleting menu:', error);
   }

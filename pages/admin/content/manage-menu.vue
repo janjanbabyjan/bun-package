@@ -1,7 +1,11 @@
-
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
-import { getAllManageMenus ,deleteMenu,updateMenu } from '@/plugins/api/authService';
+import { ref, computed, onMounted } from "vue";
+import {
+  getAllManageMenus,
+  deleteMenu,
+  updateMenu,
+  createNewMenu,
+} from "@/plugins/api/authService";
 
 definePageMeta({
   layout: "admin",
@@ -65,8 +69,8 @@ const search = () => {
 
 // ตัวบอกหน้า
 const breadcrumbs = [
-  { text: 'หน้าแรก', href: '/admin' },
-  { text: 'รายชื่อหน้าเว็บไซต์', href: '/admin/content/manage-single-page' },
+  { text: "หน้าแรก", href: "/admin" },
+  { text: "จัดการเมนู", href: "/admin/content/manage-menu" },
 ];
 
 const getBreadcrumbText = (index: number) => {
@@ -79,10 +83,10 @@ const manageMenus = ref([]);
 const fetchManageMenus = async () => {
   try {
     const response = await getAllManageMenus();
-    console.log('Fetched manage menus:', response); // ตรวจสอบข้อมูลที่ได้รับ
+    console.log("Fetched manage menus:", response); // ตรวจสอบข้อมูลที่ได้รับ
     manageMenus.value = response.result.manageMenus;
   } catch (error) {
-    console.error('Error fetching manage menus:', error);
+    console.error("Error fetching manage menus:", error);
   }
 };
 
@@ -95,11 +99,11 @@ const buildMenuTree = (menuItems: any[]) => {
   const menuMap = new Map();
   const roots: any[] = [];
 
-  menuItems.forEach(item => {
+  menuItems.forEach((item) => {
     menuMap.set(item.id, { ...item, children: [] });
   });
 
-  menuMap.forEach(item => {
+  menuMap.forEach((item) => {
     if (item.parentId === null) {
       roots.push(item);
     } else {
@@ -111,8 +115,17 @@ const buildMenuTree = (menuItems: any[]) => {
 };
 
 const menuTree = computed(() => buildMenuTree(manageMenus.value));
-</script>
 
+// Delete menu function
+const handleDeleteMenu = async (id: number) => {
+  try {
+    await deleteMenu(id);
+    fetchManageMenus(); // Refresh the menu list after deletion
+  } catch (error) {
+    console.error("Error deleting menu:", error);
+  }
+};
+</script>
 <template>
   <div>
     <!-- Breadcrumb navigation -->
@@ -168,14 +181,17 @@ const menuTree = computed(() => buildMenuTree(manageMenus.value));
                 ></v-switch>
               </v-card-text>
               <v-card-actions>
-                <v-btn color="primary" @click="addMenu">เพิ่ม</v-btn>
+                <v-btn color="primary" @click="createNewMenu">เพิ่ม</v-btn>
                 <v-btn color="error" @click="closeDialog">ยกเลิก</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
 
           <!-- Path Selection Dialog -->
-          <v-dialog v-model="pathDialog" class="custom-path-dialog align-center">
+          <v-dialog
+            v-model="pathDialog"
+            class="custom-path-dialog align-center"
+          >
             <v-card>
               <v-card-title class="mt-2">เลือกเส้นทาง</v-card-title>
               <v-card-text class="scrollable-content">
@@ -196,8 +212,12 @@ const menuTree = computed(() => buildMenuTree(manageMenus.value));
                     ></v-text-field>
                   </v-col>
                   <v-col cols="5" class="btn-ss">
-                    <v-btn class="btn" color="primary" @click="search">ค้นหา</v-btn>
-                    <v-btn  color="secondary" @click="clearSearch" class="ml-3">ล้าง</v-btn>
+                    <v-btn class="btn" color="primary" @click="search"
+                      >ค้นหา</v-btn
+                    >
+                    <v-btn color="secondary" @click="clearSearch" class="ml-3"
+                      >ล้าง</v-btn
+                    >
                   </v-col>
                 </v-row>
                 <v-list>
@@ -218,27 +238,22 @@ const menuTree = computed(() => buildMenuTree(manageMenus.value));
         </div>
       </v-card-item>
     </v-card>
+<br>
   </div>
-  <div v-for="menu in menuTree" :key="menu.id" class="menu-item">
-  {{ menu.menuName }}
-  <!-- ตรวจสอบว่ามีเมนูย่อยหรือไม่ -->
-  <div v-if="menu.children.length" class="submenu-list">
-    <div v-for="child in menu.children" :key="child.id" class="submenu-item">
-      <span>{{ child.menuName }}</span>
-      <!-- ไอคอน "ลบ" ด้วย HTML entity -->
-      <span class="edit-icon" @click="updateMenu(child.id)">&#9998;</span>
-      <span class="delete-icon" @click="deleteMenu(child.id)">&#128465;</span>
-    </div>
-  </div>
-  <!-- ไอคอน "ลบ" สำหรับ root menu ด้วย Font Awesome -->
-  <span v-if="!menu.children.length" class="delete-icon" @click="deleteMenu(menu.id)">
-    <i class="fas fa-trash-alt"></i> <!-- หรือใช้ HTML entity ได้เช่นกัน &#xf2ed; -->
-  </span>
-</div>
-
-
+  <v-expansion-panels multiple>
+  <v-expansion-panel v-for="menu in menuTree" :key="menu.id">
+    <!-- v-expansion-panel-header -->
+    <v-expansion-panel-header>
+      {{ menu.menuName }}
+      <v-spacer></v-spacer>
+      <v-icon @click.stop="handleDeleteMenu(menu.id)">mdi-delete</v-icon>
+    </v-expansion-panel-header>
+  </v-expansion-panel>
+</v-expansion-panels>
 
 </template>
+
+
 
 <style>
 .edit-icon,
@@ -274,6 +289,10 @@ const menuTree = computed(() => buildMenuTree(manageMenus.value));
   height: auto;
 }
 
+.v-icon {
+  cursor: pointer;
+}
+
 .custom-path-dialog {
   max-width: 800px !important;
   width: 90%;
@@ -284,7 +303,8 @@ const menuTree = computed(() => buildMenuTree(manageMenus.value));
   height: 350px; /* Adjust this value to fit your design */
   overflow-y: auto;
 }
-.btn-ss{
-  margin-top: -1.6rem
+
+.btn-ss {
+  margin-top: -1.6rem;
 }
 </style>
