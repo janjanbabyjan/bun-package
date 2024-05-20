@@ -94,7 +94,6 @@ onMounted(() => {
   fetchManageMenus();
 });
 
-
 // Function to build menu tree from flat list
 const buildMenuTree = (menuItems: any[]) => {
   const menuMap = new Map();
@@ -126,6 +125,7 @@ const handleDeleteMenu = async (id: number) => {
     console.error("Error deleting menu:", error);
   }
 };
+
 </script>
 <template>
   <div>
@@ -241,6 +241,39 @@ const handleDeleteMenu = async (id: number) => {
     </v-card>
   </div>
   <br />
+
+  <v-card elevation="10" class="withbg">
+    
+   
+    <v-list-group v-for="menu in menuTree" :key="menu.id">
+      <template v-slot:activator="{ props }">
+        <v-list-item
+          v-bind="props"
+          prepend-icon="mdi-home"
+          :tile="menu.menuName"
+        >
+          {{ menu.menuName }}
+          <v-list-group
+            v-bind="props"
+            v-if="menu.children && menu.children.length > 0"
+          >
+            <template v-slot:activator="{ props }">
+              <v-list-item
+                prepend-icon="mdi-account-circle"
+                v-for="child in menu.children"
+                :key="child.id"
+                v-bind="props"
+              >
+                {{ child.menuName }}
+              </v-list-item>
+            </template>
+          </v-list-group>
+        </v-list-item>
+      </template>
+    </v-list-group>
+  </v-card>
+  <br />
+
   <div class="list-menu-item">
     <v-expansion-panels>
       <v-expansion-panel v-for="menu in menuTree" :key="menu.id">
@@ -252,39 +285,20 @@ const handleDeleteMenu = async (id: number) => {
     </v-expansion-panels>
   </div>
   <br />
-    <ul>
-      <li v-for="menu in menuTree" :key="menu.id">
-        {{ menu.menuName }}
-        <ul v-if="menu.children && menu.children.length > 0">
-          <li v-for="child in menu.children" :key="child.id">
-            {{ child.menuName }}
-            <!-- เพิ่มโค้ดสำหรับแสดง Admin และ Actions ในนี้ -->
-          </li>
-        </ul>
-      </li>
-    </ul>
-
-    <hr>
-    <br>
-  
-  <v-list-group v-for="menu in menuTree" :key="menu.id">
-  <template v-slot:activator="{ props }">
-    <v-list-item  v-bind="props" prepend-icon="mdi-home" :tile="menu.menuName">
+  <ul>
+    <li v-for="menu in menuTree" :key="menu.id">
       {{ menu.menuName }}
-      <v-list-group v-bind="props" v-if="menu.children && menu.children.length > 0">
-        <template v-slot:activator="{ props }">
-        <v-list-item prepend-icon="mdi-account-circle" v-for="child in menu.children" :key="child.id" v-bind="props">
+      <ul v-if="menu.children && menu.children.length > 0">
+        <li v-for="child in menu.children" :key="child.id">
           {{ child.menuName }}
-        
-        
-        </v-list-item>
-        </template>  
-      </v-list-group> 
-    </v-list-item>
-  </template>
-</v-list-group>
+          <!-- เพิ่มโค้ดสำหรับแสดง Admin และ Actions ในนี้ -->
+        </li>
+      </ul>
+    </li>
+  </ul>
 
-
+  <hr />
+  <br />
 </template>
 
 <style>
