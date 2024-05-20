@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Blog } from '@/data/dashboard/dashboardData';
+const path = "/public/ui-components/content/10"
 </script>
 <template>
     <div class="py-md-15 py-sm-8">
@@ -23,7 +24,7 @@ import { Blog } from '@/data/dashboard/dashboardData';
 
                     <v-card elevation="0" variant="outlined" class="card-with-min-height">
                         <div class="hover-card overflow-hidden lh-10 rounded-md rounded-be-0 position-relative">
-                            <NuxtLink :to="`/public/ui-components/content/${card.id}`" class="text-decoration-none">
+                            <NuxtLink :to="card.path" class="text-decoration-none">
                                 <v-img :src="card.img" height="250px" alt="post" cover class="zoom-in w-100">
                                 </v-img>
                             </NuxtLink>

@@ -22,6 +22,9 @@ import SimpleImage from "@editorjs/simple-image";
 import InlineCode from "@editorjs/inline-code";
 import CodeTool from "@editorjs/code"; // Import CodeTool
 import NestedList from "@editorjs/nested-list";
+import createPage from '~/plugins/api/createPage.js';
+
+
 const editor = ref<EditorJS | null>(null);
 const editorContent = ref<any>(null);
 const outputEditor = ref<EditorJS | null>(null);
@@ -176,6 +179,7 @@ const handleDate = (data:any) => {
 };
 
 
+
 const handleTag = (data: any) => {
   console.log("🚀 ~ handleTag ~ data:", data);
   // เก็บข้อมูลที่ได้รับจาก component ตัวลูกเมื่อกดบันทึก
@@ -184,37 +188,58 @@ const handleTag = (data: any) => {
 };
 
 
-
-
-const getsave = () => {
-  const body ={
-    name: saveName.value,
-    status: status.value,
-    day: saveDate.value,
-    tag: inputText.value,
-    editorContent: editorContent.value, // เพิ่มข้อมูลจาก EditorJS ไปยัง body
-  }
-  console.log("🚀 ~ getsave ~ body.savedData.value:", saveName.value)
-  console.log("🚀 ~ getsave ~ body:", body);
-
-  saveEditorContent(); // เรียกใช้งานฟังก์ชัน saveEditorContent ที่นี่
-};
-
-
-
 const saveEditorContent = async () => {
   if (editor.value) {
     try {
       const savedData = await editor.value.save();
       // นำข้อมูลที่ได้มาใช้งานต่อได้ที่นี่ เช่น การเก็บข้อมูลในตัวแปรหรือส่งไปยัง API
-      console.log("Saved data from EditorJS:", savedData);
+      // console.log("🚀 ~ getsave ~ body.savedData.value:", savedData);
+      console.log("🚀 ~ getsave ~ savedData.blocks[0]:", savedData.blocks[0]);
     } catch (error) {
       console.error("Error saving editor content:", error);
     }
   } else {
     console.warn("Editor instance is not available.");
   }
+}
+
+
+const getsave = async () => {
+  const currentDateTime = new Date().toISOString();
+  const editorData = await editor.value?.save();
+
+  const postdata = {
+    title: saveName.value,
+    content: editorData,
+    createdAt: currentDateTime,
+    updatedAt: currentDateTime,
+    timestampCreate: currentDateTime,
+    titleImages: 'image-url',
+    pageLink: '/new-page',
+    isActive: status.value,
+    typeId: 1,
+    tag: inputText.value,
+    type: {
+      id: 2,
+      typeName: 'SinglePage',
+      createdAt: currentDateTime,
+      updatedAt: currentDateTime
+    }
+  };
+
+
+  try {
+    const response = await createPage.createSinglePage(postdata);
+    console.log('Page creation response:', response);
+    // Handle the response as needed
+  } catch (error) {
+    console.error('Error creating page:', error);
+    // Handle the error as needed
+  }
+
 };
+
+
 
 </script>
 
@@ -239,7 +264,7 @@ const saveEditorContent = async () => {
         </div>
         <!-- Content area -->
         <div class="editor-wrapper">
-          <div id="editor"  class="editor"></div>
+          <div id="editor" class="editor"></div>
         </div>
         <v-btn color="primary" class="ml-5 mb-6" @click="getsave">บันทึก</v-btn>
       </v-card>

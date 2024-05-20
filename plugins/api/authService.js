@@ -23,25 +23,32 @@ const getLogin = async ( data) => {
       return jsonData;
 }
 
-const getAllManageMenus = async () => {
+const createSinglePage = async (data) => {
   try {
-    let res = await fetch(`${baseApiUrl}/manage-menu`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+      const token = localStorage.getItem('token')
+      let headers = {
+          "Content-Type": "application/json; charset=utf-8",
+          // Authorization: `Bearer ${token}`,
+      }
 
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
-    }
+      let res = await fetch(`${baseApiUrl}/admin/content/article/add`, {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify(data)
+      });
 
-    const jsonData = await res.json();
-    return jsonData;
+      if (!res.ok) {
+          throw new Error(`HTTP error! Status: ${res.status}`);
+      }
+
+      const jsonData = await res.json();
+      console.log("🚀 ~ createSinglePage ~ jsonData:", jsonData);
+      return jsonData;
   } catch (error) {
-    console.error("Error fetching manage menus:", error);
-    throw error;
+      console.error("Error creating single page:", error);
+      throw error;
   }
+<<<<<<< HEAD
 };
 const createNewMenu = async (newMenuData) => {
   try {
@@ -74,6 +81,9 @@ const deleteMenu = async (id) => {
     console.error('Error deleting menu:', error);
   }
 };
+=======
+}
+export {getLogin,createSinglePage }
+>>>>>>> e7aa36d8c00e0cd5be9be21b8e358c926a13ab76
 
 
-export { getLogin, getAllManageMenus,createNewMenu,updateMenu,deleteMenu };
