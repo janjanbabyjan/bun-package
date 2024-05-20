@@ -22,6 +22,7 @@ import SimpleImage from "@editorjs/simple-image";
 import InlineCode from "@editorjs/inline-code";
 import CodeTool from "@editorjs/code"; // Import CodeTool
 import NestedList from "@editorjs/nested-list";
+
 const editor = ref<EditorJS | null>(null);
 const editorContent = ref<any>(null);
 const outputEditor = ref<EditorJS | null>(null);
@@ -192,27 +193,20 @@ const getsave = () => {
     status: status.value,
     day: saveDate.value,
     tag: inputText.value,
-    editorContent: editorContent.value, // เพิ่มข้อมูลจาก EditorJS ไปยัง body
+    editorContent: editorContent.value,
   }
   console.log("🚀 ~ getsave ~ body.savedData.value:", saveName.value)
   console.log("🚀 ~ getsave ~ body:", body);
 
-  saveEditorContent(); // เรียกใช้งานฟังก์ชัน saveEditorContent ที่นี่
+  saveEditorContent();
 };
 
 
 
 const saveEditorContent = async () => {
   if (editor.value) {
-    try {
-      const savedData = await editor.value.save();
-      // นำข้อมูลที่ได้มาใช้งานต่อได้ที่นี่ เช่น การเก็บข้อมูลในตัวแปรหรือส่งไปยัง API
-      console.log("Saved data from EditorJS:", savedData);
-    } catch (error) {
-      console.error("Error saving editor content:", error);
-    }
-  } else {
-    console.warn("Editor instance is not available.");
+    const savedData = await editor.value.save();
+    console.log("🚀 ~ savedData:", savedData)
   }
 };
 

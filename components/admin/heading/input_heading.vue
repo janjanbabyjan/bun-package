@@ -60,7 +60,9 @@ watch(saveStatus, (newValue) => {
 watch(saveDate, (newValue) => {
   console.log(newValue)
   emits('day', newValue);
+  // console.log("🚀 ~ watch ~ newValue:", newValue)
 });
+
 
 watch(inputText, (newValue, oldValue) => {
   if (newValue !== oldValue) {
@@ -74,27 +76,28 @@ watch(inputText, (newValue, oldValue) => {
   }
 });
 
+
+
 </script>
 
 
 <template>
   <div class="center-container">
-    <v-card elevation="10" class="withbg center-card" style="max-width: 1000px;">
+    <v-card elevation="10" class="withbg center-card">
       <v-card-item class="pa-6">
         <v-row class="mt-1">
-          <v-col style="max-width: 500px;">
-            <v-text-field label="หัวข้อ" v-model="saveName"></v-text-field>
+          <v-col>
+            <v-text-field label="หัวข้อ" v-model="saveName" cl></v-text-field>
           </v-col>
-          <v-col style="max-width: 350px;">
-            <v-text-field label="วันที่สร้าง" v-model="saveDate" class="ml-8 " type="date" />
+          <v-col>
+            <v-text-field label="วันที่สร้าง" v-model="saveDate" type="date" />
           </v-col>
         </v-row>
         <v-row>
           <v-col>
             <div class="d-flex flex-column">
               <div class="d-flex align-center">
-                <v-text-field type="text" v-model="inputText" label="เพิ่ม Tag ข่าว"
-                  style="max-width: 200px;"></v-text-field>
+                <v-text-field type="text" v-model="inputText" label="เพิ่ม Tag"></v-text-field>
                 <v-btn color="primary" class="ml-5 mt-2 align-self-start" v-model="inputText" @click="addTag">
                   <v-icon left>mdi-plus</v-icon>
                 </v-btn>
@@ -102,7 +105,7 @@ watch(inputText, (newValue, oldValue) => {
               <div class="d-flex flex-wrap-reverse">
                 <div v-for="(tag, index) in tags" :key="index" class="tag mr-4 tag-item">
                   <span @click="editTag(index)" class="editable-tag">{{ tag }}</span>
-                  <span @click="removeTag(index)" class="delete-icon">-</span> <!-- เครื่องหมายลบ -->
+                  <span @click="removeTag(index)" class="delete-icon">-</span>
                 </div>
               </div>
             </div>
@@ -115,7 +118,6 @@ watch(inputText, (newValue, oldValue) => {
               </v-col>
             </v-row>
           </v-col>
-
         </v-row>
       </v-card-item>
     </v-card>
@@ -126,14 +128,13 @@ watch(inputText, (newValue, oldValue) => {
 .tags-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 50px;
   /* ระยะห่างระหว่าง tag */
 }
 
 .delete-icon {
   cursor: pointer;
   /* เปลี่ยน cursor เป็น pointer เมื่อชี้ที่เครื่องหมายลบ */
-  color: black;
+  color: #3d7df3;
   /* กำหนดสีของเครื่องหมายลบเป็นสีดำ */
   font-size: 1.5rem;
   /* กำหนดขนาดของเครื่องหมายลบใหญ่ขึ้น */
@@ -145,9 +146,10 @@ watch(inputText, (newValue, oldValue) => {
   display: inline-flex;
   font-size: 12px;
   align-items: center;
-  background-color: #d1d1d1;
-  padding: 1px 4px;
-  border-radius: 15px;
+  background-color: #dae7ff;
+  color: #3d7df3;
+  padding: 0.5rem 0.8rem;
+  border-radius: 10px;
   margin-bottom: 8px;
   /* ระยะห่างของ tag ด้านล่าง */
   border: 1px;
@@ -157,8 +159,8 @@ watch(inputText, (newValue, oldValue) => {
   height: 25px;
 }
 
-.editable-tag {
+span {
   cursor: pointer;
-  /* เปลี่ยน cursor เป็น pointer เมื่อชี้ที่แท็กที่สามารถแก้ไขได้ */
+  width: 100%;
 }
 </style>

@@ -76,11 +76,11 @@ const sidebarItem: menu[] = [
         children: [
             {
                 title: 'Activity',
-                to: '/public/ui-components/activiry'
+                to: '/public/ui-components/content/10'
             },
             {
                 title: 'Gallery',
-                to: '/public/ui-components/gallery'
+                to: '/public/ui-components/content/5'
             },
 
         ],
