@@ -3,17 +3,11 @@
 import { ref } from 'vue';
 import { defineEmits } from 'vue';
 
-
-
-const imageUrl = ref<string>('');
 const imageUrls = ref<string[]>([]);
 const selectedImageUrl = ref<string>('');
 const dialog = ref<boolean>(false);
 
 const emits = defineEmits(['imageUploaded']);
-
-
-
 const fileInput = ref<HTMLInputElement | null>(null);
 
 const openFileInput = () => {
@@ -24,22 +18,24 @@ const openFileInput = () => {
 
 const handleFileUpload = (event: Event) => {
     const target = event.target as HTMLInputElement;
-    const file = target.files?.[0];
-    if (file && file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onload = () => {
-            if (typeof reader.result === 'string') {
-                imageUrl.value = reader.result;
-                imageUrls.value.push(reader.result);
-                emits('imageUploaded', reader.result);
+    const files = target.files;
+    if (files) {
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    if (typeof reader.result === 'string') {
+                        imageUrls.value.push(reader.result);
+                        emits('imageUploaded', reader.result);
+                    }
+                };
+                reader.readAsDataURL(file);
+            } else {
+                alert('โปรดเลือกไฟล์รูปภาพเท่านั้น');
             }
-        };
-        reader.readAsDataURL(file);
-    } else {
-        alert('โปรดเลือกไฟล์รูปภาพเท่านั้น');
+        }
     }
-    console.log("🚀 ~ handleFileUpload ~ file:", file)
-
 };
 
 const openDialog = (imageUrl: string) => {
@@ -53,6 +49,7 @@ const deleteImage = (index: number) => {
 
 </script>
 
+
 <template>
     <div class="center-container">
         <!-- <v-card class="withbg mt-4" style="max-width: 1000px;"> -->
@@ -62,7 +59,7 @@ const deleteImage = (index: number) => {
         <!-- Content area -->
         <div class="content-area">
             <!-- Camera icon and file input -->
-            <input ref="fileInput" type="file" style="display: none;" @change="handleFileUpload" accept="image/*">
+            <input ref="fileInput" type="file" multiple style="display: none;" @change="handleFileUpload" accept="image/*">
             <!-- Gallery display -->
             <div class="image-gallery">
                 <div v-for="(imageUrl, index) in imageUrls" :key="index" class="image-container">
@@ -76,8 +73,7 @@ const deleteImage = (index: number) => {
         <v-dialog v-model="dialog" max-width="800px" content-class="popup-dialog">
             <img :src="selectedImageUrl" alt="Selected Image" class="popup-image">
         </v-dialog>
-        <!-- <v-btn color="primary" class="ml-5 mb-6" @click="saveImages">บันทึก</v-btn> -->
-        <!-- </v-card> -->
+
     </div>
 </template>
 

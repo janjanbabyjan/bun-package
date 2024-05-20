@@ -3,8 +3,8 @@
 
 // api
 import axios from 'axios';
+import createPage from '~/plugins/api/createPage.js';
 
-const baseApiUrl = useRuntimeConfig().public.apiBase;
 
 definePageMeta({
   layout: "admin",
@@ -20,7 +20,6 @@ const breadcrumbs = [
 const getBreadcrumbText = (index: number) => {
   return breadcrumbs[index].text;
 };
-
 
 
 // Save data
@@ -64,11 +63,12 @@ const getsave = async () => {
 
 
   try {
-    const response = await axios.post(`${baseApiUrl}/singlepage`, postdata);
-    console.log(response);
-    // jsonOutput.value = JSON.stringify(response.data, null, 2);
+    const response = await createPage.createSinglePage(postdata);
+    console.log('Page creation response:', response);
+    // Handle the response as needed
   } catch (error) {
-    console.error('Error posting to single page:', error);
+    console.error('Error creating page:', error);
+    // Handle the error as needed
   }
 
 };

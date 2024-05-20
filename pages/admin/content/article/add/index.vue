@@ -22,6 +22,8 @@ import SimpleImage from "@editorjs/simple-image";
 import InlineCode from "@editorjs/inline-code";
 import CodeTool from "@editorjs/code"; // Import CodeTool
 import NestedList from "@editorjs/nested-list";
+import createPage from '~/plugins/api/createPage.js';
+
 
 const editor = ref<EditorJS | null>(null);
 const editorContent = ref<any>(null);
@@ -177,6 +179,7 @@ const handleDate = (data:any) => {
 };
 
 
+
 const handleTag = (data: any) => {
   console.log("🚀 ~ handleTag ~ data:", data);
   // เก็บข้อมูลที่ได้รับจาก component ตัวลูกเมื่อกดบันทึก
@@ -187,28 +190,42 @@ const handleTag = (data: any) => {
 
 
 
-const getsave = () => {
-  const body ={
-    name: saveName.value,
-    status: status.value,
-    day: saveDate.value,
+const getsave = async () => {
+  const currentDateTime = new Date().toISOString();
+  const editorData = await editor.value?.save();
+
+  const postdata = {
+    title: saveName.value,
+    content: editorData,
+    createdAt: currentDateTime,
+    updatedAt: currentDateTime,
+    timestampCreate: currentDateTime,
+    titleImages: 'image-url',
+    pageLink: '/new-page',
+    isActive: status.value,
+    typeId: 1,
     tag: inputText.value,
-    editorContent: editorContent.value,
-  }
-  console.log("🚀 ~ getsave ~ body.savedData.value:", saveName.value)
-  console.log("🚀 ~ getsave ~ body:", body);
+    type: {
+      id: 2,
+      typeName: 'SinglePage',
+      createdAt: currentDateTime,
+      updatedAt: currentDateTime
+    }
+  };
 
-  saveEditorContent();
+
+  try {
+    const response = await createPage.createSinglePage(postdata);
+    console.log('Page creation response:', response);
+    // Handle the response as needed
+  } catch (error) {
+    console.error('Error creating page:', error);
+    // Handle the error as needed
+  }
+
 };
 
 
-
-const saveEditorContent = async () => {
-  if (editor.value) {
-    const savedData = await editor.value.save();
-    console.log("🚀 ~ savedData:", savedData)
-  }
-};
 
 </script>
 
@@ -233,7 +250,7 @@ const saveEditorContent = async () => {
         </div>
         <!-- Content area -->
         <div class="editor-wrapper">
-          <div id="editor"  class="editor"></div>
+          <div id="editor" class="editor"></div>
         </div>
         <v-btn color="primary" class="ml-5 mb-6" @click="getsave">บันทึก</v-btn>
       </v-card>
