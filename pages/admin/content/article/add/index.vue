@@ -188,6 +188,20 @@ const handleTag = (data: any) => {
 };
 
 
+const saveEditorContent = async () => {
+  if (editor.value) {
+    try {
+      const savedData = await editor.value.save();
+      // นำข้อมูลที่ได้มาใช้งานต่อได้ที่นี่ เช่น การเก็บข้อมูลในตัวแปรหรือส่งไปยัง API
+      // console.log("🚀 ~ getsave ~ body.savedData.value:", savedData);
+      console.log("🚀 ~ getsave ~ savedData.blocks[0]:", savedData.blocks[0]);
+    } catch (error) {
+      console.error("Error saving editor content:", error);
+    }
+  } else {
+    console.warn("Editor instance is not available.");
+  }
+}
 
 
 const getsave = async () => {
