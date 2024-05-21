@@ -272,9 +272,9 @@ const handleDeleteMenu = async (id: number) => {
       </template>
     </v-list-group>
   </v-card>
-  <br />
+  <!-- <br /> -->
 
-  <div class="list-menu-item">
+  <!-- <div class="list-menu-item">
     <v-expansion-panels>
       <v-expansion-panel v-for="menu in menuTree" :key="menu.id">
         <v-expansion-panel-header title="Title">
@@ -284,21 +284,18 @@ const handleDeleteMenu = async (id: number) => {
       </v-expansion-panel>
     </v-expansion-panels>
   </div>
-  <br />
-  <ul>
+  <br /> -->
+  <!-- <ul>
     <li v-for="menu in menuTree" :key="menu.id">
       {{ menu.menuName }}
       <ul v-if="menu.children && menu.children.length > 0">
         <li v-for="child in menu.children" :key="child.id">
           {{ child.menuName }}
-          <!-- เพิ่มโค้ดสำหรับแสดง Admin และ Actions ในนี้ -->
         </li>
       </ul>
     </li>
-  </ul>
+  </ul> -->
 
-  <hr />
-  <br />
 </template>
 
 <style>
