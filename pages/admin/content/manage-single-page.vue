@@ -53,11 +53,11 @@ const closeDialog = () => {
                             <div class="buttons-container">
                                 <router-link to="/admin/content/article/add">
                                     <v-btn color="primary" class="ml-5"
-                                        :style="{ width: '150px', 'max-width': '200px', height: '50px' }">เพิ่มคำบรรยาย</v-btn>
+                                       >เพิ่มคำบรรยาย</v-btn>
                                 </router-link>
                                 <router-link to="/admin/content/gallery/add">
                                     <v-btn color="primary" class="ml-5"
-                                        :style="{ width: '150px', 'max-width': '200px', height: '50px' }">เพิ่มรูป</v-btn>
+                                       >เพิ่มรูป</v-btn>
                                 </router-link>
                             </div>
                         </v-card-text>

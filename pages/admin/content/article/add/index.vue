@@ -25,6 +25,8 @@ import NestedList from "@editorjs/nested-list";
 import createPage from '~/plugins/api/createPage.js';
 
 
+
+
 const editor = ref<EditorJS | null>(null);
 const editorContent = ref<any>(null);
 const outputEditor = ref<EditorJS | null>(null);
@@ -37,7 +39,7 @@ const breadcrumbs = [
   { text: 'เพิ่มคำบรรยาย', href: '/admin/content/article/add' },
 ];
 
-const getBreadcrumbText = (index :number) => {
+const getBreadcrumbText = (index: number) => {
   return breadcrumbs[index].text;
 };
 
@@ -160,19 +162,19 @@ const status = ref(true);
 const saveDate = ref('');
 const inputText = ref('');
 
-const handleSave = (data:any) => {
+const handleSave = (data: any) => {
   console.log("🚀 ~ handleSave ~ data:", data)
   // เก็บข้อมูลที่ได้รับจาก component ตัวลูกเมื่อกดบันทึก
   saveName.value = data;
 };
 
-const handleStatus = (data:any) => {
+const handleStatus = (data: any) => {
   console.log("🚀 ~ handleSave ~ data:", data)
   // เก็บข้อมูลที่ได้รับจาก component ตัวลูกเมื่อกดบันทึก
   status.value = data;
 };
 
-const handleDate = (data:any) => {
+const handleDate = (data: any) => {
   console.log("🚀 ~ handleSave ~ data:", data)
   // เก็บข้อมูลที่ได้รับจาก component ตัวลูกเมื่อกดบันทึก
   saveDate.value = data;
@@ -186,23 +188,6 @@ const handleTag = (data: any) => {
   inputText.value = data;
   // ส่งข้อมูลกลับไปยัง component ตัวแม่ เมื่อข้อมูลเปลี่ยนแปลง
 };
-
-
-const saveEditorContent = async () => {
-  if (editor.value) {
-    try {
-      const savedData = await editor.value.save();
-      // นำข้อมูลที่ได้มาใช้งานต่อได้ที่นี่ เช่น การเก็บข้อมูลในตัวแปรหรือส่งไปยัง API
-      // console.log("🚀 ~ getsave ~ body.savedData.value:", savedData);
-      console.log("🚀 ~ getsave ~ savedData.blocks[0]:", savedData.blocks[0]);
-    } catch (error) {
-      console.error("Error saving editor content:", error);
-    }
-  } else {
-    console.warn("Editor instance is not available.");
-  }
-}
-
 
 const getsave = async () => {
   const currentDateTime = new Date().toISOString();
@@ -226,20 +211,13 @@ const getsave = async () => {
       updatedAt: currentDateTime
     }
   };
-
-
   try {
     const response = await createPage.createSinglePage(postdata);
     console.log('Page creation response:', response);
-    // Handle the response as needed
   } catch (error) {
     console.error('Error creating page:', error);
-    // Handle the error as needed
   }
-
 };
-
-
 
 </script>
 
@@ -255,7 +233,8 @@ const getsave = async () => {
     </v-breadcrumbs>
 
     <!-- เพิ่มตัวแปลด้วย ถ้าจะดึงจากลูก -->
-    <AdminHeadingInputHeading :name="saveName" @name="handleSave" @status="handleStatus" @day="handleDate" @tag="handleTag"  />
+    <AdminHeadingInputHeading :name="saveName" @name="handleSave" @status="handleStatus" @day="handleDate"
+      @tag="handleTag" />
 
     <div class="center-container">
       <v-card class="withbg mt-4 " style="max-width: 1000px;">
@@ -269,7 +248,7 @@ const getsave = async () => {
         <v-btn color="primary" class="ml-5 mb-6" @click="getsave">บันทึก</v-btn>
       </v-card>
     </div>
-    
+
   </div>
 </template>
 
@@ -283,5 +262,4 @@ const getsave = async () => {
   justify-content: center;
   align-items: center;
 }
-
 </style>

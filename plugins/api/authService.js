@@ -23,7 +23,11 @@ const getLogin = async ( data) => {
       return jsonData;
 }
 
+<<<<<<< HEAD
 const getAllManageMenus = async () => {
+=======
+export const createSinglePage = async (data) => {
+>>>>>>> 2133a48f645d2dc91f07957f2a8834bb0529a300
   try {
     let res = await fetch(`${baseApiUrl}/manage-menu`, {
       method: "GET",

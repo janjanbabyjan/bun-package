@@ -1,8 +1,8 @@
 <template>
-    <div class="corporate-banner pt-md-16 pt-8 pb-md-12 pb-8 mt-95">
+    <div class="corporate-banner pt-md-16 pt-8 pb-md-12 pb-8 mt-95" >
         <v-container>
-            <v-row class="align-center justify-space-between pt-md-7">
-                <v-col cols="12" md="5" data-aos="fade-right" data-aos-delay="200" data-aos-duration="1000">
+            <v-row class="align-center justify-space-between pt-md-7 ">
+                <v-col cols="12" md="5" data-aos="fade-right" data-aos-delay="200" data-aos-duration="1000" class="header-content">
                     <div class="d-flex align-center mb-6">
                         <span class="bg-success pa-2 rounded-circle mr-2"></span>
                         <h6 class="text-subtitle-1 text-dark font-weight-bold">อะไรจ๊ะ</h6>
@@ -35,5 +35,23 @@
 .corporate-banner .v-container img{
     width: 550px;
 }
- 
+
+
+/* @media only screen and (min-width: 300) { */
+
+/* } */
+
+@media only screen and (max-width: 376px) {
+    .header-content{
+        padding-top: 15rem;
+    }
+}
+
+@media only screen and (max-width: 800px ) {
+    .header-content{
+        padding-top: 15rem;
+
+    }
+}
+
 </style>
