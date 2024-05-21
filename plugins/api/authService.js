@@ -48,7 +48,42 @@ const createSinglePage = async (data) => {
       console.error("Error creating single page:", error);
       throw error;
   }
+<<<<<<< HEAD
+};
+const createNewMenu = async (newMenuData) => {
+  try {
+    const response = await axios.post(`${baseApiUrl}/manage-menu`, newMenuData);
+    console.log('Created new menu:', response.data);
+    getAllManageMenus(); // เรียกใช้ function ในการดึงข้อมูลเมนูอัตโนมัติหลังจากสร้างเมนูใหม่
+    closeDialog(); // ปิด Dialog หลังจากสร้างเมนูเสร็จ
+  } catch (error) {
+    console.error('Error creating new menu:', error);
+  }
+};
+
+const updateMenu = async (id, updatedMenuData) => {
+  try {
+    const response = await axios.post(`${baseApiUrl}/manage-menu/${id}`, updatedMenuData);
+    console.log('Updated menu:', response.data);
+    fetchManageMenus(); // เรียกใช้ function ในการดึงข้อมูลเมนูอัตโนมัติหลังจากอัปเดตเมนู
+  } catch (error) {
+    console.error('Error updating menu:', error);
+  }
+};
+
+const deleteMenu = async (id) => {
+  try {
+    const response = await axios.delete(`${baseApiUrl}/manage-menu/${id}`);
+    console.log('Deleted menu:', response.data);
+    // location.reload(); //reหน้า
+    getAllManageMenus(); // เรียกใช้ function ในการดึงข้อมูลเมนูอัตโนมัติหลังจากลบเมนู
+  } catch (error) {
+    console.error('Error deleting menu:', error);
+  }
+};
+=======
 }
 export {getLogin,createSinglePage }
+>>>>>>> e7aa36d8c00e0cd5be9be21b8e358c926a13ab76
 
 
