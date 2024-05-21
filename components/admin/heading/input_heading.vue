@@ -4,7 +4,6 @@
 import { createSinglePage } from "~/plugins/api/authService"
 
 const router = useRouter();
-
 const getsave = async () => {
   const data = {
     title: saveName.value,
@@ -18,19 +17,16 @@ const getsave = async () => {
     console.log(result);
 
     if (result.statusCode === 200) {
-      
       router.push('/admin/dashboard');
     } else {
-      
       console.error("Error creating article:", result);
     }
   } catch (error) {
     console.error("Error creating article:", error);
-    
   }
 };
 
-getsave();
+// getsave();
 
 
 
