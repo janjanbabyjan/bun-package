@@ -10,4 +10,4 @@ export const fetchSinglePage = async (id) => {
     console.error('fetchError', error);
     return null;
   }
-};
+};  

@@ -22,6 +22,11 @@ import SimpleImage from "@editorjs/simple-image";
 import InlineCode from "@editorjs/inline-code";
 import CodeTool from "@editorjs/code"; // Import CodeTool
 import NestedList from "@editorjs/nested-list";
+import createPage from '~/plugins/api/createPage.js';
+
+
+
+
 const editor = ref<EditorJS | null>(null);
 const editorContent = ref<any>(null);
 const outputEditor = ref<EditorJS | null>(null);
@@ -34,7 +39,7 @@ const breadcrumbs = [
   { text: 'เพิ่มคำบรรยาย', href: '/admin/content/article/add' },
 ];
 
-const getBreadcrumbText = (index :number) => {
+const getBreadcrumbText = (index: number) => {
   return breadcrumbs[index].text;
 };
 
@@ -157,23 +162,24 @@ const status = ref(true);
 const saveDate = ref('');
 const inputText = ref('');
 
-const handleSave = (data:any) => {
+const handleSave = (data: any) => {
   console.log("🚀 ~ handleSave ~ data:", data)
   // เก็บข้อมูลที่ได้รับจาก component ตัวลูกเมื่อกดบันทึก
   saveName.value = data;
 };
 
-const handleStatus = (data:any) => {
+const handleStatus = (data: any) => {
   console.log("🚀 ~ handleSave ~ data:", data)
   // เก็บข้อมูลที่ได้รับจาก component ตัวลูกเมื่อกดบันทึก
   status.value = data;
 };
 
-const handleDate = (data:any) => {
+const handleDate = (data: any) => {
   console.log("🚀 ~ handleSave ~ data:", data)
   // เก็บข้อมูลที่ได้รับจาก component ตัวลูกเมื่อกดบันทึก
   saveDate.value = data;
 };
+
 
 
 const handleTag = (data: any) => {
@@ -183,25 +189,33 @@ const handleTag = (data: any) => {
   // ส่งข้อมูลกลับไปยัง component ตัวแม่ เมื่อข้อมูลเปลี่ยนแปลง
 };
 
-const getsave = () => {
-  const body ={
-    name: saveName.value,
-    status: status.value,
-    day: saveDate.value,
+const getsave = async () => {
+  const currentDateTime = new Date().toISOString();
+  const editorData = await editor.value?.save();
+
+  const postdata = {
+    title: saveName.value,
+    content: editorData,
+    createdAt: currentDateTime,
+    updatedAt: currentDateTime,
+    timestampCreate: currentDateTime,
+    titleImages: 'image-url',
+    pageLink: '/new-page',
+    isActive: status.value,
+    typeId: 1,
     tag: inputText.value,
-    // editorContent: editorContent.value, // เพิ่มข้อมูลจาก EditorJS ไปยัง body
-  }
-  
-  console.log("🚀 ~ getsave ~ body.savedData.value:", saveName.value)
-  console.log("🚀 ~ getsave ~ body:", body);
-
-  saveEditorContent();
-};
-
-const saveEditorContent = async () => {
-  if (editor.value) {
-    const savedData = await editor.value.save();
-    console.log("🚀 ~ savedData:", savedData)
+    type: {
+      id: 2,
+      typeName: 'SinglePage',
+      createdAt: currentDateTime,
+      updatedAt: currentDateTime
+    }
+  };
+  try {
+    const response = await createPage.createSinglePage(postdata);
+    console.log('Page creation response:', response);
+  } catch (error) {
+    console.error('Error creating page:', error);
   }
 };
 
@@ -219,7 +233,8 @@ const saveEditorContent = async () => {
     </v-breadcrumbs>
 
     <!-- เพิ่มตัวแปลด้วย ถ้าจะดึงจากลูก -->
-    <AdminHeadingInputHeading :name="saveName" @name="handleSave" @status="handleStatus" @day="handleDate" @tag="handleTag"  />
+    <AdminHeadingInputHeading :name="saveName" @name="handleSave" @status="handleStatus" @day="handleDate"
+      @tag="handleTag" />
 
     <div class="center-container">
       <v-card class="withbg mt-4 " style="max-width: 1000px;">
@@ -228,12 +243,12 @@ const saveEditorContent = async () => {
         </div>
         <!-- Content area -->
         <div class="editor-wrapper">
-          <div id="editor"  class="editor"></div>
+          <div id="editor" class="editor"></div>
         </div>
         <v-btn color="primary" class="ml-5 mb-6" @click="getsave">บันทึก</v-btn>
       </v-card>
     </div>
-    
+
   </div>
 </template>
 
@@ -247,5 +262,4 @@ const saveEditorContent = async () => {
   justify-content: center;
   align-items: center;
 }
-
 </style>

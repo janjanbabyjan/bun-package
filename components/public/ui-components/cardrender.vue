@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import { Blog } from '@/data/dashboard/dashboardData';
+const path = "/public/ui-components/content/10"
 </script>
 <template>
     <div class="py-md-15 py-sm-8">
         <v-container>
-            <v-row class="justify-center">
+            <v-row class="justify-center header-test">
                 <v-col cols="12" sm="8">
                     <div class="text-center">
                         <div class="d-flex align-center mb-5 justify-center" data-aos="fade-right" data-aos-delay="200"
                             data-aos-duration="1000">
-                            <!-- <span class="bg-success pa-2 rounded-circle mr-2"></span> -->
-                            <!-- <h6 class="text-subtitle-1 text-dark font-weight-bold">Blog</h6> -->
+                            <span class="bg-success pa-2 rounded-circle mr-2"></span>
+                            <h6 class="text-subtitle-1 text-dark font-weight-bold">Blog</h6>
                         </div>
                         <h2 class="text-h2 text-dark mb-3" data-aos="fade-left" data-aos-delay="200"
                             data-aos-duration="1000">ตัวอย่างตัวอย่างตัวอย่าง</h2>
@@ -23,7 +24,7 @@ import { Blog } from '@/data/dashboard/dashboardData';
 
                     <v-card elevation="0" variant="outlined" class="card-with-min-height">
                         <div class="hover-card overflow-hidden lh-10 rounded-md rounded-be-0 position-relative">
-                            <NuxtLink :to="`/public/ui-components/content/${card.id}`" class="text-decoration-none">
+                            <NuxtLink :to="card.path" class="text-decoration-none">
                                 <v-img :src="card.img" height="250px" alt="post" cover class="zoom-in w-100">
                                 </v-img>
                             </NuxtLink>
@@ -60,4 +61,18 @@ import { Blog } from '@/data/dashboard/dashboardData';
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+@media only screen and (max-width: 376px) {
+    .header-test{
+        padding-top: 15rem;
+    }
+}
+
+@media only screen and (max-width: 800px ) {
+    .header-test{
+        padding-top: 15rem;
+
+    }
+}
+
 </style>

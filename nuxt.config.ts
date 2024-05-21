@@ -25,4 +25,5 @@ export default defineNuxtConfig({
       apiBase: process.env.API_URL, // can be overridden by NUXT_PUBLIC_API_BASE environment variable
     }
   },
+  
 });

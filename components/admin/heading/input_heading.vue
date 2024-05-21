@@ -1,7 +1,61 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 
-// Define props
+//ดึงเข้าดาต้า เเต่ดึงไม่ได้ 
+import { createSinglePage } from "~/plugins/api/authService"
+
+const router = useRouter();
+const getsave = async () => {
+  const data = {
+    title: saveName.value,
+    status: saveStatus.value,
+    day: saveDate.value,
+    tag: inputText.value
+  };
+
+  try {
+    const result = await createSinglePage(data);
+    console.log(result);
+
+    if (result.statusCode === 200) {
+      router.push('/admin/dashboard');
+    } else {
+      console.error("Error creating article:", result);
+    }
+  } catch (error) {
+    console.error("Error creating article:", error);
+  }
+};
+
+// getsave();
+
+
+
+// ฟังก์ชันการทำงาน ------------------------------------
+
+// Function to add a tag
+const addTag = () => {
+  if (inputText.value.trim() !== '') {
+    tags.value.push(inputText.value.trim());
+    inputText.value = ''; // Clear input after adding tag
+  }
+};
+
+// Function to edit a tag
+const editTag = (index: number) => {
+  inputText.value = tags.value[index];
+  removeTag(index); // Remove the tag before editing
+};
+
+// Function to remove a tag
+const removeTag = (index: number) => {
+  tags.value.splice(index, 1);
+};
+
+
+// การทำ body ส่งไปหาเเม่ ทำ body  ------------------------
+
+// ใช้ defineProps เพื่อรับค่า props จาก component ตัวแม่ โดยระบุชนิดของ props
 const props = defineProps({
   name: { type: String, default: '' },
   status: { type: Boolean, default: true },
@@ -29,17 +83,7 @@ const addTag = () => {
   }
 };
 
-
-// Function to edit a tag
-const editTag = (index: number) => {
-  const tagValue = tags.value[index];
-  if (tagValue && typeof tagValue.value === 'string') {
-    inputText.value = tagValue.value; // Set inputText to the tag's value for editing
-    removeTag(index); // Remove the tag from the list before editing
-  } else {
-    console.error('Invalid tag value:', tagValue);
-  }
-};
+const tags = ref<string[]>([]);
 
 
 // Function to remove a tag
@@ -62,39 +106,52 @@ watch(saveStatus, (newValue) => {
 watch(saveDate, (newValue) => {
   console.log(newValue);
   emits('day', newValue);
+  // console.log("🚀 ~ watch ~ newValue:", newValue)
 });
 
-watch(tags, (newValue) => {
-  emits('tag', newValue);
+
+// Watch for changes in inputText
+watch(inputText, (newValue, oldValue) => {
+  if (newValue !== oldValue) {
+    if (props.addTag !== '') {
+      emits('addTag', newValue);
+    } else if (props.editTag !== '') {
+      emits('editTag', newValue);
+    } else {
+      emits('tag', newValue);
+    }
+  }
 });
+
+
 
 </script>
 
 <template>
   <div class="center-container">
-    <v-card elevation="10" class="withbg center-card" style="max-width: 1000px;">
+    <v-card elevation="10" class="withbg center-card">
       <v-card-item class="pa-6">
         <v-row class="mt-1">
-          <v-col style="max-width: 500px;">
-            <v-text-field label="หัวข้อ" v-model="saveName"></v-text-field>
+          <v-col>
+            <v-text-field label="หัวข้อ" v-model="saveName" cl></v-text-field>
           </v-col>
-          <v-col style="max-width: 350px;">
-            <v-text-field label="วันที่สร้าง" v-model="saveDate" class="ml-8 " type="date" />
+          <v-col>
+            <v-text-field label="วันที่สร้าง" v-model="saveDate" type="date" />
           </v-col>
         </v-row>
         <v-row>
           <v-col>
             <div class="d-flex flex-column">
               <div class="d-flex align-center">
-                <v-text-field type="text" v-model="inputText" label="เพิ่ม Tag ข่าว" style="max-width: 200px;"></v-text-field>
-                <v-btn color="primary" class="ml-5 mt-2 align-self-start" @click="addTag">
+                <v-text-field type="text" v-model="inputText" label="เพิ่ม Tag"></v-text-field>
+                <v-btn color="primary" class="ml-5 mt-2 align-self-start" v-model="inputText" @click="addTag">
                   <v-icon left>mdi-plus</v-icon>
                 </v-btn>
               </div>
               <div class="d-flex flex-wrap-reverse">
                 <div v-for="(tag, index) in tags" :key="index" class="tag mr-4 tag-item">
-                  <span @click="editTag(index)" class="editable-tag">{{ tag.value }}</span>
-                  <span @click="removeTag(index)" class="delete-icon">-</span> <!-- เครื่องหมายลบ -->
+                  <span @click="editTag(index)" class="editable-tag">{{ tag }}</span>
+                  <span @click="removeTag(index)" class="delete-icon">-</span>
                 </div>
               </div>
             </div>
@@ -107,7 +164,6 @@ watch(tags, (newValue) => {
               </v-col>
             </v-row>
           </v-col>
-
         </v-row>
       </v-card-item>
     </v-card>
@@ -118,14 +174,13 @@ watch(tags, (newValue) => {
 .tags-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 50px;
   /* ระยะห่างระหว่าง tag */
 }
 
 .delete-icon {
   cursor: pointer;
   /* เปลี่ยน cursor เป็น pointer เมื่อชี้ที่เครื่องหมายลบ */
-  color: black;
+  color: #3d7df3;
   /* กำหนดสีของเครื่องหมายลบเป็นสีดำ */
   font-size: 1.5rem;
   /* กำหนดขนาดของเครื่องหมายลบใหญ่ขึ้น */
@@ -137,9 +192,10 @@ watch(tags, (newValue) => {
   display: inline-flex;
   font-size: 12px;
   align-items: center;
-  background-color: #d1d1d1;
-  padding: 1px 4px;
-  border-radius: 15px;
+  background-color: #dae7ff;
+  color: #3d7df3;
+  padding: 0.5rem 0.8rem;
+  border-radius: 10px;
   margin-bottom: 8px;
   /* ระยะห่างของ tag ด้านล่าง */
   border: 1px;
@@ -149,8 +205,8 @@ watch(tags, (newValue) => {
   height: 25px;
 }
 
-.editable-tag {
+span {
   cursor: pointer;
-  /* เปลี่ยน cursor เป็น pointer เมื่อชี้ที่แท็กที่สามารถแก้ไขได้ */
+  width: 100%;
 }
 </style>

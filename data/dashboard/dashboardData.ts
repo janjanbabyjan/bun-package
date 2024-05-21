@@ -168,7 +168,8 @@ const Blog: ContentSection[] = [
         view: '27,567 Views',
         title: 'Banpu and Mahidol Invite High School and Vocational School Students Nationwide to Restore Urban Forests and Bring Biodiversity Back to Cities with The 19th Power Green Camp – “Urban Rewilding: Forests – Cities – Lives” Apply Today until March 31',
         desc: 'Banpu Public Company Limited, a leading international versatile energy provider, together with Faculty of Environment and Resource Studies, Mahidol University, invites students of any major from high schools and vocational schools nationwide to join the 19th Power Green Camp. Carrying on the theme of “Urban Rewilding: Forests – Cities – Lives”, the camp will allow participants to explore the way to connect all living organisms to the forests – starting with understanding the importance of forests resources and biodiversity and learning how to conserve them, studying the connection between ‘woodland forests’ and ‘urban forests’ and leveraging this knowledge to design and develop a concept for urban forests areas in systematic approaches. These efforts not only contribute to the restoration of biodiversity, both plant and animal species, but also result in the creation of more urban green spaces, which are essential elements for a sustainable city that enhances the quality of life for city dwellers.',
-        name: 'Mark R. Freeman'
+        name: 'Mark R. Freeman',
+        path: '/public/ui-components/content/10'
     },
     {
         id: 2,
@@ -178,7 +179,8 @@ const Blog: ContentSection[] = [
         view: '29,567 Views',
         title: 'Banpu Signs THB 2.4 Billion Deal with ADB to Bolster E-Mobility and Battery Businesses',
         desc: 'Banpu Public Company Limited, a leading international versatile energy provider, signed a THB 2.4 billion loan with the Asian Development Bank (ADB), including a concessional loan of USD 10.7 million from the ADB-administered Clean Technology Fund to support the financing of 1,500 six-seater e-Tuk Tuks, related energy support including charging stations for micro-scale transit services in Bangkok, Thailand, and an expansion of 1.3-gigawatt-hour of a lithium-ion electric vehicle battery manufacturing facility in Jiangsu province in the People’s Republic of China (PRC). This fund will strengthen Banpu’s Energy Technology business and accelerate the Greener & Smarter transformation.',
-        name: 'James Robert'
+        name: 'James Robert',
+        path: '/public/ui-components/content/6'
     },
     {
         id: 3,
@@ -188,7 +190,8 @@ const Blog: ContentSection[] = [
         view: '28,567 Views',
         title: 'Banpu Shapes Digital & Innovation Team, Transforming “Personnel and Organization” for Digital Business Era',
         desc: 'Banpu Public Company Limited, a leading international versatile energy provider, is entering its fifth decade in business and celebrating this landmark by showcasing the success of its “Digital and Innovation (D&I) unit”. The unit has been instrumental in leading Banpu’s digital transformation with the goal of delivering “Smarter Energy for Sustainability”. Through the use of digital technology, Banpu has connected its business network in nine countries throughout the Asia-Pacific region while enhancing operational efficiency, reducing costs, and creating long-term business sustainability. Banpu’s four outstanding achievements include the inspection of logistic routes; analyses of energy price trends; storing and centralizing data from subsidiaries in the Banpu group in the nine countries; and upgrading cybersecurity and creating advanced information security to drive business growth with an alignment of the Greener & Smarter strategy.',
-        name: 'David William'
+        name: 'David William',
+        path: '/public/ui-components/content/5'
     },
 
 

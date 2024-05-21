@@ -39,6 +39,7 @@ type ContentSection = {
     title: string;
     desc: string;
     name: string;
+    path: string;
 };
 
 type PortfolioSection = {
