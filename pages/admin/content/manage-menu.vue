@@ -129,17 +129,17 @@ const handleDeleteMenu = async (id: number) => {
 };
 
 // Data for expandable list
-const open = ref(['']);
-// const admins = ref([
-//   ['Management', 'mdi-account-multiple-outline'],
-//   ['Settings', 'mdi-cog-outline'],
-// ]);
-// const cruds = ref([
-//   ['Create', 'mdi-plus-outline'],
-//   ['Read', 'mdi-file-outline'],
-//   ['Update', 'mdi-update'],
-//   ['Delete', 'mdi-delete'],
-// ]);
+const open = ref(['Users']);
+const admins = ref([
+  ['Management', 'mdi-account-multiple-outline'],
+  ['Settings', 'mdi-cog-outline'],
+]);
+const cruds = ref([
+  ['Create', 'mdi-plus-outline'],
+  ['Read', 'mdi-file-outline'],
+  ['Update', 'mdi-update'],
+  ['Delete', 'mdi-delete'],
+]);
 
 </script>
 <template>
@@ -224,15 +224,11 @@ const open = ref(['']);
     <v-list v-model:opened="open">
       <v-list-group v-for="menu in menuTree" :key="menu.id" :value="menu.menuName">
         <template v-slot:activator="{ props }">
-          <v-list-item v-bind="props" prepend-icon="mdi-home" class="menu-item">
-            <span>{{ menu.menuName }}</span>
-            <v-spacer></v-spacer>
-            <v-icon @click.stop="handleDeleteMenu(menu.id)" style="font-size: 16px; color: #757575;">
-              mdi-delete
-            </v-icon>
+          <v-list-item v-bind="props" prepend-icon="mdi-home">
+            {{ menu.menuName }}
           </v-list-item>
         </template>
-        
+
         <!-- If the menu has children, render them in a nested v-list-group -->
         <v-list-group v-if="menu.children && menu.children.length > 0" v-for="child in menu.children" :key="child.id"
           :value="child.menuName">
@@ -248,6 +244,18 @@ const open = ref(['']);
 </template>
 
 <style>
+.edit-icon,
+.delete-icon {
+  cursor: pointer;
+  margin-left: 10px;
+  color: #333;
+}
+
+.edit-icon:hover,
+.delete-icon:hover {
+  color: red;
+}
+
 .breadcrumb-item {
   cursor: pointer;
 }
@@ -256,16 +264,33 @@ const open = ref(['']);
   background-color: #fcfcfc;
 }
 
+.buttons-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
 .custom-dialog {
   max-width: 600px !important;
   width: 90%;
   height: auto;
 }
 
+.v-icon {
+  cursor: pointer;
+}
+
 .custom-path-dialog {
   max-width: 800px !important;
   width: 90%;
   height: 850px !important;
+}
+
+.scrollable-content {
+  height: 350px;
+  /* Adjust this value to fit your design */
+  overflow-y: auto;
 }
 
 .btn-ss {
