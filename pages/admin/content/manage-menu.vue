@@ -14,9 +14,6 @@ definePageMeta({
 const dialog = ref(false);
 const newMenuName = ref("");
 const newMenuLink = ref("");
-const parentMenuOptions = ref([]);
-const parentMenuId = ref(null);
-
 const isActive = ref(false);
 const pathDialog = ref(false);
 const linkOptions = ref([
@@ -39,7 +36,6 @@ const closeDialog = () => {
   newMenuName.value = "";
   newMenuLink.value = "";
   isActive.value = false;
-  parentMenuId.value = null;
 };
 
 const selectLink = (item: { value: string }) => {
@@ -93,18 +89,11 @@ onMounted(() => {
 // Function to create new menu
 const createNewMenus = async () => {
   try {
-    const newMenu = {
-      menuName: newMenuName.value,
-      pathMenu: newMenuLink.value,
-      isActive: isActive.value,
-      parentId: parentMenuId.value,
-      icons: null,
-    };
-    await createNewMenu(newMenu);
-    fetchParentMenuOptions(); // Refresh the parent menu options
+    await createNewMenu(newMenuName.value, newMenuLink.value, isActive.value);
+    fetchManageMenus();
     closeDialog();
   } catch (error) {
-    console.error("Error creating menu:", error);
+    console.error('Error creating menu:', error);
   }
 };
 
@@ -140,18 +129,8 @@ const handleDeleteMenu = async (id: number) => {
   }
 };
 
-const handleAddMenu = async (id: number) => {
-  
-};
-
-const handleEditMenu = async (id: number) => {
-  
-};
-
-
 // Data for expandable list
 const open = ref(['Users']);
-<<<<<<< HEAD
 const admins = ref([
   ['Management', 'mdi-account-multiple-outline'],
   ['Settings', 'mdi-cog-outline'],
@@ -162,24 +141,7 @@ const cruds = ref([
   ['Update', 'mdi-update'],
   ['Delete', 'mdi-delete'],
 ]);
-onMounted(async () => {
-  await fetchParentMenuOptions();
-});
-=======
 
->>>>>>> 691a837cf2dcfddaba5eb9a13af5a81f4581903d
-
-const fetchParentMenuOptions = async () => {
-  try {
-    const response = await getAllManageMenus();
-    parentMenuOptions.value = response.result.manageMenus.map((menu: any) => ({
-      text: menu.menuName,
-      value: menu.id,
-    }));
-  } catch (error) {
-    console.error("Error fetching parent menu options:", error);
-  }
-};
 </script>
 <template>
   <div>
@@ -198,28 +160,29 @@ const fetchParentMenuOptions = async () => {
           <v-card-title class="text-h5">จัดการเมนู</v-card-title>
           <v-btn color="primary" class="ml-auto" @click="openDialog">เพิ่มเมนูหลัก</v-btn>
           <v-dialog v-model="dialog" class="custom-dialog">
-    <v-card>
-      <v-card-title class="mt-2">เพิ่มเมนู</v-card-title>
+            <v-card>
+              <v-card-title class="mt-2">เพิ่มเมนู</v-card-title>
 
-      <v-card-text>
-        <v-text-field v-model="newMenuName" label="ชื่อเมนู" outlined></v-text-field>
-        <v-row>
-          <v-col cols="10">
-            <v-text-field v-model="newMenuLink" label="ลิงก์" outlined readonly @click="openPathDialog"></v-text-field>
-          </v-col>
-          <v-col cols="2">
-            <v-btn color="primary" @click="openPathDialog">เลือก</v-btn>
-          </v-col>
-        </v-row>
-        <v-select v-model="parentMenuId" :items="parentMenuOptions" label="เลือกเมนูหลัก" outlined></v-select>
-        <v-switch v-model="isActive" label="แสดงเมนู" :input-value="true" :false-value="false" class="toggle-switch"></v-switch>
-      </v-card-text>
-      <v-card-actions>
-        <v-btn color="primary" @click="createNewMenus">เพิ่ม</v-btn>
-        <v-btn color="error" @click="closeDialog">ยกเลิก</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+              <v-card-text>
+                <v-text-field v-model="newMenuName" label="ชื่อเมนู" outlined></v-text-field>
+                <v-row>
+                  <v-col cols="10">
+                    <v-text-field v-model="newMenuLink" label="ลิงก์" outlined readonly
+                      @click="openPathDialog"></v-text-field>
+                  </v-col>
+                  <v-col cols="2">
+                    <v-btn color="primary" @click="openPathDialog">เลือก</v-btn>
+                  </v-col>
+                </v-row>
+                <v-switch v-model="isActive" label="แสดงเมนู" :input-value="true" :false-value="false"
+                  class="toggle-switch"></v-switch>
+              </v-card-text>
+              <v-card-actions>
+                <v-btn color="primary" @click="createNewMenus">เพิ่ม</v-btn>
+                <v-btn color="error" @click="closeDialog">ยกเลิก</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
 
           <!-- Path Selection Dialog -->
           <v-dialog v-model="pathDialog" class="custom-path-dialog align-center">
@@ -258,22 +221,12 @@ const fetchParentMenuOptions = async () => {
 
   <!-- ตัวแสดงหน้าย่อๆ -->
   <v-card elevation="10" class="withbg">
-
-
     <!-- Drop down list ใหม่-->
     <v-list v-model:opened="open">
       <v-list-group v-for="menu in menuTree" :key="menu.id" :value="menu.menuName">
         <template v-slot:activator="{ props }">
-          <v-list-item v-bind="props" >
-            <v-icon>{{ isActive ? 'mdi-menu-down' : 'mdi-menu-right' }}</v-icon>
- 
+          <v-list-item v-bind="props" prepend-icon="mdi-home">
             {{ menu.menuName }}
-            <template v-slot:append>
-              <v-icon class="mr-1 icon-size" @click.stop="handleAddMenu(menu.id)">mdi-plus</v-icon>
-              <v-icon class="mr-1 icon-size" @click.stop="handleEditMenu(menu.id)">mdi-pencil</v-icon>
-              <v-icon class="icon-size" @click.stop="handleDeleteMenu(menu.id)">mdi-delete</v-icon>
-            </template>
-
           </v-list-item>
         </template>
 
@@ -281,13 +234,8 @@ const fetchParentMenuOptions = async () => {
         <v-list-group v-if="menu.children && menu.children.length > 0" v-for="child in menu.children" :key="child.id"
           :value="child.menuName">
           <template v-slot:activator="{ props }">
-            <v-list-item v-bind="props" style="color: blue;">
-              <v-icon>{{ isActive ? 'mdi-menu-down' : 'mdi-menu-right' }}</v-icon>
+            <v-list-item v-bind="props" prepend-icon="mdi-account-circle">
               {{ child.menuName }}
-              <template v-slot:append>
-              <v-icon class="mr-1 icon-size" @click.stop="handleEditMenu(menu.id)">mdi-pencil</v-icon>
-              <v-icon class="icon-size" @click.stop="handleDeleteMenu(menu.id)">mdi-delete</v-icon>
-              </template>
             </v-list-item>
           </template>
         </v-list-group>
@@ -348,14 +296,5 @@ const fetchParentMenuOptions = async () => {
 
 .btn-ss {
   margin-top: -1.6rem;
-}
-
-.icon-size {
-  font-size: 18px; /* หรือเลือกขนาดที่ต้องการ */
-}
-
-.icon-size:hover {
-  color: red !important; /* เปลี่ยนสีเมื่อ hover */
-  cursor: pointer; /* เปลี่ยน cursor เป็น pointer เมื่อ hover */
 }
 </style>
