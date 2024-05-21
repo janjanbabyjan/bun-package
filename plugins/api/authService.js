@@ -23,13 +23,13 @@ const getLogin = async ( data) => {
       return jsonData;
 }
 
-const createNewMenu = async (menuName, pathMenu, isActive) => {
+const createNewMenu = async (menuName, pathMenu, isActive, parentId) => {
   try {
     const response = await axios.post(`${baseApiUrl}/manage-menu`, {
       menuName,
       pathMenu,
       isActive,
-      parentId: null, // ตัวอย่างการสร้างเมนูหลัก จึงไม่ได้ใส่ parentId
+      parentId, // ส่ง parentId ไปด้วย
       icons: null, // ตัวอย่างการสร้างเมนูหลัก จึงไม่ได้ใส่ icons
     });
 
