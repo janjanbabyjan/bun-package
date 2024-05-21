@@ -73,7 +73,6 @@ const saveStatus = ref(props.status);
 const saveDate = ref(props.day);
 const inputText = ref(props.tag);
 
-
 const tags = ref<string[]>([]);
 
 
