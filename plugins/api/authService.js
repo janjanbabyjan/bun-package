@@ -23,14 +23,21 @@ const getLogin = async ( data) => {
       return jsonData;
 }
 
-const createNewMenu = async (newMenuData) => {
+const createNewMenu = async (menuName, pathMenu, isActive) => {
   try {
-    const response = await axios.post(`${baseApiUrl}/manage-menu`, newMenuData);
-    console.log('Created new menu:', response.data);
-    getAllManageMenus(); // เรียกใช้ function ในการดึงข้อมูลเมนูอัตโนมัติหลังจากสร้างเมนูใหม่
-    closeDialog(); // ปิด Dialog หลังจากสร้างเมนูเสร็จ
+    const response = await axios.post(`${baseApiUrl}/manage-menu`, {
+      menuName,
+      pathMenu,
+      isActive,
+      parentId: null, // ตัวอย่างการสร้างเมนูหลัก จึงไม่ได้ใส่ parentId
+      icons: null, // ตัวอย่างการสร้างเมนูหลัก จึงไม่ได้ใส่ icons
+    });
+
+    console.log('Menu created:', response.data);
+    // ดำเนินการต่อตามต้องการ เช่น แสดงข้อความ "เมนูถูกสร้างเรียบร้อยแล้ว"
   } catch (error) {
-    console.error('Error creating new menu:', error);
+    console.error('Error creating menu:', error);
+    // ดำเนินการต่อตามต้องการ เช่น แสดงข้อความแจ้งเตือนผู้ใช้เกี่ยวกับข้อผิดพลาด
   }
 };
 

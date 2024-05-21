@@ -3,22 +3,18 @@ import { ref, computed, onMounted } from "vue";
 import {
   getAllManageMenus,
   deleteMenu,
-  updateMenu,
   createNewMenu,
 } from "@/plugins/api/authService";
 
 definePageMeta({
   layout: "admin",
 });
-// Dialog and menu states
-const dialog = ref(false);
-const newMenu = ref({
-  name: "",
-  link: "",
-});
-const isActive = ref(false);
 
 // Path selection dialog state
+const dialog = ref(false);
+const newMenuName = ref("");
+const newMenuLink = ref("");
+const isActive = ref(false);
 const pathDialog = ref(false);
 const linkOptions = ref([
   { label: "หน้าหลัก", value: "/" },
@@ -30,24 +26,20 @@ const linkOptions = ref([
 const category = ref("");
 const searchQuery = ref("");
 
-// Methods
+// Open main dialog
 const openDialog = () => {
   dialog.value = true;
 };
 
 const closeDialog = () => {
   dialog.value = false;
-  newMenu.value = { name: "", link: "" };
+  newMenuName.value = "";
+  newMenuLink.value = "";
   isActive.value = false;
 };
 
-const addMenu = () => {
-  console.log("Menu added:", newMenu.value);
-  closeDialog();
-};
-
 const selectLink = (item: { value: string }) => {
-  newMenu.value.link = item.value;
+  newMenuLink.value = item.value;
   pathDialog.value = false;
 };
 
@@ -83,7 +75,6 @@ const manageMenus = ref([]);
 const fetchManageMenus = async () => {
   try {
     const response = await getAllManageMenus();
-    console.log("Fetched manage menus:", response); // ตรวจสอบข้อมูลที่ได้รับ
     manageMenus.value = response.result.manageMenus;
   } catch (error) {
     console.error("Error fetching manage menus:", error);
@@ -93,6 +84,17 @@ const fetchManageMenus = async () => {
 onMounted(() => {
   fetchManageMenus();
 });
+
+// Function to create new menu
+const createNewMenus = async () => {
+  try {
+    await createNewMenu(newMenuName.value, newMenuLink.value, isActive.value);
+    fetchManageMenus();
+    closeDialog();
+  } catch (error) {
+    console.error('Error creating menu:', error);
+  }
+};
 
 // Function to build menu tree from flat list
 const buildMenuTree = (menuItems: any[]) => {
@@ -161,10 +163,10 @@ const open = ref(['']);
               <v-card-title class="mt-2">เพิ่มเมนู</v-card-title>
 
               <v-card-text>
-                <v-text-field v-model="newMenu.name" label="ชื่อเมนู" outlined></v-text-field>
+                <v-text-field v-model="newMenuName" label="ชื่อเมนู" outlined></v-text-field>
                 <v-row>
                   <v-col cols="10">
-                    <v-text-field v-model="newMenu.link" label="ลิงก์" outlined readonly
+                    <v-text-field v-model="newMenuLink" label="ลิงก์" outlined readonly
                       @click="openPathDialog"></v-text-field>
                   </v-col>
                   <v-col cols="2">
@@ -175,7 +177,7 @@ const open = ref(['']);
                   class="toggle-switch"></v-switch>
               </v-card-text>
               <v-card-actions>
-                <v-btn color="primary" @click="createNewMenu">เพิ่ม</v-btn>
+                <v-btn color="primary" @click="createNewMenus">เพิ่ม</v-btn>
                 <v-btn color="error" @click="closeDialog">ยกเลิก</v-btn>
               </v-card-actions>
             </v-card>
