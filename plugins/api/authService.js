@@ -23,7 +23,7 @@ const getLogin = async ( data) => {
       return jsonData;
 }
 
-const createSinglePage = async (data) => {
+export const createSinglePage = async (data) => {
   try {
       const token = localStorage.getItem('token')
       let headers = {
@@ -48,7 +48,6 @@ const createSinglePage = async (data) => {
       console.error("Error creating single page:", error);
       throw error;
   }
-<<<<<<< HEAD
 };
 const createNewMenu = async (newMenuData) => {
   try {
@@ -81,9 +80,5 @@ const deleteMenu = async (id) => {
     console.error('Error deleting menu:', error);
   }
 };
-=======
-}
-export {getLogin,createSinglePage }
->>>>>>> e7aa36d8c00e0cd5be9be21b8e358c926a13ab76
 
 
