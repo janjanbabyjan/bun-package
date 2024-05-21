@@ -218,27 +218,7 @@ const cruds = ref([
 
   <!-- ตัวแสดงหน้าย่อๆ -->
   <v-card elevation="10" class="withbg">
-
-    <!-- Drop down list เก่า -->
-    <v-list-group v-for="menu in menuTree" :key="menu.id">
-      <template v-slot:activator="{ props }">
-        <v-list-item v-bind="props" prepend-icon="mdi-home" :tile="menu.menuName">
-          {{ menu.menuName }}
-          
-          <v-list-group v-bind="props" v-if="menu.children && menu.children.length > 0">
-            <template v-slot:activator="{ props }">
-              <v-list-item prepend-icon="mdi-account-circle" v-for="child in menu.children" :key="child.id"
-                v-bind="props">
-                {{ child.menuName }}
-              </v-list-item>
-            </template>
-          </v-list-group>
-          
-        </v-list-item>
-      </template>
-    </v-list-group>
-
-<!-- Drop down list ใหม่-->
+    <!-- Drop down list ใหม่-->
     <v-list v-model:opened="open">
       <v-list-group v-for="menu in menuTree" :key="menu.id" :value="menu.menuName">
         <template v-slot:activator="{ props }">
@@ -258,36 +238,7 @@ const cruds = ref([
         </v-list-group>
       </v-list-group>
     </v-list>
-
-
   </v-card>
-  <br />
-
-  <div class="list-menu-item">
-    <v-expansion-panels>
-      <v-expansion-panel v-for="menu in menuTree" :key="menu.id">
-        <v-expansion-panel-header title="Title">
-          {{ menu.menuName }}
-          <v-icon @click.stop="handleDeleteMenu(menu.id)">mdi-delete</v-icon>
-        </v-expansion-panel-header>
-      </v-expansion-panel>
-    </v-expansion-panels>
-  </div>
-  <br />
-  <ul>
-    <li v-for="menu in menuTree" :key="menu.id">
-      {{ menu.menuName }}
-      <ul v-if="menu.children && menu.children.length > 0">
-        <li v-for="child in menu.children" :key="child.id">
-          {{ child.menuName }}
-          <!-- เพิ่มโค้ดสำหรับแสดง Admin และ Actions ในนี้ -->
-        </li>
-      </ul>
-    </li>
-  </ul>
-
-  <hr />
-  <br />
 </template>
 
 <style>
