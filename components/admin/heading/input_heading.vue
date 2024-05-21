@@ -1,119 +1,74 @@
 <script setup lang="ts">
+import { ref, watch } from 'vue';
 
-//ดึงเข้าดาต้า เเต่ดึงไม่ได้ 
-import { createSinglePage } from "~/plugins/api/authService"
-
-const router = useRouter();
-
-const getsave = async () => {
-  const data = {
-    title: saveName.value,
-    status: saveStatus.value,
-    day: saveDate.value,
-    tag: inputText.value
-  };
-
-  try {
-    const result = await createSinglePage(data);
-    console.log(result);
-
-    if (result.statusCode === 200) {
-      
-      router.push('/admin/dashboard');
-    } else {
-      
-      console.error("Error creating article:", result);
-    }
-  } catch (error) {
-    console.error("Error creating article:", error);
-    
-  }
-};
-
-getsave();
-
-
-
-// ฟังก์ชันการทำงาน ------------------------------------
-
-// Function to add a tag
-const addTag = () => {
-  if (inputText.value.trim() !== '') {
-    tags.value.push(inputText.value.trim());
-    inputText.value = ''; // Clear input after adding tag
-  }
-};
-
-// Function to edit a tag
-const editTag = (index: number) => {
-  inputText.value = tags.value[index];
-  removeTag(index); // Remove the tag before editing
-};
-
-// Function to remove a tag
-const removeTag = (index: number) => {
-  tags.value.splice(index, 1);
-};
-
-
-// การทำ body ส่งไปหาเเม่ ทำ body  ------------------------
-
-// ใช้ defineProps เพื่อรับค่า props จาก component ตัวแม่ โดยระบุชนิดของ props
+// Define props
 const props = defineProps({
   name: { type: String, default: '' },
   status: { type: Boolean, default: true },
   day: { type: String, default: '' },
-  tag: { type: String, default: '' },
-  addTag: { type: String, default: '' },
-  editTag: { type: String, default: '' },
-  removeTag: { type: String, default: '' },
+  tag: { type: Array, default: () => [] },
 });
 
-// ใช้ defineEmits เพื่อส่งอีเวนต์ไปยัง component ตัวแม่
-const emits = defineEmits(['name', 'status', 'day', 'tag', 'addTag', 'editTag', 'removeTag']); // กำหนด emit ที่ต้องการใช้
+// Define emits
+const emits = defineEmits(['name', 'status', 'day', 'tag']);
 
 const saveName = ref(props.name);
 const saveStatus = ref(props.status);
 const saveDate = ref(props.day);
-const inputText = ref(props.tag);
+const inputText = ref(); // Initialize inputText as an empty string
+const tags = ref<Array<{ value: string }>>(
+  props.tag.map((item: unknown) => ({ value: String(item) }))
+);
+// Function to add a tag
+const addTag = () => {
+  if (inputText.value.trim() !== '') {
+    const tagValue = inputText.value.trim(); // เก็บค่า inputText ไว้ในตัวแปร tagValue
+    tags.value.push({ value: tagValue }); // เพิ่ม tagValue เข้าไปใน tags.value
+    inputText.value = ''; // ล้างค่า inputText หลังจากเพิ่ม tag
+    emits('tag', tags.value.map(tag => tag.value));
+  }
+};
 
 
-const tags = ref<string[]>([]);
+// Function to edit a tag
+const editTag = (index: number) => {
+  const tagValue = tags.value[index];
+  if (tagValue && typeof tagValue.value === 'string') {
+    inputText.value = tagValue.value; // Set inputText to the tag's value for editing
+    removeTag(index); // Remove the tag from the list before editing
+  } else {
+    console.error('Invalid tag value:', tagValue);
+  }
+};
 
 
-// ใช้ watch เพื่อตรวจสอบการเปลี่ยนแปลงของข้อมูล
+// Function to remove a tag
+const removeTag = (index: number) => {
+  tags.value.splice(index, 1);
+  emits('tag', tags.value);
+};
+
+// Watch for changes in props
 watch(saveName, (newValue) => {
-  console.log(newValue)
-  // ส่งข้อมูลกลับไปยัง component แม่ เมื่อข้อมูลเปลี่ยนแปลง
+  console.log(newValue);
   emits('name', newValue);
 });
 
 watch(saveStatus, (newValue) => {
-  console.log(newValue)
-  // ส่งข้อมูลกลับไปยัง component แม่ เมื่อข้อมูลเปลี่ยนแปลง
+  console.log(newValue);
   emits('status', newValue);
 });
 
 watch(saveDate, (newValue) => {
-  console.log(newValue)
+  console.log(newValue);
   emits('day', newValue);
 });
 
-// Watch for changes in inputText
-watch(inputText, (newValue, oldValue) => {
-  if (newValue !== oldValue) {
-    if (props.addTag !== '') {
-      emits('addTag', newValue);
-    } else if (props.editTag !== '') {
-      emits('editTag', newValue);
-    } else {
-      emits('tag', newValue);
-    }
-  }
+watch(tags, (newValue) => {
+  emits('tag', newValue);
 });
 
 </script>
-
 
 <template>
   <div class="center-container">
@@ -131,15 +86,14 @@ watch(inputText, (newValue, oldValue) => {
           <v-col>
             <div class="d-flex flex-column">
               <div class="d-flex align-center">
-                <v-text-field type="text" v-model="inputText" label="เพิ่ม Tag ข่าว"
-                  style="max-width: 200px;"></v-text-field>
-                <v-btn color="primary" class="ml-5 mt-2 align-self-start" v-model="inputText" @click="addTag">
+                <v-text-field type="text" v-model="inputText" label="เพิ่ม Tag ข่าว" style="max-width: 200px;"></v-text-field>
+                <v-btn color="primary" class="ml-5 mt-2 align-self-start" @click="addTag">
                   <v-icon left>mdi-plus</v-icon>
                 </v-btn>
               </div>
               <div class="d-flex flex-wrap-reverse">
                 <div v-for="(tag, index) in tags" :key="index" class="tag mr-4 tag-item">
-                  <span @click="editTag(index)" class="editable-tag">{{ tag }}</span>
+                  <span @click="editTag(index)" class="editable-tag">{{ tag.value }}</span>
                   <span @click="removeTag(index)" class="delete-icon">-</span> <!-- เครื่องหมายลบ -->
                 </div>
               </div>

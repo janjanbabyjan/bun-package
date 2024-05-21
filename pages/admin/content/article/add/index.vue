@@ -183,41 +183,27 @@ const handleTag = (data: any) => {
   // ส่งข้อมูลกลับไปยัง component ตัวแม่ เมื่อข้อมูลเปลี่ยนแปลง
 };
 
-
-const saveEditorContent = async () => {
-  if (editor.value) {
-    try {
-      const savedData = await editor.value.save();
-      // นำข้อมูลที่ได้มาใช้งานต่อได้ที่นี่ เช่น การเก็บข้อมูลในตัวแปรหรือส่งไปยัง API
-      // console.log("🚀 ~ getsave ~ body.savedData.value:", savedData);
-      console.log("🚀 ~ getsave ~ savedData.blocks[0]:", savedData.blocks[0]);
-    } catch (error) {
-      console.error("Error saving editor content:", error);
-    }
-  } else {
-    console.warn("Editor instance is not available.");
-  }
-}
-
-
 const getsave = () => {
   const body ={
     name: saveName.value,
     status: status.value,
     day: saveDate.value,
     tag: inputText.value,
-    editorContent: editorContent.value, // เพิ่มข้อมูลจาก EditorJS ไปยัง body
+    // editorContent: editorContent.value, // เพิ่มข้อมูลจาก EditorJS ไปยัง body
   }
   
   console.log("🚀 ~ getsave ~ body.savedData.value:", saveName.value)
   console.log("🚀 ~ getsave ~ body:", body);
 
-  saveEditorContent(); // เรียกใช้งานฟังก์ชัน saveEditorContent ที่นี่
+  saveEditorContent();
 };
 
-
-
-
+const saveEditorContent = async () => {
+  if (editor.value) {
+    const savedData = await editor.value.save();
+    console.log("🚀 ~ savedData:", savedData)
+  }
+};
 
 </script>
 
