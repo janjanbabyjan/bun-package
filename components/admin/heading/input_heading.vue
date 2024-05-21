@@ -108,15 +108,12 @@ watch(inputText, (newValue, oldValue) => {
     }
   }
 });
-
-
-
 </script>
 
 
 <template>
   <div class="center-container">
-    <v-card elevation="10" class="withbg center-card">
+    <v-card class="withbg mt-4" style="max-width: 1000px;">
       <v-card-item class="pa-6">
         <v-row class="mt-1">
           <v-col>
@@ -171,7 +168,7 @@ watch(inputText, (newValue, oldValue) => {
   /* กำหนดสีของเครื่องหมายลบเป็นสีดำ */
   font-size: 1.5rem;
   /* กำหนดขนาดของเครื่องหมายลบใหญ่ขึ้น */
-  margin-left: 4px;
+  margin-left: 5px;
   /* กำหนดระยะห่างของเครื่องหมายลบจากข้อความ */
 }
 

@@ -5,22 +5,20 @@
 import axios from 'axios';
 import createPage from '~/plugins/api/createPage.js';
 
-
 definePageMeta({
   layout: "admin",
 });
 
 // Breadcrumbs
 const breadcrumbs = [
-  { text: 'Home', href: '/admin' },
-  { text: 'Website Pages', href: '/admin/content/manage-single-page' },
-  { text: 'Add Gallery', href: '/admin/content/gallery/add' },
+  { text: 'หน้าแรก', href: '/admin' },
+  { text: 'รายชื่อหน้าเว็บไซต์ ', href: '/admin/content/manage-single-page' },
+  { text: 'เพิ่มรูปภาพ', href: '/admin/content/gallery/add' },
 ];
 
 const getBreadcrumbText = (index: number) => {
   return breadcrumbs[index].text;
 };
-
 
 // Save data
 const saveName = ref('');
@@ -28,7 +26,6 @@ const status = ref(true);
 const saveDate = ref('');
 const inputText = ref('');
 const uploadedFile = ref<File | null>(null);
-
 
 const getsave = async () => {
   const currentDateTime = new Date().toISOString();
@@ -61,7 +58,6 @@ const getsave = async () => {
     }
   };
 
-
   try {
     const response = await createPage.createSinglePage(postdata);
     console.log('Page creation response:', response);
@@ -70,7 +66,6 @@ const getsave = async () => {
     console.error('Error creating page:', error);
     // Handle the error as needed
   }
-
 };
 
 const handleSave = (data: any) => {
@@ -116,13 +111,14 @@ const jsonOutput = ref('');
   <AdminHeadingInputHeading :name="saveName" @name="handleSave" @status="handleStatus" @day="handleDate"
     @tag="handleTag" />
 
-  <v-card class="mt-3">
-    <AdminBodyGalleryInput @imageUploaded="handleImageUpload" />
-    <v-btn color="primary" class="ml-5 mb-6" @click="getsave">Save</v-btn>
-    <pre>{{ jsonOutput }}</pre>
-  </v-card>
+  <div class="center-container">
+    <v-card class="withbg mt-4" style="max-width: 1000px;">
+      <AdminBodyGalleryInput @imageUploaded="handleImageUpload" />
+      <v-btn color="primary" class="ml-5 mb-6" @click="getsave">Save</v-btn>
+      <pre>{{ jsonOutput }}</pre>
+    </v-card>
+  </div>
 </template>
-
 
 <style scoped>
 .breadcrumb-item {

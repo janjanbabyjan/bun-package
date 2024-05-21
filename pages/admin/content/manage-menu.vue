@@ -126,17 +126,26 @@ const handleDeleteMenu = async (id: number) => {
   }
 };
 
+// Data for expandable list
+const open = ref(['Users']);
+const admins = ref([
+  ['Management', 'mdi-account-multiple-outline'],
+  ['Settings', 'mdi-cog-outline'],
+]);
+const cruds = ref([
+  ['Create', 'mdi-plus-outline'],
+  ['Read', 'mdi-file-outline'],
+  ['Update', 'mdi-update'],
+  ['Delete', 'mdi-delete'],
+]);
+
 </script>
 <template>
   <div>
     <!-- Breadcrumb navigation -->
     <v-breadcrumbs>
-      <v-breadcrumbs-item
-        v-for="(breadcrumb, index) in breadcrumbs"
-        :key="index"
-        @click="navigateTo(breadcrumb.href)"
-        class="breadcrumb-item"
-      >
+      <v-breadcrumbs-item v-for="(breadcrumb, index) in breadcrumbs" :key="index" @click="navigateTo(breadcrumb.href)"
+        class="breadcrumb-item">
         {{ getBreadcrumbText(index) }}
         <template v-if="index < breadcrumbs.length - 1"> > </template>
       </v-breadcrumbs-item>
@@ -146,40 +155,24 @@ const handleDeleteMenu = async (id: number) => {
       <v-card-item class="pa-6">
         <div class="d-flex align-center justify-space-between pt-sm-2">
           <v-card-title class="text-h5">จัดการเมนู</v-card-title>
-          <v-btn color="primary" class="ml-auto" @click="openDialog"
-            >เพิ่มเมนูหลัก</v-btn
-          >
+          <v-btn color="primary" class="ml-auto" @click="openDialog">เพิ่มเมนูหลัก</v-btn>
           <v-dialog v-model="dialog" class="custom-dialog">
             <v-card>
               <v-card-title class="mt-2">เพิ่มเมนู</v-card-title>
 
               <v-card-text>
-                <v-text-field
-                  v-model="newMenu.name"
-                  label="ชื่อเมนู"
-                  outlined
-                ></v-text-field>
+                <v-text-field v-model="newMenu.name" label="ชื่อเมนู" outlined></v-text-field>
                 <v-row>
                   <v-col cols="10">
-                    <v-text-field
-                      v-model="newMenu.link"
-                      label="ลิงก์"
-                      outlined
-                      readonly
-                      @click="openPathDialog"
-                    ></v-text-field>
+                    <v-text-field v-model="newMenu.link" label="ลิงก์" outlined readonly
+                      @click="openPathDialog"></v-text-field>
                   </v-col>
                   <v-col cols="2">
                     <v-btn color="primary" @click="openPathDialog">เลือก</v-btn>
                   </v-col>
                 </v-row>
-                <v-switch
-                  v-model="isActive"
-                  label="แสดงเมนู"
-                  :input-value="true"
-                  :false-value="false"
-                  class="toggle-switch"
-                ></v-switch>
+                <v-switch v-model="isActive" label="แสดงเมนู" :input-value="true" :false-value="false"
+                  class="toggle-switch"></v-switch>
               </v-card-text>
               <v-card-actions>
                 <v-btn color="primary" @click="createNewMenu">เพิ่ม</v-btn>
@@ -189,44 +182,25 @@ const handleDeleteMenu = async (id: number) => {
           </v-dialog>
 
           <!-- Path Selection Dialog -->
-          <v-dialog
-            v-model="pathDialog"
-            class="custom-path-dialog align-center"
-          >
+          <v-dialog v-model="pathDialog" class="custom-path-dialog align-center">
             <v-card>
               <v-card-title class="mt-2">เลือกเส้นทาง</v-card-title>
               <v-card-text class="scrollable-content">
                 <v-row class="align-center">
                   <v-col cols="3">
-                    <v-select
-                      v-model="category"
-                      :items="['หมวดหมู่ 1', 'หมวดหมู่ 2', 'หมวดหมู่ 3']"
-                      label="เลือกหมวดหมู่"
-                      outlined
-                    ></v-select>
+                    <v-select v-model="category" :items="['หมวดหมู่ 1', 'หมวดหมู่ 2', 'หมวดหมู่ 3']"
+                      label="เลือกหมวดหมู่" outlined></v-select>
                   </v-col>
                   <v-col cols="4">
-                    <v-text-field
-                      v-model="searchQuery"
-                      label="ค้นหา"
-                      outlined
-                    ></v-text-field>
+                    <v-text-field v-model="searchQuery" label="ค้นหา" outlined></v-text-field>
                   </v-col>
                   <v-col cols="5" class="btn-ss">
-                    <v-btn class="btn" color="primary" @click="search"
-                      >ค้นหา</v-btn
-                    >
-                    <v-btn color="secondary" @click="clearSearch" class="ml-3"
-                      >ล้าง</v-btn
-                    >
+                    <v-btn class="btn" color="primary" @click="search">ค้นหา</v-btn>
+                    <v-btn color="secondary" @click="clearSearch" class="ml-3">ล้าง</v-btn>
                   </v-col>
                 </v-row>
                 <v-list>
-                  <v-list-item
-                    v-for="(item, index) in linkOptions"
-                    :key="index"
-                    @click="selectLink(item)"
-                  >
+                  <v-list-item v-for="(item, index) in linkOptions" :key="index" @click="selectLink(item)">
                     <v-list-item-title>{{ item.label }}</v-list-item-title>
                   </v-list-item>
                 </v-list>
@@ -242,39 +216,32 @@ const handleDeleteMenu = async (id: number) => {
   </div>
   <br />
 
+  <!-- ตัวแสดงหน้าย่อๆ -->
   <v-card elevation="10" class="withbg">
-    
-   
-    <v-list-group v-for="menu in menuTree" :key="menu.id">
-      <template v-slot:activator="{ props }">
-        <v-list-item
-          v-bind="props"
-          prepend-icon="mdi-home"
-          :tile="menu.menuName"
-        >
-          {{ menu.menuName }}
-          <v-list-group
-            v-bind="props"
-            v-if="menu.children && menu.children.length > 0"
-          >
-            <template v-slot:activator="{ props }">
-              <v-list-item
-                prepend-icon="mdi-account-circle"
-                v-for="child in menu.children"
-                :key="child.id"
-                v-bind="props"
-              >
-                {{ child.menuName }}
-              </v-list-item>
-            </template>
-          </v-list-group>
-        </v-list-item>
-      </template>
-    </v-list-group>
-  </v-card>
-  <!-- <br /> -->
+    <!-- Drop down list ใหม่-->
+    <v-list v-model:opened="open">
+      <v-list-group v-for="menu in menuTree" :key="menu.id" :value="menu.menuName">
+        <template v-slot:activator="{ props }">
+          <v-list-item v-bind="props" prepend-icon="mdi-home">
+            {{ menu.menuName }}
+          </v-list-item>
+        </template>
 
-  <!-- <div class="list-menu-item">
+        <!-- If the menu has children, render them in a nested v-list-group -->
+        <v-list-group v-if="menu.children && menu.children.length > 0" v-for="child in menu.children" :key="child.id"
+          :value="child.menuName">
+          <template v-slot:activator="{ props }">
+            <v-list-item v-bind="props" prepend-icon="mdi-account-circle">
+              {{ child.menuName }}
+            </v-list-item>
+          </template>
+        </v-list-group>
+      </v-list-group>
+    </v-list>
+  </v-card>
+  <br />
+
+  <div class="list-menu-item">
     <v-expansion-panels>
       <v-expansion-panel v-for="menu in menuTree" :key="menu.id">
         <v-expansion-panel-header title="Title">
@@ -284,18 +251,21 @@ const handleDeleteMenu = async (id: number) => {
       </v-expansion-panel>
     </v-expansion-panels>
   </div>
-  <br /> -->
-  <!-- <ul>
+  <br />
+  <ul>
     <li v-for="menu in menuTree" :key="menu.id">
       {{ menu.menuName }}
       <ul v-if="menu.children && menu.children.length > 0">
         <li v-for="child in menu.children" :key="child.id">
           {{ child.menuName }}
+          <!-- เพิ่มโค้ดสำหรับแสดง Admin และ Actions ในนี้ -->
         </li>
       </ul>
     </li>
-  </ul> -->
+  </ul>
 
+  <hr />
+  <br />
 </template>
 
 <style>
@@ -343,7 +313,8 @@ const handleDeleteMenu = async (id: number) => {
 }
 
 .scrollable-content {
-  height: 350px; /* Adjust this value to fit your design */
+  height: 350px;
+  /* Adjust this value to fit your design */
   overflow-y: auto;
 }
 
