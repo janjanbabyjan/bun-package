@@ -76,6 +76,7 @@ const fetchManageMenus = async () => {
   try {
     const response = await getAllManageMenus();
     manageMenus.value = response.result.manageMenus;
+    console.log("Response from getAllManageMenus:", response);
   } catch (error) {
     console.error("Error fetching manage menus:", error);
   }
