@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
 
 //ดึงเข้าดาต้า เเต่ดึงไม่ได้ 
 import { createSinglePage } from "~/plugins/api/authService"
@@ -60,51 +59,38 @@ const props = defineProps({
   name: { type: String, default: '' },
   status: { type: Boolean, default: true },
   day: { type: String, default: '' },
-  tag: { type: Array, default: () => [] },
+  tag: { type: String, default: '' },
+  addTag: { type: String, default: '' },
+  editTag: { type: String, default: '' },
+  removeTag: { type: String, default: '' },
 });
 
-// Define emits
-const emits = defineEmits(['name', 'status', 'day', 'tag']);
+// ใช้ defineEmits เพื่อส่งอีเวนต์ไปยัง component ตัวแม่
+const emits = defineEmits(['name', 'status', 'day', 'tag', 'addTag', 'editTag', 'removeTag']); // กำหนด emit ที่ต้องการใช้
 
 const saveName = ref(props.name);
 const saveStatus = ref(props.status);
 const saveDate = ref(props.day);
-const inputText = ref(); // Initialize inputText as an empty string
-const tags = ref<Array<{ value: string }>>(
-  props.tag.map((item: unknown) => ({ value: String(item) }))
-);
-// Function to add a tag
-const addTag = () => {
-  if (inputText.value.trim() !== '') {
-    const tagValue = inputText.value.trim(); // เก็บค่า inputText ไว้ในตัวแปร tagValue
-    tags.value.push({ value: tagValue }); // เพิ่ม tagValue เข้าไปใน tags.value
-    inputText.value = ''; // ล้างค่า inputText หลังจากเพิ่ม tag
-    emits('tag', tags.value.map(tag => tag.value));
-  }
-};
+const inputText = ref(props.tag);
 
 const tags = ref<string[]>([]);
 
 
-// Function to remove a tag
-const removeTag = (index: number) => {
-  tags.value.splice(index, 1);
-  emits('tag', tags.value);
-};
-
-// Watch for changes in props
+// ใช้ watch เพื่อตรวจสอบการเปลี่ยนแปลงของข้อมูล
 watch(saveName, (newValue) => {
-  console.log(newValue);
+  console.log(newValue)
+  // ส่งข้อมูลกลับไปยัง component แม่ เมื่อข้อมูลเปลี่ยนแปลง
   emits('name', newValue);
 });
 
 watch(saveStatus, (newValue) => {
-  console.log(newValue);
+  console.log(newValue)
+  // ส่งข้อมูลกลับไปยัง component แม่ เมื่อข้อมูลเปลี่ยนแปลง
   emits('status', newValue);
 });
 
 watch(saveDate, (newValue) => {
-  console.log(newValue);
+  console.log(newValue)
   emits('day', newValue);
   // console.log("🚀 ~ watch ~ newValue:", newValue)
 });
@@ -127,9 +113,10 @@ watch(inputText, (newValue, oldValue) => {
 
 </script>
 
+
 <template>
   <div class="center-container">
-    <v-card elevation="10" class="withbg center-card">
+    <v-card class="withbg mt-4" style="max-width: 1000px;">
       <v-card-item class="pa-6">
         <v-row class="mt-1">
           <v-col>
@@ -184,7 +171,7 @@ watch(inputText, (newValue, oldValue) => {
   /* กำหนดสีของเครื่องหมายลบเป็นสีดำ */
   font-size: 1.5rem;
   /* กำหนดขนาดของเครื่องหมายลบใหญ่ขึ้น */
-  margin-left: 4px;
+  margin-left: 5px;
   /* กำหนดระยะห่างของเครื่องหมายลบจากข้อความ */
 }
 

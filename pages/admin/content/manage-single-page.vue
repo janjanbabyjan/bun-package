@@ -56,7 +56,7 @@ const closeDialog = () => {
                                        >เพิ่มคำบรรยาย</v-btn>
                                 </router-link>
                                 <router-link to="/admin/content/gallery/add">
-                                    <v-btn color="primary" class="ml-5"
+                                    <v-btn color="primary" style="width: 120px;" class="ml-5"
                                        >เพิ่มรูป</v-btn>
                                 </router-link>
                             </div>
@@ -143,6 +143,6 @@ const closeDialog = () => {
     align-items: center;
     /* จัดวางตรงกลางแนวตั้ง */
     height: 100%;
-    /* กำหนดความสูงเท่ากับพอกับปุ่ม */
+    
 }
 </style>
