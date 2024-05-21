@@ -23,30 +23,6 @@ const getLogin = async ( data) => {
       return jsonData;
 }
 
-<<<<<<< HEAD
-const getAllManageMenus = async () => {
-=======
-export const createSinglePage = async (data) => {
->>>>>>> 2133a48f645d2dc91f07957f2a8834bb0529a300
-  try {
-    let res = await fetch(`${baseApiUrl}/manage-menu`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
-    }
-
-    const jsonData = await res.json();
-    return jsonData;
-  } catch (error) {
-    console.error("Error fetching manage menus:", error);
-    throw error;
-  }
-};
 const createNewMenu = async (newMenuData) => {
   try {
     const response = await axios.post(`${baseApiUrl}/manage-menu`, newMenuData);
@@ -78,7 +54,25 @@ const deleteMenu = async (id) => {
     console.error('Error deleting menu:', error);
   }
 };
+const getAllManageMenus = async () => {
+  try {
+    let res = await fetch(`${baseApiUrl}/manage-menu`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
 
+    const jsonData = await res.json();
+    return jsonData;
+  } catch (error) {
+    console.error("Error fetching manage menus:", error);
+    throw error;
+  }
+};
 
 export { getLogin, getAllManageMenus,createNewMenu,updateMenu,deleteMenu };
