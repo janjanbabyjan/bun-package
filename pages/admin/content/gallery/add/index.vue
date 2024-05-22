@@ -1,6 +1,4 @@
-<!-- pages\admin\content\gallery\add\index.vue -->
 <script setup lang="ts">
-
 // api
 import axios from 'axios';
 import createPage from '~/plugins/api/createPage.js';
@@ -25,23 +23,13 @@ const saveName = ref('');
 const status = ref(true);
 const saveDate = ref('');
 const inputText = ref('');
-const uploadedFile = ref<File | null>(null);
+const uploadedFile = ref<string | null>(null);
 
 const getsave = async () => {
   const currentDateTime = new Date().toISOString();
-
   const postdata = {
     title: saveName.value,
-    content: {
-      blocks: [
-        {
-          "type": "image",
-          "data": {
-            "url": uploadedFile.value
-          }
-        }
-      ]
-    },
+    content: uploadedFile.value,
     createdAt: currentDateTime,
     updatedAt: currentDateTime,
     timestampCreate: currentDateTime,
@@ -88,9 +76,10 @@ const handleTag = (data: any) => {
   inputText.value = data;
 };
 
-const handleImageUpload = (file: File) => {
-  console.log('Image File:', file);
-  uploadedFile.value = file;
+// Event handler for imageUploaded event
+const handleImageUpload = (imageUrl: string) => {
+  console.log('Uploaded Image URL:', imageUrl);
+  uploadedFile.value = imageUrl;
 };
 
 const jsonOutput = ref('');

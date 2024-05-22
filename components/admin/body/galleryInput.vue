@@ -2,11 +2,11 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { defineEmits } from 'vue';
+import axios from 'axios'; // Import axios library
 
 const imageUrls = ref<string[]>([]);
 const selectedImageUrl = ref<string>('');
 const dialog = ref<boolean>(false);
-
 const emits = defineEmits(['imageUploaded']);
 const fileInput = ref<HTMLInputElement | null>(null);
 
@@ -16,23 +16,33 @@ const openFileInput = () => {
     }
 };
 
-const handleFileUpload = (event: Event) => {
+const handleFileUpload = async (event: Event) => {
     const target = event.target as HTMLInputElement;
     const files = target.files;
+
     if (files) {
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
             if (file && file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = () => {
-                    if (typeof reader.result === 'string') {
-                        imageUrls.value.push(reader.result);
-                        emits('imageUploaded', reader.result);
+                const formData = new FormData();
+                formData.append('file', file);
+
+                try {
+                    const response = await axios.post('http://localhost:8000/upload', formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                        },
+                    });
+
+                    if (response.data.url) {
+                        imageUrls.value.push(response.data.url);
+                        emits('imageUploaded', response.data.url);
                     }
-                };
-                reader.readAsDataURL(file);
+                } catch (error) {
+                    console.error('Error uploading image:', error);
+                }
             } else {
-                alert('โปรดเลือกไฟล์รูปภาพเท่านั้น');
+                alert('Please select an image file only.');
             }
         }
     }
@@ -46,7 +56,6 @@ const openDialog = (imageUrl: string) => {
 const deleteImage = (index: number) => {
     imageUrls.value.splice(index, 1);
 };
-
 </script>
 
 
@@ -59,7 +68,8 @@ const deleteImage = (index: number) => {
         <!-- Content area -->
         <div class="content-area">
             <!-- Camera icon and file input -->
-            <input ref="fileInput" type="file" multiple style="display: none;" @change="handleFileUpload" accept="image/*">
+            <input ref="fileInput" type="file" multiple style="display: none;" @change="handleFileUpload"
+                accept="image/*">
             <!-- Gallery display -->
             <div class="image-gallery">
                 <div v-for="(imageUrl, index) in imageUrls" :key="index" class="image-container">
