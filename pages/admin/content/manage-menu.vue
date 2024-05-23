@@ -41,21 +41,68 @@ const closeDialog = () => {
   isEditMode.value = false;
   currentMenuId.value = null;
 };
+const selectedParentId = ref<number | string | null>(null);
 
-const selectLink = (item: { value: string }) => {
-  newMenuLink.value = item.value;
+
+const selectLink = (menu: any) => {
+  newMenuLink.value = menu.menuName; // หรือ menu.menuLink หรือข้อมูลที่ต้องการแสดงใน newMenuLink
   pathDialog.value = false;
 };
+// Submenu dialog state
+const subMenuDialog = ref(false);
+const newSubMenuName = ref("");
+const newSubMenuLink = ref("");
+const isSubMenuActive = ref(false);
+const isSubMenuEditMode = ref(false);
+const currentSubMenuId = ref<number | null>(null);
+
+// Function to open submenu dialog
+const openSubMenuDialog = (parentId: number | string) => {
+  subMenuDialog.value = true;
+  selectedParentId.value = parentId;
+};
+
+// Function to close submenu dialog
+const closeSubMenuDialog = () => {
+  subMenuDialog.value = false;
+  newSubMenuName.value = "";
+  newSubMenuLink.value = "";
+  isSubMenuActive.value = false;
+  isSubMenuEditMode.value = false;
+  currentSubMenuId.value = null;
+};
+
+// Function to save submenu
+const saveSubMenu = async () => {
+  try {
+    if (currentSubMenuId.value !== null) {
+      await updateMenu(currentSubMenuId.value, {
+        menuName: newSubMenuName.value,
+        menuLink: newSubMenuLink.value,
+        isActive: isSubMenuActive.value,
+      });
+      fetchManageMenus();
+      closeSubMenuDialog();
+    } else {
+      await createNewMenu(newSubMenuName.value, newSubMenuLink.value, isSubMenuActive.value, selectedParentId.value);
+      fetchManageMenus();
+      closeSubMenuDialog();
+    }
+  } catch (error) {
+    console.error('Error saving submenu:', error);
+  }
+};
+
+// Function to handle adding a new menu
 // Function to handle adding a new menu
 const handleAddMenu = async (parentId: number | string) => {
   try {
-    // สร้างเมนูใหม่โดยให้ parentId ของเมนูใหม่เป็น parentId ของเมนูที่เลือก
-    await createNewMenu("New Menu", "/", true, parentId);
-    fetchManageMenus();
+    openSubMenuDialog(parentId); // Open submenu dialog instead of adding directly
   } catch (error) {
-    console.error("Error adding new menu:", error);
+    console.error("Error opening submenu dialog:", error);
   }
 };
+
 
 // Open path dialog
 const openPathDialog = () => {
@@ -186,6 +233,7 @@ const updateExistingMenu = async () => {
 
 // Data for expandable list
 const open = ref(['Users']);
+
 </script>
 
 <template>
@@ -219,7 +267,7 @@ const open = ref(['Users']);
                     <v-btn color="primary" @click="openPathDialog">เลือก</v-btn>
                   </v-col>
                 </v-row>
-                <v-switch v-model="isActive" label="แสดงเมนู" :input-value="true" :false-value="false"
+                <v-switch v-model="isActive" label="แสดงเมนู" color="primary" :input-value="true" :false-value="false"
                   class="toggle-switch"></v-switch>
               </v-card-text>
               <v-card-actions>
@@ -274,12 +322,29 @@ const open = ref(['Users']);
             <v-icon>{{ isActive ? 'mdi-menu-down' : 'mdi-menu-right' }}</v-icon>
             {{ menu.menuName }}
             <template v-slot:append>
-              <v-icon class="mr-1 icon-size" @click.stop="handleAddMenu(menu.id)">mdi-plus</v-icon>
+              <v-icon class="icon-size" @click.stop="openSubMenuDialog(menu.id)">mdi-plus</v-icon>
               <v-icon class="mr-1 icon-size" @click.stop="handleEditMenu(menu)">mdi-pencil</v-icon>
               <v-icon class="icon-size" @click.stop="handleDeleteMenu(menu.id)">mdi-delete</v-icon>
             </template>
           </v-list-item>
         </template>
+<!-- Submenu Dialog -->
+<v-dialog v-model="subMenuDialog" class="custom-dialog">
+  <v-card>
+    <v-card-title class="mt-2">{{ isSubMenuEditMode ? 'แก้ไขเมนูย่อย' : 'เพิ่มเมนูย่อย' }}</v-card-title>
+
+    <v-card-text>
+      <!-- Fields for submenu -->
+      <v-text-field v-model="newSubMenuName" label="ชื่อเมนูย่อย" outlined></v-text-field>
+      <v-text-field v-model="newSubMenuLink" label="ลิงก์" outlined></v-text-field>
+      <v-switch v-model="isSubMenuActive" label="แสดงเมนูย่อย" color="primary"></v-switch>
+    </v-card-text>
+    <v-card-actions>
+      <v-btn color="primary" @click="saveSubMenu">{{ isSubMenuEditMode ? 'บันทึกการเปลี่ยนแปลง' : 'เพิ่ม' }}</v-btn>
+      <v-btn color="error" @click="closeSubMenuDialog">ยกเลิก</v-btn>
+    </v-card-actions>
+  </v-card>
+</v-dialog>
 
         <!-- If the menu has children, render them in a nested v-list-group -->
         <v-list-group v-if="menu.children && menu.children.length > 0" v-for="child in menu.children" :key="child.id"
