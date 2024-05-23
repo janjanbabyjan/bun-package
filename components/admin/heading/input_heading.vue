@@ -127,7 +127,8 @@ watch(inputText, (newValue, oldValue) => {
           <v-col>
             <div class="d-flex flex-column">
               <div class="d-flex align-center">
-                <v-text-field type="text" v-model="inputText" label="เพิ่ม Tag"></v-text-field>
+                <v-text-field type="text" v-model="inputText" label="เพิ่ม Tag ข่าว"
+                  style="max-width: 200px;"></v-text-field>
                 <v-btn color="primary" class="ml-5 mt-2 align-self-start" v-model="inputText" @click="addTag">
                   <v-icon left>mdi-plus</v-icon>
                 </v-btn>
@@ -144,7 +145,7 @@ watch(inputText, (newValue, oldValue) => {
             <v-row>
               <span class="ml-4">สถานะ</span>
               <v-col>
-                <v-switch v-model="saveStatus"></v-switch>
+                <v-switch v-model="saveStatus" color="primary" style="margin-left: 35px ; margin-top: -15px;"></v-switch>
               </v-col>
             </v-row>
           </v-col>
@@ -155,10 +156,24 @@ watch(inputText, (newValue, oldValue) => {
 </template>
 
 <style>
+
 .tags-container {
   display: flex;
-  flex-wrap: wrap;
-  /* ระยะห่างระหว่าง tag */
+  flex-wrap: nowrap;
+  gap: 0.5rem;
+}
+
+.tag-item {
+  display: flex;
+  align-items: center;
+  background-color: #dae7ff;
+  color: #3d7df3;
+  padding: 0.5rem 0.8rem;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  border: 1px solid transparent;
+  height: 25px;
+  white-space: nowrap; /* ป้องกันการขึ้นบรรทัดใหม่ */
 }
 
 .delete-icon {
@@ -172,25 +187,12 @@ watch(inputText, (newValue, oldValue) => {
   /* กำหนดระยะห่างของเครื่องหมายลบจากข้อความ */
 }
 
-.tag-item {
-  display: inline-flex;
-  font-size: 12px;
-  align-items: center;
-  background-color: #dae7ff;
-  color: #3d7df3;
-  padding: 0.5rem 0.8rem;
-  border-radius: 10px;
-  margin-bottom: 8px;
-  /* ระยะห่างของ tag ด้านล่าง */
-  border: 1px;
-  /* เพิ่มเส้นขอบ */
-  width: auto;
-  /* ปรับขนาดความกว้างอัตโนมัติ */
-  height: 25px;
-}
+
 
 span {
   cursor: pointer;
   width: 100%;
 }
+
+
 </style>

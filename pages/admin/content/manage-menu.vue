@@ -46,12 +46,14 @@ const selectLink = (item: { value: string }) => {
   newMenuLink.value = item.value;
   pathDialog.value = false;
 };
+const handleAddMenu = async (id: number) => {
+  
+};
 
 // Open path dialog
 const openPathDialog = () => {
   pathDialog.value = true;
 };
-
 
 // Clear search
 const clearSearch = () => {
@@ -184,10 +186,6 @@ const updateExistingMenu = async () => {
     }
   }
 };
-const handleAddMenu = async (id: number) => {
-  
-};
-
 
 // Data for expandable list
 const open = ref(['Users']);
