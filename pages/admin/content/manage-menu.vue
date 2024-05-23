@@ -5,12 +5,24 @@ import {
   deleteMenu,
   createNewMenu,
   updateMenu,
+  getAllPageTypes,
 } from "@/plugins/api/authService";
 
 definePageMeta({
   layout: "admin",
 });
+const pageTypes = ref([]); // Variable to store fetched page types
 
+// Function to fetch and set page types
+const fetchPageTypes = async () => {
+  try {
+    const response = await getAllPageTypes();
+    console.log("🚀 ~ fetchPageTypes ~ response:", response)
+    pageTypes.value = response.result; // Assuming response.result contains the page types
+  } catch (error) {
+    console.error("Error fetching page types:", error);
+  }
+};
 // Dialog states
 const dialog = ref(false);
 const pathDialog = ref(false);
@@ -46,6 +58,7 @@ const manageMenus = ref([]);
 const fetchManageMenus = async () => {
   try {
     const response = await getAllManageMenus();
+    console.log("🚀 ~ fetchManageMenus ~ response:", response)
     manageMenus.value = response.result.manageMenus;
   } catch (error) {
     console.error("Error fetching manage menus:", error);
@@ -208,6 +221,7 @@ const getBreadcrumbText = (index: number) => {
 
 onMounted(() => {
   fetchManageMenus();
+  fetchPageTypes();
 });
 </script>
 
@@ -264,16 +278,18 @@ onMounted(() => {
                 <v-row class="align-center">
                   <v-col cols="3">
                     <v-select
-                      v-model="category"
-                      :items="['หมวดหมู่ 1', 'หมวดหมู่ 2', 'หมวดหมู่ 3']"
-                      label="หมวดหมู่"
-                      outlined
-                    ></v-select>
+                v-model="category"
+                :items="pageTypes"
+                label="หมวดหมู่"
+                item-text="typeName"  
+                item-value="id"      
+                outlined
+              ></v-select>
                   </v-col>
                   <v-col cols="7">
-                    <v-text-field v-model="searchQuery" label="ค้นหา" outlined></v-text-field>
+                    <v-text-field style="max-width: 350px;" v-model="searchQuery" label="ค้นหา" outlined></v-text-field>
                   </v-col>
-                  <v-col cols="2" class="d-flex justify-end align-items-center">
+                  <v-col style="margin-top: -23px" cols="2" class="d-flex justify-end align-items-center">
                     <v-btn class="btn" color="primary" @click="search">ค้นหา</v-btn>
                     <v-btn color="secondary" @click="clearSearch" class="ml-3">ล้าง</v-btn>
                   </v-col>
