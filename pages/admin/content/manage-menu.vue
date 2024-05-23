@@ -44,8 +44,8 @@ const selectLink = (menu: any) => {
 };
 
 
-const handleAddMenu = async (id: number) => {
-
+const handleAddMenu = async (parentId: number | null) => {
+  
 };
 
 // Open path dialog
@@ -282,7 +282,6 @@ const open = ref(['Users']);
             {{ menu.menuName }}
             <template v-slot:append>
               <v-icon class="mr-1 icon-size" @click.stop="handleAddMenu(menu.id)">mdi-plus</v-icon>
-
               <v-icon class="mr-1 icon-size" @click.stop="handleEditMenu(menu)">mdi-pencil</v-icon>
               <v-icon class="icon-size" @click.stop="handleDeleteMenu(menu.id)">mdi-delete</v-icon>
             </template>
