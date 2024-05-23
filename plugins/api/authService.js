@@ -114,5 +114,13 @@ const createSinglePage = async (data) => {
       throw error;
   }
 };
-
-export { getLogin, getAllManageMenus,createNewMenu,updateMenu,deleteMenu,createSinglePage };
+const getAllPageTypes = async () => {
+  try {
+    const response = await axios.get(`${baseApiUrl}/pagetype`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching page types:', error);
+    throw error;
+  }
+};
+export { getLogin, getAllManageMenus,createNewMenu,updateMenu,deleteMenu,createSinglePage ,getAllPageTypes};
