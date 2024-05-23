@@ -251,8 +251,8 @@ const open = ref(['Users']);
                   </v-col>
                 </v-row>
                 <v-list>
-                  <v-list-item v-for="(item, index) in linkOptions" :key="index" @click="selectLink(item)">
-                    <v-list-item-title>{{ item.label }}</v-list-item-title>
+                  <v-list-item v-for="(menu, index) in menuTree" :key="index" @click="selectLink(menu)">
+                    <v-list-item-title>{{ menu.menuName }}</v-list-item-title>
                   </v-list-item>
                 </v-list>
               </v-card-text>
