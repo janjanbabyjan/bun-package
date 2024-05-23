@@ -23,14 +23,19 @@ const getLogin = async ( data) => {
       return jsonData;
 }
 
-const createNewMenu = async (menuName, pathMenu, isActive) => {
+const createNewMenu = async (
+  menuName,
+  menuLink,
+  isActive,
+  parentId // เพิ่มพารามิเตอร์ parentId ที่รับค่าเป็น string หรือ number
+) => {
   try {
     const response = await axios.post(`${baseApiUrl}/manage-menu`, {
       menuName,
-      pathMenu,
+      menuLink,
       isActive,
-      parentId: null, // ตัวอย่างการสร้างเมนูหลัก จึงไม่ได้ใส่ parentId
-      icons: null, // ตัวอย่างการสร้างเมนูหลัก จึงไม่ได้ใส่ icons
+      parentId, // ส่ง parentId ไปยังเซิร์ฟเวอร์เพื่อการประมวลผล
+      icons: null,
     });
 
     console.log('Menu created:', response.data);
@@ -41,9 +46,11 @@ const createNewMenu = async (menuName, pathMenu, isActive) => {
   }
 };
 
+
+
 const updateMenu = async (id, updatedMenuData) => {
   try {
-    const response = await axios.put(`${baseApiUrl}/manage-menu/${id}`, updatedMenuData);
+    const response = await axios.post(`${baseApiUrl}/manage-menu/${id}`, updatedMenuData);
     return response.data;
   } catch (error) {
     console.error('Error updating menu:', error);

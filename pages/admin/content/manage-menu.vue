@@ -46,8 +46,15 @@ const selectLink = (item: { value: string }) => {
   newMenuLink.value = item.value;
   pathDialog.value = false;
 };
-const handleAddMenu = async (id: number) => {
-  
+// Function to handle adding a new menu
+const handleAddMenu = async (parentId: number | string) => {
+  try {
+    // Create a new menu with the selected parentId
+    await createNewMenu("New Menu", "/", true, parentId); // ส่ง parentId ไปยัง createNewMenu
+    fetchManageMenus(); // Refresh the menu list after adding
+  } catch (error) {
+    console.error("Error adding new menu:", error);
+  }
 };
 
 // Open path dialog
@@ -100,17 +107,6 @@ const createNewMenus = async () => {
     closeDialog();
   } catch (error) {
     console.error('Error creating menu:', error);
-  }
-};
-
-// Function to update menu
-const updateMenu = async (id: number, updatedMenuData: any) => {
-  try {
-    const response = await axios.post(`/manage-menu/${id}`, updatedMenuData);
-    console.log('Updated menu:', response.data);
-    fetchManageMenus(); // Refresh the menu list after updating
-  } catch (error) {
-    console.error('Error updating menu:', error);
   }
 };
 
@@ -178,8 +174,9 @@ const updateExistingMenu = async () => {
         menuLink: newMenuLink.value,
         isActive: isActive.value,
       };
-      await updateMenu(currentMenuId.value, updatedMenuData);
-      fetchManageMenus();
+      const response = await updateMenu(currentMenuId.value, updatedMenuData);
+      console.log('Updated menu response:', response);
+      fetchManageMenus(); // Refresh the menu list after updating
       closeDialog();
     } catch (error) {
       console.error('Error updating menu:', error);
@@ -278,7 +275,6 @@ const open = ref(['Users']);
             {{ menu.menuName }}
             <template v-slot:append>
               <v-icon class="mr-1 icon-size" @click.stop="handleAddMenu(menu.id)">mdi-plus</v-icon>
-
               <v-icon class="mr-1 icon-size" @click.stop="handleEditMenu(menu)">mdi-pencil</v-icon>
               <v-icon class="icon-size" @click.stop="handleDeleteMenu(menu.id)">mdi-delete</v-icon>
             </template>
