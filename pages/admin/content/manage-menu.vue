@@ -49,9 +49,9 @@ const selectLink = (item: { value: string }) => {
 // Function to handle adding a new menu
 const handleAddMenu = async (parentId: number | string) => {
   try {
-    // Create a new menu with the selected parentId
-    await createNewMenu("New Menu", "/", true, parentId); // ส่ง parentId ไปยัง createNewMenu
-    fetchManageMenus(); // Refresh the menu list after adding
+    // สร้างเมนูใหม่โดยให้ parentId ของเมนูใหม่เป็น parentId ของเมนูที่เลือก
+    await createNewMenu("New Menu", "/", true, parentId);
+    fetchManageMenus();
   } catch (error) {
     console.error("Error adding new menu:", error);
   }
