@@ -52,12 +52,10 @@ const closeDialog = () => {
                         <v-card-text>
                             <div class="buttons-container">
                                 <router-link to="/admin/content/article/add">
-                                    <v-btn color="primary" class="ml-5"
-                                       >เพิ่มคำบรรยาย</v-btn>
+                                    <v-btn color="primary" class="ml-5">เพิ่มคำบรรยาย</v-btn>
                                 </router-link>
                                 <router-link to="/admin/content/gallery/add">
-                                    <v-btn color="primary" style="width: 120px;" class="ml-5"
-                                       >เพิ่มรูป</v-btn>
+                                    <v-btn color="primary" style="width: 120px;" class="ml-5">เพิ่มรูป</v-btn>
                                 </router-link>
                             </div>
                         </v-card-text>
@@ -73,11 +71,11 @@ const closeDialog = () => {
                 <v-col cols="12" md="4" style="max-width: 200px;">
                     <v-text-field label="ค้นหาชื่อ"></v-text-field>
                 </v-col>
-                <v-col cols="12" md="4" style="max-width: 200px;">
-                    <v-select label="สถานะ"></v-select>
+                <v-col cols="12" md="4" style="max-width: 200px;" >
+                    <v-select :items="['หมวดหมู่ 1', 'หมวดหมู่ 2', 'หมวดหมู่ 3']" label="สถานะ"></v-select>
                 </v-col>
                 <v-col cols="12" md="4" class="d-flex justify-between align-center" style="max-width: 200px;">
-                    <v-select label="ประเภท"></v-select>
+                    <v-select :items="['หมวดหมู่ 1', 'หมวดหมู่ 2', 'หมวดหมู่ 3']" label="ประเภท"></v-select>
                 </v-col>
                 <div class="d-flex justify-between align-center" style="margin-top: -5px;">
                     <v-btn color="primary" class="ml-3">ค้นหา</v-btn>
@@ -113,17 +111,12 @@ const closeDialog = () => {
                         <h6 class="text-body-1 text-muted">{{ item.pname }}</h6>
                     </td>
                     <td>
-                        <!-- <v-chip :class="'text-body-2 bg-' + item.statuscolor" color="white" size="small">{{
-                            item.status
-                        }}</v-chip> -->
-                        <v-switch id="isOpenSwitch" v-model="isOpen" class="d-flex custom-switch"></v-switch>
+                        <v-switch id="isOpenSwitch" v-model="isOpen" color="primary"></v-switch>
                     </td>
                     <td>
                         <router-link to="/admin/content/article/edit/[id]">
                             <v-icon class="ml-3" style="color: red;">mdi-pencil</v-icon>
                         </router-link>
-                        <!-- <h6 class="text-h6 text-right">{{ item.budget }}</h6> -->
-                        <!-- ใช้ไอคอนแก้ไข -->
                     </td>
                 </tr>
             </tbody>
@@ -143,6 +136,6 @@ const closeDialog = () => {
     align-items: center;
     /* จัดวางตรงกลางแนวตั้ง */
     height: 100%;
-    
+
 }
 </style>
