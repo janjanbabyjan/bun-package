@@ -271,9 +271,9 @@ onMounted(() => {
                     ></v-select>
                   </v-col>
                   <v-col cols="7">
-                    <v-text-field v-model="searchQuery" label="ค้นหา" outlined></v-text-field>
+                    <v-text-field v-model="searchQuery" style="max-width: 350px;" label="ค้นหา" outlined ></v-text-field>
                   </v-col>
-                  <v-col cols="2" class="d-flex justify-end align-items-center">
+                  <v-col cols="2" class="d-flex justify-end align-items-center" style="margin-top: -10px;">
                     <v-btn class="btn" color="primary" @click="search">ค้นหา</v-btn>
                     <v-btn color="secondary" @click="clearSearch" class="ml-3">ล้าง</v-btn>
                   </v-col>
