@@ -12,7 +12,10 @@ definePageMeta({
   layout: "admin",
 });
 const pageTypes = ref([]); // Variable to store fetched page types
-
+const selectCategory = (selectedCategory: any) => {
+  category.value = selectedCategory.typeName;
+  pathDialog.value = false; // Close the path dialog
+};
 // Function to fetch and set page types
 const fetchPageTypes = async () => {
   try {
@@ -275,8 +278,15 @@ onMounted(() => {
               <v-card-text class="scrollable-content">
                 <v-row class="align-center">
                   <v-col cols="3">
-                    <v-select v-model="category" :items="pageTypes" label="หมวดหมู่" item-text="typeName"
-                      item-value="id" outlined></v-select>
+      <v-select
+        v-model="category"
+        :items="pageTypes"
+        label="หมวดหมู่"
+        item-text="typeName"
+        item-value="id"
+        outlined
+      ></v-select>
+              
                   </v-col>
                   <v-col cols="7">
                     <v-text-field style="max-width: 350px;" v-model="searchQuery" label="ค้นหา" outlined></v-text-field>
