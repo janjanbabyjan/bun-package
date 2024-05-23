@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
+import axios from "axios";
 import {
   getAllManageMenus,
   deleteMenu,
   createNewMenu,
+  updateMenu,
 } from "@/plugins/api/authService";
 
 definePageMeta({
@@ -36,6 +38,8 @@ const closeDialog = () => {
   newMenuName.value = "";
   newMenuLink.value = "";
   isActive.value = false;
+  isEditMode.value = false;
+  currentMenuId.value = null;
 };
 
 const selectLink = (item: { value: string }) => {
@@ -47,6 +51,7 @@ const selectLink = (item: { value: string }) => {
 const openPathDialog = () => {
   pathDialog.value = true;
 };
+
 
 // Clear search
 const clearSearch = () => {
@@ -76,7 +81,6 @@ const fetchManageMenus = async () => {
   try {
     const response = await getAllManageMenus();
     manageMenus.value = response.result.manageMenus;
-    console.log("Response from getAllManageMenus:", response);
   } catch (error) {
     console.error("Error fetching manage menus:", error);
   }
@@ -94,6 +98,26 @@ const createNewMenus = async () => {
     closeDialog();
   } catch (error) {
     console.error('Error creating menu:', error);
+  }
+};
+
+// Function to update menu
+const updateMenu = async (id: number, updatedMenuData: any) => {
+  try {
+    const response = await axios.post(`/manage-menu/${id}`, updatedMenuData);
+    console.log('Updated menu:', response.data);
+    fetchManageMenus(); // Refresh the menu list after updating
+  } catch (error) {
+    console.error('Error updating menu:', error);
+  }
+};
+
+// Function to save menu (create or update)
+const saveMenu = () => {
+  if (isEditMode.value) {
+    updateExistingMenu();
+  } else {
+    createNewMenus();
   }
 };
 
@@ -129,20 +153,46 @@ const handleDeleteMenu = async (id: number) => {
   }
 };
 
+// State for editing menu
+const isEditMode = ref(false);
+const currentMenuId = ref<number | null>(null);
+
+// Function to handle edit menu
+const handleEditMenu = (menu: any) => {
+  currentMenuId.value = menu.id;
+  newMenuName.value = menu.menuName;
+  newMenuLink.value = menu.menuLink;
+  isActive.value = menu.isActive;
+  isEditMode.value = true;
+  dialog.value = true;
+};
+
+// Function to update existing menu
+const updateExistingMenu = async () => {
+  if (currentMenuId.value !== null) {
+    try {
+      const updatedMenuData = {
+        menuName: newMenuName.value,
+        menuLink: newMenuLink.value,
+        isActive: isActive.value,
+      };
+      await updateMenu(currentMenuId.value, updatedMenuData);
+      fetchManageMenus();
+      closeDialog();
+    } catch (error) {
+      console.error('Error updating menu:', error);
+    }
+  }
+};
+const handleAddMenu = async (id: number) => {
+  
+};
+
+
 // Data for expandable list
 const open = ref(['Users']);
-const admins = ref([
-  ['Management', 'mdi-account-multiple-outline'],
-  ['Settings', 'mdi-cog-outline'],
-]);
-const cruds = ref([
-  ['Create', 'mdi-plus-outline'],
-  ['Read', 'mdi-file-outline'],
-  ['Update', 'mdi-update'],
-  ['Delete', 'mdi-delete'],
-]);
-
 </script>
+
 <template>
   <div>
     <!-- Breadcrumb navigation -->
@@ -161,7 +211,7 @@ const cruds = ref([
           <v-btn color="primary" class="ml-auto" @click="openDialog">เพิ่มเมนูหลัก</v-btn>
           <v-dialog v-model="dialog" class="custom-dialog">
             <v-card>
-              <v-card-title class="mt-2">เพิ่มเมนู</v-card-title>
+              <v-card-title class="mt-2">{{ isEditMode ? 'แก้ไขเมนู' : 'เพิ่มเมนู' }}</v-card-title>
 
               <v-card-text>
                 <v-text-field v-model="newMenuName" label="ชื่อเมนู" outlined></v-text-field>
@@ -178,7 +228,7 @@ const cruds = ref([
                   class="toggle-switch"></v-switch>
               </v-card-text>
               <v-card-actions>
-                <v-btn color="primary" @click="createNewMenus">เพิ่ม</v-btn>
+                <v-btn color="primary" @click="saveMenu">{{ isEditMode ? 'บันทึกการเปลี่ยนแปลง' : 'เพิ่ม' }}</v-btn>
                 <v-btn color="error" @click="closeDialog">ยกเลิก</v-btn>
               </v-card-actions>
             </v-card>
@@ -225,8 +275,15 @@ const cruds = ref([
     <v-list v-model:opened="open">
       <v-list-group v-for="menu in menuTree" :key="menu.id" :value="menu.menuName">
         <template v-slot:activator="{ props }">
-          <v-list-item v-bind="props" prepend-icon="mdi-home">
+          <v-list-item v-bind="props">
+            <v-icon>{{ isActive ? 'mdi-menu-down' : 'mdi-menu-right' }}</v-icon>
             {{ menu.menuName }}
+            <template v-slot:append>
+              <v-icon class="mr-1 icon-size" @click.stop="handleAddMenu(menu.id)">mdi-plus</v-icon>
+
+              <v-icon class="mr-1 icon-size" @click.stop="handleEditMenu(menu)">mdi-pencil</v-icon>
+              <v-icon class="icon-size" @click.stop="handleDeleteMenu(menu.id)">mdi-delete</v-icon>
+            </template>
           </v-list-item>
         </template>
 
@@ -234,8 +291,13 @@ const cruds = ref([
         <v-list-group v-if="menu.children && menu.children.length > 0" v-for="child in menu.children" :key="child.id"
           :value="child.menuName">
           <template v-slot:activator="{ props }">
-            <v-list-item v-bind="props" prepend-icon="mdi-account-circle">
+            <v-list-item v-bind="props" style="color: blue;">
+              <v-icon>{{ isActive ? 'mdi-menu-down' : 'mdi-menu-right' }}</v-icon>
               {{ child.menuName }}
+              <template v-slot:append>
+                <v-icon class="mr-1 icon-size" @click.stop="handleEditMenu(child)">mdi-pencil</v-icon>
+                <v-icon class="icon-size" @click.stop="handleDeleteMenu(child.id)">mdi-delete</v-icon>
+              </template>
             </v-list-item>
           </template>
         </v-list-group>
@@ -296,5 +358,14 @@ const cruds = ref([
 
 .btn-ss {
   margin-top: -1.6rem;
+}
+
+.icon-size {
+  font-size: 18px; /* หรือเลือกขนาดที่ต้องการ */
+}
+
+.icon-size:hover {
+  color: red !important; /* เปลี่ยนสีเมื่อ hover */
+  cursor: pointer; /* เปลี่ยน cursor เป็น pointer เมื่อ hover */
 }
 </style>

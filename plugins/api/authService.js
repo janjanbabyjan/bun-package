@@ -43,11 +43,11 @@ const createNewMenu = async (menuName, pathMenu, isActive) => {
 
 const updateMenu = async (id, updatedMenuData) => {
   try {
-    const response = await axios.post(`${baseApiUrl}/manage-menu/${id}`, updatedMenuData);
-    console.log('Updated menu:', response.data);
-    fetchManageMenus(); // เรียกใช้ function ในการดึงข้อมูลเมนูอัตโนมัติหลังจากอัปเดตเมนู
+    const response = await axios.put(`${baseApiUrl}/manage-menu/${id}`, updatedMenuData);
+    return response.data;
   } catch (error) {
     console.error('Error updating menu:', error);
+    throw error;
   }
 };
 
