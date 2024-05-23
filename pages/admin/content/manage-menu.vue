@@ -18,11 +18,7 @@ const newMenuName = ref("");
 const newMenuLink = ref("");
 const isActive = ref(false);
 const pathDialog = ref(false);
-const linkOptions = ref([
-  { label: "หน้าหลัก", value: "/" },
-  { label: "เกี่ยวกับเรา", value: "/about" },
-  { label: "ติดต่อเรา", value: "/contact" },
-]);
+
 
 // Category and search state
 const category = ref("");
@@ -42,12 +38,14 @@ const closeDialog = () => {
   currentMenuId.value = null;
 };
 
-const selectLink = (item: { value: string }) => {
-  newMenuLink.value = item.value;
+const selectLink = (menu: any) => {
+  newMenuLink.value = menu.menuName; // หรือ menu.menuLink หรือข้อมูลที่ต้องการแสดงใน newMenuLink
   pathDialog.value = false;
 };
+
+
 const handleAddMenu = async (id: number) => {
-  
+
 };
 
 // Open path dialog
@@ -145,6 +143,8 @@ const buildMenuTree = (menuItems: any[]) => {
 
 const menuTree = computed(() => buildMenuTree(manageMenus.value));
 
+
+
 // Delete menu function
 const handleDeleteMenu = async (id: number) => {
   try {
@@ -189,6 +189,10 @@ const updateExistingMenu = async () => {
 
 // Data for expandable list
 const open = ref(['Users']);
+
+
+
+
 </script>
 
 <template>
@@ -222,7 +226,7 @@ const open = ref(['Users']);
                     <v-btn color="primary" @click="openPathDialog">เลือก</v-btn>
                   </v-col>
                 </v-row>
-                <v-switch v-model="isActive" label="แสดงเมนู" :input-value="true" :false-value="false"
+                <v-switch v-model="isActive" label="แสดงเมนู" color="primary" :input-value="true" :false-value="false"
                   class="toggle-switch"></v-switch>
               </v-card-text>
               <v-card-actions>
@@ -359,11 +363,14 @@ const open = ref(['Users']);
 }
 
 .icon-size {
-  font-size: 18px; /* หรือเลือกขนาดที่ต้องการ */
+  font-size: 18px;
+  /* หรือเลือกขนาดที่ต้องการ */
 }
 
 .icon-size:hover {
-  color: red !important; /* เปลี่ยนสีเมื่อ hover */
-  cursor: pointer; /* เปลี่ยน cursor เป็น pointer เมื่อ hover */
+  color: red !important;
+  /* เปลี่ยนสีเมื่อ hover */
+  cursor: pointer;
+  /* เปลี่ยน cursor เป็น pointer เมื่อ hover */
 }
 </style>
