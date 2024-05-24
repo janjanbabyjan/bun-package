@@ -4,11 +4,13 @@ import { ref } from 'vue';
 import { defineEmits } from 'vue';
 import axios from 'axios'; // Import axios library
 
+const imageUrl = ref<string>('');
 const imageUrls = ref<string[]>([]);
 const selectedImageUrl = ref<string>('');
 const dialog = ref<boolean>(false);
-const emits = defineEmits(['imageUploaded']);
 const fileInput = ref<HTMLInputElement | null>(null);
+const emit = defineEmits(['imageUploaded']);
+
 
 const openFileInput = () => {
     if (fileInput.value) {
@@ -16,37 +18,36 @@ const openFileInput = () => {
     }
 };
 
-const handleFileUpload = async (event: Event) => {
-    const target = event.target as HTMLInputElement;
-    const files = target.files;
+const handleFileUpload = async (event: any) => {
+  const target = event.target as HTMLInputElement;
+  const files = target.files;
 
-    if (files) {
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
-            if (file && file.type.startsWith('image/')) {
-                const formData = new FormData();
-                formData.append('file', file);
-
-                try {
-                    const response = await axios.post('http://localhost:8000/upload', formData, {
-                        headers: {
-                            'Content-Type': 'multipart/form-data',
-                        },
-                    });
-
-                    if (response.data.url) {
-                        imageUrls.value.push(response.data.url);
-                        emits('imageUploaded', response.data.url);
-                    }
-                } catch (error) {
-                    console.error('Error uploading image:', error);
-                }
-            } else {
-                alert('Please select an image file only.');
-            }
-        }
+  if (files) {
+    const formData = new FormData();
+    for (let i = 0; i < files.length; i++) {
+      formData.append('files', files[i]);
     }
+
+    try {
+      const response = await axios.post('http://localhost:8000/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      if (response.status === 201) {
+        const uploadedFiles = response.data.file;
+        console.log('Uploaded files:', uploadedFiles);
+        emit('imageUploaded', uploadedFiles);
+      } else {
+        console.error('Upload failed:', response.data.message);
+      }
+    } catch (error) {
+      console.error('Error uploading files:', error);
+    }
+  }
 };
+
 
 const openDialog = (imageUrl: string) => {
     selectedImageUrl.value = imageUrl;
@@ -69,8 +70,7 @@ const deleteImage = (index: number) => {
         <div class="content-area">
             <!-- Camera icon and file input -->
             <input ref="fileInput" type="file" multiple style="display: none;" @change="handleFileUpload"
-                accept="image/*">
-            <!-- Gallery display -->
+                accept="image/*"> <!-- Gallery display -->
             <div class="image-gallery">
                 <div v-for="(imageUrl, index) in imageUrls" :key="index" class="image-container">
                     <img :src="imageUrl" class="gallery-image" alt="Image" @click="openDialog(imageUrl)">
