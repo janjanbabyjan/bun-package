@@ -1,3 +1,4 @@
+<!-- pages\public\ui-components\content\[id].vue -->
 <script setup>
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
@@ -78,11 +79,6 @@ onMounted(async () => {
       },
       data: jsonData.value.data.content,
     });
-
-    editor.isReady.then(() => {
-      const outputData = editor.saver.getEditorData();
-      editorOutput.value = JSON.stringify(outputData, null, 2);
-    });
   }
 });
 </script>
@@ -98,44 +94,48 @@ onMounted(async () => {
         </v-card>
       </template>
       <template v-else>
-        <div class="py-md-15 py-8 gallery">
-          <v-container>
-            <v-row class="justify-center">
-              <v-col cols="12" sm="8">
-                <div class="text-center">
-                  <h2 class="text-h2 text-dark mb-3">Gallery</h2>
-                </div>
-              </v-col>
-            </v-row>
-            <v-row class="justify-center">
-              <v-col cols="12" md="4" sm="6" v-for="(imagePath, index) in jsonData.data.content" :key="index" class="mb-2">
-                <div class="hover-card overflow-hidden">
-                  <v-img :src="getImageUrl(imagePath)" height="250px" alt="Uploaded Image" cover class="w-100"
-                    @click="showImageModal = true; selectedImageUrl = getImageUrl(imagePath)"></v-img>
-                </div>
-              </v-col>
-            </v-row>
-          </v-container>
-
-          <v-dialog v-model="showImageModal" max-width="800" max-height="1000">
+        <v-card>
+          <div class="py-md-15 py-8 gallery">
             <v-container>
-              <div class="image-container">
-                <img :src="selectedImageUrl" :style="{
-                  transform: `scale(${zoom})`,
-                  transformOrigin: 'center',
-                }" @wheel.prevent="handleWheel" />
-              </div>
-              <v-card-actions>
-                <v-btn icon @click="zoomOut">
-                  <v-icon>mdi-magnify-minus-outline</v-icon>
-                </v-btn>
-                <v-btn icon @click="zoomIn">
-                  <v-icon>mdi-magnify-plus-outline</v-icon>
-                </v-btn>
-              </v-card-actions>
+              <v-row class="justify-center">
+                <v-col cols="12" sm="8">
+                  <div class="text-center">
+                    <h2 class="text-h2 text-dark mb-3">Gallery</h2>
+                  </div>
+                </v-col>
+              </v-row>
+              <v-row class="justify-center">
+                <v-col cols="12" md="4" sm="6" v-for="(imagePath, index) in jsonData.data.content" :key="index"
+                  class="mb-2">
+                  <div class="hover-card overflow-hidden">
+                    <v-img :src="getImageUrl(imagePath)" height="250px" alt="Uploaded Image" cover class="w-100"
+                      @click="showImageModal = true; selectedImageUrl = getImageUrl(imagePath)"></v-img>
+                  </div>
+                </v-col>
+              </v-row>
             </v-container>
-          </v-dialog>
-        </div>      </template>
+
+            <v-dialog v-model="showImageModal" max-width="800" max-height="1000">
+              <v-container>
+                <div class="image-container">
+                  <img :src="selectedImageUrl" :style="{
+                    transform: `scale(${zoom})`,
+                    transformOrigin: 'center',
+                  }" @wheel.prevent="handleWheel" />
+                </div>
+                <v-card-actions>
+                  <v-btn icon @click="zoomOut">
+                    <v-icon>mdi-magnify-minus-outline</v-icon>
+                  </v-btn>
+                  <v-btn icon @click="zoomIn">
+                    <v-icon>mdi-magnify-plus-outline</v-icon>
+                  </v-btn>
+                </v-card-actions>
+              </v-container>
+            </v-dialog>
+          </div>
+        </v-card>
+      </template>
     </template>
   </div>
 </template>

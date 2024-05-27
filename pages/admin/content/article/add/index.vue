@@ -116,14 +116,7 @@ onMounted(() => {
           defaultStyle: "unordered",
         },
       },
-      image: {
-        class: ImageTool,
-        config: {
-          endpoints: {
-            byFile: 'http://localhost:8000/upload'
-          }
-        }
-      },
+      image: SimpleImage,
       checklist: {
         class: Checklist,
         inlineToolbar: true,

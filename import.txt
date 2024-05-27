@@ -54,3 +54,4 @@ bun install --save-dev nuxt3
 bun add vuetify@next
 
 bun add @editorjs/image
+add @nuxt/composables
