@@ -27,6 +27,7 @@ import ImageTool from '@editorjs/image';
 
 
 
+const router = useRouter();
 
 
 const editor = ref<EditorJS | null>(null);
@@ -169,7 +170,10 @@ onBeforeUnmount(() => {
 const saveName = ref('');
 const status = ref(true);
 const saveDate = ref('');
-const inputText = ref('');
+const tags = ref<string[]>([]);
+
+const newTag = ref(''); // New tag input
+
 
 const handleSave = (data: any) => {
   console.log("🚀 ~ handleSave ~ data:", data)
@@ -191,11 +195,9 @@ const handleDate = (data: any) => {
 
 
 
-const handleTag = (data: any) => {
-  console.log("🚀 ~ handleTag ~ data:", data);
-  // เก็บข้อมูลที่ได้รับจาก component ตัวลูกเมื่อกดบันทึก
-  inputText.value = data;
-  // ส่งข้อมูลกลับไปยัง component ตัวแม่ เมื่อข้อมูลเปลี่ยนแปลง
+const handleTag = (data: string[]) => {
+  tags.value = data;
+  console.log("🚀 ~ handleTag ~ data:", data)
 };
 
 const getsave = async () => {
@@ -212,7 +214,7 @@ const getsave = async () => {
     pageLink: '/new-page',
     isActive: status.value,
     typeId: 1,
-    tag: inputText.value,
+    tag: tags.value.map(tag => ({ tag })) ,// Format tags
     type: {
       id: 1,
       typeName: 'single pages',
@@ -228,10 +230,13 @@ const getsave = async () => {
   }
 };
 
+
 </script>
 
 <template>
+  
   <div>
+
     <!-- Breadcrumb navigation -->
     <v-breadcrumbs>
       <v-breadcrumbs-item v-for="(breadcrumb, index) in breadcrumbs" :key="index" @click="navigateTo(breadcrumb.href)"
@@ -242,7 +247,7 @@ const getsave = async () => {
     </v-breadcrumbs>
 
     <!-- เพิ่มตัวแปลด้วย ถ้าจะดึงจากลูก -->
-    <AdminHeadingInputHeading :name="saveName" @name="handleSave" @status="handleStatus" @day="handleDate"
+    <AdminHeadingInputHeading :name="saveName" @name="handleSave" @status="handleStatus" @day="handleDate "
       @tag="handleTag" />
 
     <div class="center-container">

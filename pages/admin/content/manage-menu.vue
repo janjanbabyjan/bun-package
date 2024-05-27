@@ -6,23 +6,34 @@ import {
   createNewMenu,
   updateMenu,
   getAllPageTypes,
+  getAllSinglePages,
 } from "@/plugins/api/authService";
+import index from "@/components/public/layout/full/vertical-sidebar/NavItem/index.vue";
 
 definePageMeta({
   layout: "admin",
 });
-const pageTypes = ref([]); // Variable to store fetched page types
+interface PageType {
+  id: number;
+  typeName: string;
+}
+const selectedPageType = ref<PageType | null>(null); // กำหนด selectedPageType เป็น ref ที่เก็บข้อมูลของ PageType หรือ null
+const category = ref("");
 
-// Function to fetch and set page types
+const pageTypes = ref<string[]>([]);
+
 const fetchPageTypes = async () => {
   try {
     const response = await getAllPageTypes();
-    console.log("🚀 ~ fetchPageTypes ~ response:", response);
-    pageTypes.value = response.result; // Assuming response.result contains the page types
+    console.log("Fetched page types:", response.result);
+    pageTypes.value = response.result.map(
+      (type: { typeName: string }) => type.typeName
+    );
   } catch (error) {
     console.error("Error fetching page types:", error);
   }
 };
+
 // Dialog states
 const dialog = ref(false);
 const pathDialog = ref(false);
@@ -39,7 +50,7 @@ const newSubMenuLink = ref("");
 const isSubMenuActive = ref(false);
 
 // Search and category
-const category = ref("");
+
 const searchQuery = ref("");
 
 // State for editing menu
@@ -54,6 +65,7 @@ const selectedParentId = ref<number | string | null>(null);
 // Manage menus data
 const manageMenus = ref([]);
 
+
 // Fetch all menus
 const fetchManageMenus = async () => {
   try {
@@ -62,6 +74,22 @@ const fetchManageMenus = async () => {
     manageMenus.value = response.result.manageMenus;
   } catch (error) {
     console.error("Error fetching manage menus:", error);
+  }
+};
+interface SinglePage {
+  id: number;
+  title: string;
+  pageLink?: string;
+}
+
+const singlePages = ref<SinglePage[]>([]);
+
+const fetchSinglePages = async () => {
+  try {
+    const response = await getAllSinglePages();
+    singlePages.value = response.result.singlePage;
+  } catch (error) {
+    console.error("Error fetching single pages:", error);
   }
 };
 
@@ -192,9 +220,8 @@ const handleEditSubMenu = (menu: any) => {
   openSubMenuDialog(menu.parentId);
 };
 
-// Select link
-const selectLink = (menu: any) => {
-  newMenuLink.value = menu.menuName; // หรือ menu.menuLink หรือข้อมูลที่ต้องการแสดงใน newMenuLink
+const selectLink = (page: any) => {
+  newMenuLink.value = page.title; // หรือ page.pageLink หรือข้อมูลที่ต้องการแสดงใน newMenuLink
   pathDialog.value = false;
 };
 
@@ -224,9 +251,11 @@ const getBreadcrumbText = (index: number) => {
   return breadcrumbs[index].text;
 };
 
+
 onMounted(() => {
   fetchManageMenus();
-  fetchPageTypes();
+  fetchPageTypes(); // Call fetchPageTypes function when the component is mounted
+  fetchSinglePages();
 });
 </script>
 
@@ -295,7 +324,6 @@ onMounted(() => {
             </v-card-actions>
           </v-card>
         </v-dialog>
-
         <!-- Path Selection Dialog -->
         <v-dialog v-model="pathDialog" class="custom-path-dialog align-center">
           <v-card>
@@ -304,12 +332,9 @@ onMounted(() => {
               <v-row class="align-center">
                 <v-col cols="3">
                   <v-select
-                    v-model="category"
+                    label="Select"
                     :items="pageTypes"
-                    label="หมวดหมู่"
-                    item-text="typeName"
-                    item-value="id"
-                    outlined
+                    variant="outlined"
                   ></v-select>
                 </v-col>
                 <v-col cols="7">
@@ -333,13 +358,20 @@ onMounted(() => {
                   >
                 </v-col>
               </v-row>
+
               <v-list>
                 <v-list-item
-                  v-for="(menu, index) in menuTree"
-                  :key="index"
-                  @click="selectLink(menu)"
+                  v-for="page in singlePages"
+                  :key="page.id"
+                  @click="selectLink(page)"
                 >
-                  <v-list-item-title>{{ menu.menuName }}</v-list-item-title>
+                  <v-list-item-content>
+                    <v-list-item-title>{{ page.title }}</v-list-item-title>
+                    <v-list-item-subtitle v-if="page.pageLink">{{
+                      page.pageLink
+                    }}</v-list-item-subtitle>
+                  </v-list-item-content>
+                  <!-- Any actions or buttons related to single pages -->
                 </v-list-item>
               </v-list>
             </v-card-text>
@@ -394,7 +426,7 @@ onMounted(() => {
                 label="ชื่อเมนูย่อย"
                 outlined
               ></v-text-field>
-              <v-row>
+              <!-- <v-row>
                 <v-col cols="10">
                   <v-text-field
                     v-model="newSubMenuLink"
@@ -407,7 +439,7 @@ onMounted(() => {
                 <v-col cols="2">
                   <v-btn color="primary" @click="openPathDialog">เลือก</v-btn>
                 </v-col>
-              </v-row>
+              </v-row> -->
               <!-- <v-text-field v-model="newSubMenuLink" label="ลิงก์" outlined></v-text-field> -->
               <v-switch
                 v-model="isSubMenuActive"
@@ -432,7 +464,7 @@ onMounted(() => {
           :value="child.menuName"
         >
           <template v-slot:activator="{ props }">
-            <v-list-item v-bind="props" style="color: blue">
+            <v-list-item v-bind="props" style="color: #5b5b5b">
               <v-icon>{{
                 props.isOpen ? "mdi-menu-down" : "mdi-menu-right"
               }}</v-icon>
@@ -511,11 +543,14 @@ onMounted(() => {
 }
 
 .icon-size {
-  font-size: 18px; /* หรือเลือกขนาดที่ต้องการ */
+  font-size: 18px;
+  /* หรือเลือกขนาดที่ต้องการ */
 }
 
 .icon-size:hover {
-  color: red !important; /* เปลี่ยนสีเมื่อ hover */
-  cursor: pointer; /* เปลี่ยน cursor เป็น pointer เมื่อ hover */
+  color: red !important;
+  /* เปลี่ยนสีเมื่อ hover */
+  cursor: pointer;
+  /* เปลี่ยน cursor เป็น pointer เมื่อ hover */
 }
 </style>
