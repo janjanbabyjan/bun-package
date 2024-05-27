@@ -3,27 +3,27 @@
 import { createSinglePage } from "~/plugins/api/authService";
 
 const router = useRouter();
-// const getsave = async () => {
-//   const data = {
-//     title: saveName.value,
-//     status: saveStatus.value,
-//     day: saveDate.value,
-//     tag: tags.value, // เปลี่ยน inputText.value เป็น tags.value
-//   };
+const getsave = async () => {
+  const data = {
+    title: saveName.value,
+    status: saveStatus.value,
+    day: saveDate.value,
+    tag: tags.value, // เปลี่ยน inputText.value เป็น tags.value
+  };
 
-//   try {
-//     const result = await createSinglePage(data);
-//     console.log(result);
+  try {
+    const result = await createSinglePage(data);
+    console.log(result);
 
-//     if (result.statusCode === 200) {
-//       router.push("/admin/dashboard");
-//     } else {
-//       console.error("Error creating article:", result);
-//     }
-//   } catch (error) {
-//     console.error("Error creating article:", error);
-//   }
-// };
+    if (result.statusCode === 200) {
+      router.push("/admin/dashboard");
+    } else {
+      console.error("Error creating article:", result);
+    }
+  } catch (error) {
+    console.error("Error creating article:", error);
+  }
+};
 
 // getsave();
 
@@ -34,9 +34,10 @@ const router = useRouter();
 const addTag = () => {
   if (inputText.value.trim() !== "") {
     tags.value.push(inputText.value.trim());
-    inputText.value = ""; // clear inputText after adding tag
+    // inputText.value = ""; // ไม่ต้อง clear inputText
   }
 };
+
 
 // Function to edit a tag
 const editTag = (index: number) => {
@@ -44,6 +45,7 @@ const editTag = (index: number) => {
   removeTag(index); // Remove the tag before editing
 };
 
+// Function to remove a tag
 const removeTag = (index: number) => {
   tags.value.splice(index, 1);
 };
@@ -60,12 +62,13 @@ const props = defineProps({
   editTag: { type: String, default: "" },
   removeTag: { type: String, default: "" },
 });
+
 // ใช้ defineEmits เพื่อส่งอีเวนต์ไปยัง component ตัวแม่
 const emits = defineEmits([
   "name",
   "status",
   "day",
-  "tags", // ส่งข้อมูลแท็กเป็น array
+  "tag",
   "addTag",
   "editTag",
   "removeTag",
@@ -96,9 +99,7 @@ watch(saveDate, (newValue) => {
   emits("day", newValue);
   // console.log("🚀 ~ watch ~ newValue:", newValue)
 });
-watch(tags, (newValue) => {
-  emits("tags", newValue); // ส่งข้อมูลแท็กเป็น array
-});
+
 // Watch for changes in inputText
 watch(inputText, (newValue, oldValue) => {
   if (newValue !== oldValue) {
@@ -107,7 +108,7 @@ watch(inputText, (newValue, oldValue) => {
     } else if (props.editTag !== "") {
       emits("editTag", newValue);
     } else {
-      emits("tags", newValue);
+      emits("tag", newValue);
     }
   }
 });

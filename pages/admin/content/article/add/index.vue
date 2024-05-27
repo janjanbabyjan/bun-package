@@ -25,17 +25,14 @@ import NestedList from "@editorjs/nested-list";
 import createPage from '~/plugins/api/createPage.js';
 
 
+const router = useRouter();
+
+
 const editor = ref<EditorJS | null>(null);
 const editorContent = ref<any>(null);
 const outputEditor = ref<EditorJS | null>(null);
 
-const router = useRouter();
 
-const saveName = ref('');
-const status = ref(true);
-const saveDate = ref('');
-const tags = ref<string[]>([]);
-const newTag = ref(''); // New tag input
 // ตัวบอกหน้า
 const breadcrumbs = [
   { text: 'หน้าแรก', href: '/admin' },
@@ -161,27 +158,65 @@ onBeforeUnmount(() => {
 
 
 // เพิ่ม code เพื่อดึงลูกมา  -----------------
-// const saveName = ref('');
-// const status = ref(true);
-// const saveDate = ref('');
-// const inputText = ref('');
+const saveName = ref('');
+const status = ref(true);
+const saveDate = ref('');
+const tags = ref<string[]>([]);
+const newTag = ref(''); // New tag input
 
-// const tags = ref<string[]>([]);
 
 const handleSave = (data: any) => {
+  console.log("🚀 ~ handleSave ~ data:", data)
+  // เก็บข้อมูลที่ได้รับจาก component ตัวลูกเมื่อกดบันทึก
   saveName.value = data;
 };
 
 const handleStatus = (data: any) => {
+  console.log("🚀 ~ handleSave ~ data:", data)
+  // เก็บข้อมูลที่ได้รับจาก component ตัวลูกเมื่อกดบันทึก
   status.value = data;
 };
 
 const handleDate = (data: any) => {
+  console.log("🚀 ~ handleSave ~ data:", data)
+  // เก็บข้อมูลที่ได้รับจาก component ตัวลูกเมื่อกดบันทึก
   saveDate.value = data;
 };
 
+
+
 const handleTag = (data: string[]) => {
-  tags.value = data; // เก็บแท็กเป็น array
+  tags.value = data;
+};
+
+const getsave = async () => {
+  const currentDateTime = new Date().toISOString();
+  const editorData = await editor.value?.save();
+
+  const postdata = {
+    title: saveName.value,
+    content: editorData,
+    createdAt: currentDateTime,
+    updatedAt: currentDateTime,
+    timestampCreate: currentDateTime,
+    titleImages: 'image-url',
+    pageLink: '/new-page',
+    isActive: status.value,
+    typeId: 1,
+    tag: tags.value.map(tag => ({ tagName: tag })) ,// Format tags
+    type: {
+      id: 2,
+      typeName: 'SinglePage',
+      createdAt: currentDateTime,
+      updatedAt: currentDateTime
+    }
+  };
+  try {
+    const response = await createPage.createSinglePage(postdata);
+    console.log('Page creation response:', response);
+  } catch (error) {
+    console.error('Error creating page:', error);
+  }
 };
 const addTag = () => {
   if (newTag.value.trim() !== "") {
@@ -194,71 +229,11 @@ const addTag = () => {
 const removeTag = (index: number) => {
   tags.value.splice(index, 1);
 };
-// Save data
-const getsave = async () => {
-  if (!editor.value) {
-    console.error('Editor instance is not initialized');
-    return;
-  }
-
-  const currentDateTime = new Date().toISOString();
-  try {
-    const editorData = await editor.value.save();
-    
-    const postdata = {
-      title: saveName.value,
-      content: {
-        html: editorData.blocks.map(block => block.data.text).join('') // Assuming blocks contain HTML content
-      },
-      typeId: 1,
-      titleImages: 'image-url',
-      pageLink: null,
-      isActive: status.value,
-      tag: tags.value.map(tag => ({ tagName: tag })) // Format tags
-    };
-
-    const response = await createPage.createSinglePage(postdata);
-    console.log('Page creation response:', response);
-    if (response.statusCode === 201 && response.result && response.result.data) {
-      console.log("Article created successfully:", response.result);
-      router.push(response.result.data.pageLink);
-    } else {
-      console.error("Unexpected response:", response);
-    }
-  } catch (error) {
-    console.error('Error saving editor data:', error);
-  }
-};
 
 </script>
 
 <template>
-  <div>
-    <!-- Breadcrumb navigation -->
-    <v-breadcrumbs>
-      <v-breadcrumbs-item v-for="(breadcrumb, index) in breadcrumbs" :key="index" @click="navigateTo(breadcrumb.href)"
-        class="breadcrumb-item">
-        {{ getBreadcrumbText(index) }}
-        <template v-if="index < breadcrumbs.length - 1"> > </template>
-      </v-breadcrumbs-item>
-    </v-breadcrumbs>
-
-    <!-- Admin heading input -->
-    <AdminHeadingInputHeading :name="saveName" @name="handleSave" @status="handleStatus" @day="handleDate"
-      @tag="handleTag" />
-
-    <div class="center-container">
-      <v-card class="withbg mt-4" style="max-width: 1000px;">
-        <div class="title-section">
-          <v-card-title class="text-h5 ml-3">เพิ่มคำบรรยาย</v-card-title>
-        </div>
-        <!-- Content area -->
-        <div class="editor-wrapper">
-          <div id="editor" class="editor"></div>
-        </div>
-        
-        <!-- Tag Input -->
-        <div class="tags-container">
+          <div class="tags-container">
           <v-text-field v-model="newTag" label="Add Tag"></v-text-field>
           <v-btn @click="addTag">Add Tag</v-btn>
         </div>
@@ -268,10 +243,34 @@ const getsave = async () => {
             <v-icon small @click="removeTag(index)">mdi-close</v-icon>
           </v-chip>
         </div>
-        
+  <div>
+
+    <!-- Breadcrumb navigation -->
+    <v-breadcrumbs>
+      <v-breadcrumbs-item v-for="(breadcrumb, index) in breadcrumbs" :key="index" @click="navigateTo(breadcrumb.href)"
+        class="breadcrumb-item">
+        {{ getBreadcrumbText(index) }}
+        <template v-if="index < breadcrumbs.length - 1"> > </template>
+      </v-breadcrumbs-item>
+    </v-breadcrumbs>
+
+    <!-- เพิ่มตัวแปลด้วย ถ้าจะดึงจากลูก -->
+    <AdminHeadingInputHeading :name="saveName" @name="handleSave" @status="handleStatus" @day="handleDate"
+      @tag="handleTag" />
+
+    <div class="center-container">
+      <v-card class="withbg mt-4 " style="max-width: 1000px;">
+        <div class="title-section">
+          <v-card-title class="text-h5 ml-3">เพิ่มคำบรรยาย</v-card-title>
+        </div>
+        <!-- Content area -->
+        <div class="editor-wrapper">
+          <div id="editor" class="editor"></div>
+        </div>
         <v-btn color="primary" class="ml-5 mb-6" @click="getsave">บันทึก</v-btn>
       </v-card>
     </div>
+
   </div>
 </template>
 
