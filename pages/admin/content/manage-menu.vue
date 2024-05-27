@@ -77,7 +77,6 @@ interface SinglePage {
   id: number;
   title: string;
   pageLink?: string;
-  // เพิ่มคุณสมบัติอื่น ๆ ตามต้องการ
 }
 
 const singlePages = ref<SinglePage[]>([]);
@@ -259,18 +258,6 @@ onMounted(() => {
 </script>
 
 <template>
-  <v-select
-    :items="pageTypes"
-    item-text="{{pageTypes.typeName}}"
-    label="Page Type"
-    v-model="selectedPageType"
-  />
-  <v-select
-    :items="pageTypes"
-    density="comfortable"
-    label="Comfortable"
-  ></v-select>
-
   <!-- Breadcrumb navigation -->
   <v-breadcrumbs>
     <v-breadcrumbs-item
