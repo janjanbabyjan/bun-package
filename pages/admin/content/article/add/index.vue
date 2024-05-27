@@ -23,6 +23,8 @@ import InlineCode from "@editorjs/inline-code";
 import CodeTool from "@editorjs/code"; // Import CodeTool
 import NestedList from "@editorjs/nested-list";
 import createPage from '~/plugins/api/createPage.js';
+import ImageTool from '@editorjs/image';
+
 
 
 
@@ -113,6 +115,14 @@ onMounted(() => {
           defaultStyle: "unordered",
         },
       },
+      image: {
+        class: ImageTool,
+        config: {
+          endpoints: {
+            byFile: 'http://localhost:8000/upload'
+          }
+        }
+      },
       checklist: {
         class: Checklist,
         inlineToolbar: true,
@@ -140,7 +150,6 @@ onMounted(() => {
         inlineToolbar: true,
         shortcut: "CMD+SHIFT+O",
       },
-      image: SimpleImage,
     },
   });
 });
@@ -205,8 +214,8 @@ const getsave = async () => {
     typeId: 1,
     tag: inputText.value,
     type: {
-      id: 2,
-      typeName: 'SinglePage',
+      id: 1,
+      typeName: 'single pages',
       createdAt: currentDateTime,
       updatedAt: currentDateTime
     }

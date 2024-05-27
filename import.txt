@@ -52,3 +52,5 @@ bun install --save-dev nuxt3
 
 13. วันที่
 bun add vuetify@next
+
+bun add @editorjs/image

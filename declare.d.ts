@@ -16,6 +16,7 @@ declare module '@editorjs/embed';
 declare module '@editorjs/inline-code';
 declare module '@editorjs/code';
 declare module '@editorjs/nested-list';
+declare module '@editorjs/image';
 
 
 // middlware

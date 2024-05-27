@@ -3,6 +3,7 @@ import { Portfolio } from '@/data/dashboard/dashboardData';
 import Icon from '../layout/full/vertical-sidebar/Icon.vue';
 // import Image from 'primevue/image';
 import Image from 'primevue/image';
+import axios from 'axios';
 
 
 const selectedImageUrl = ref('');
@@ -21,6 +22,30 @@ const zoomIn = () => {
 const zoomOut = () => {
     zoom.value = Math.max(0.5, zoom.value - 0.1);
 };
+
+
+
+const uploadedFiles = ref([]);
+
+const handleFileUpload = async (files: any) => {
+    try {
+        const formData = new FormData();
+        for (const file of files) {
+            formData.append('files', file);
+        }
+
+        const response = await axios.post('/api/upload', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+
+        uploadedFiles.value = response.data.map((file: any) => `/uploads/${file.filename}`);
+    } catch (error) {
+        console.error('Error uploading files:', error);
+    }
+};
+
 </script>
 
 <template>
@@ -46,6 +71,9 @@ const zoomOut = () => {
                     <div class="hover-card overflow-hidden lh-10 rounded-md position-relative">
                         <v-img :src="card.img" height="250px" alt="post" cover class="zoom-in w-100"
                             @click="showImageModal = true; selectedImageUrl = card.img"></v-img>
+
+                        <img v-for="(imageUrl, index) in uploadedFiles" :key="index" :src="imageUrl"
+                            alt="Uploaded Image" class="uploaded-image" />
                     </div>
                     <div class="mt-4">
                         <h5 class="text-h5 font-weight-bold text-13">
@@ -111,7 +139,7 @@ const zoomOut = () => {
     background-color: #ffffff;
 } */
 
-.v-dialog .v-container .v-card-actions{
+.v-dialog .v-container .v-card-actions {
     justify-content: center;
     align-items: center;
 }

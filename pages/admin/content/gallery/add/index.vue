@@ -1,55 +1,52 @@
 <!-- pages\admin\content\gallery\add\index.vue -->
 <script setup lang="ts">
-// api
 import axios from 'axios';
 import createPage from '~/plugins/api/createPage.js';
+import { computed } from 'vue';
 
-definePageMeta({
-  layout: "admin",
-});
 
-// Breadcrumbs
+
+// const baseUrl = 'http://localhost:8000';
+
+// const getImageUrl = (imagePath: any) => {
+//   const baseUrl = 'http://localhost:8000';
+//   const fullUrl = `${baseUrl}${imagePath}`;
+//   console.log('Full Image URL:', fullUrl);
+//   return fullUrl;
+// };
+
+
 const breadcrumbs = [
   { text: 'หน้าแรก', href: '/admin' },
   { text: 'รายชื่อหน้าเว็บไซต์ ', href: '/admin/content/manage-single-page' },
   { text: 'เพิ่มรูปภาพ', href: '/admin/content/gallery/add' },
 ];
 
-const pageId = ref(null);  // Store the page ID for later updates
-const uploadedFile = ref<string | null>(null);
-
 const getBreadcrumbText = (index: number) => {
   return breadcrumbs[index].text;
 };
 
-// Save data
+const uploadedFiles = ref<string[]>([]);
 const saveName = ref('');
 const status = ref(true);
 const saveDate = ref('');
 const inputText = ref('');
-// const uploadedFile = ref<string | null>(null);
 
 const getsave = async () => {
   const currentDateTime = new Date().toISOString();
   const postdata = {
     title: saveName.value,
-    content: null,
+    content: uploadedFiles.value,
     createdAt: currentDateTime,
     updatedAt: currentDateTime,
     timestampCreate: currentDateTime,
     titleImages: 'image-url',
     pageLink: '/new-page',
     isActive: status.value,
-    typeId: 1,
+    typeId: 2,
     tag: inputText.value,
-    type: {
-      id: 1,
-      typeName: 'Gallery',
-      createdAt: currentDateTime,
-      updatedAt: currentDateTime
-    }
+    type: { id: 2, typeName: 'gallery', createdAt: currentDateTime, updatedAt: currentDateTime }
   };
-
   try {
     const response = await createPage.createSinglePage(postdata);
     console.log('Page creation response:', response);
@@ -59,37 +56,34 @@ const getsave = async () => {
 };
 
 const handleSave = (data: any) => {
-  console.log("Data:", data)
   saveName.value = data;
 };
 
 const handleStatus = (data: any) => {
-  console.log("Data:", data)
   status.value = data;
 };
 
 const handleDate = (data: any) => {
-  console.log("Data:", data)
   saveDate.value = data;
 };
 
 const handleTag = (data: any) => {
-  console.log("Data:", data);
   inputText.value = data;
 };
 
-// Event handler for imageUploaded event
-const handleImageUpload = (imageUrl: string) => {
-  console.log('Uploaded Image URL:', imageUrl);
-  uploadedFile.value = imageUrl;
-};
 
+const handleImageUpload = (imagePaths: string[]) => {
+  uploadedFiles.value = imagePaths;
+};
 const jsonOutput = ref('');
+
+function emit(arg0: string, fullUrl: string) {
+  throw new Error('Function not implemented.');
+}
 </script>
 
 <template>
   <div>
-    <!-- Breadcrumb navigation -->
     <v-breadcrumbs>
       <v-breadcrumbs-item v-for="(breadcrumb, index) in breadcrumbs" :key="index" @click="navigateTo(breadcrumb.href)"
         class="breadcrumb-item">
@@ -98,18 +92,18 @@ const jsonOutput = ref('');
       </v-breadcrumbs-item>
     </v-breadcrumbs>
   </div>
-
   <AdminHeadingInputHeading :name="saveName" @name="handleSave" @status="handleStatus" @day="handleDate"
     @tag="handleTag" />
-
   <div class="center-container">
     <v-card class="withbg mt-4" style="max-width: 1000px;">
       <AdminBodyGalleryInput @imageUploaded="handleImageUpload" />
       <v-btn color="primary" class="ml-5 mb-6" @click="getsave">Save</v-btn>
-      <pre>{{ jsonOutput }}</pre>
+
+
     </v-card>
   </div>
 </template>
+
 
 <style scoped>
 .breadcrumb-item {
