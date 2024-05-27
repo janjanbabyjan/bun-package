@@ -320,11 +320,18 @@ onMounted(() => {
                   <v-btn color="secondary" @click="clearSearch" class="ml-3">ล้าง</v-btn>
                 </v-col>
               </v-row>
+              <!-- <v-list>
+                <v-list-item v-for="(menu, index) in menuTree" :key="menu.id" @click="selectLink(menu)">
+                  <v-list-item-title>{{ menu.menuName }}</v-list-item-title>
+                </v-list-item>
+              </v-list> -->
+
               <v-list>
                 <v-list-item v-for="(menu, index) in menuTree" :key="menu.id" @click="selectLink(menu)">
                   <v-list-item-title>{{ menu.menuName }}</v-list-item-title>
                 </v-list-item>
               </v-list>
+              
             </v-card-text>
             <v-card-actions>
               <v-btn color="error" @click="pathDialog = false">ยกเลิก</v-btn>
