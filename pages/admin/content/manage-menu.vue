@@ -6,23 +6,32 @@ import {
   createNewMenu,
   updateMenu,
   getAllPageTypes,
+  getAllSinglePages,
 } from "@/plugins/api/authService";
+import index from "@/components/public/layout/full/vertical-sidebar/NavItem/index.vue";
 
 definePageMeta({
   layout: "admin",
 });
-const pageTypes = ref([]); // Variable to store fetched page types
+interface PageType {
+  id: number;
+  typeName: string;
+}
 
-// Function to fetch and set page types
+const pageTypes = ref<PageType[]>([]); // สร้าง ref สำหรับเก็บ page types
+const selectedPageType = ref<number | null>(null); // สร้าง ref สำหรับเก็บ page type ที่ถูกเลือก
+
+// Function สำหรับเรียก API ในการดึง page types
 const fetchPageTypes = async () => {
   try {
     const response = await getAllPageTypes();
-    console.log("🚀 ~ fetchPageTypes ~ response:", response);
-    pageTypes.value = response.result; // Assuming response.result contains the page types
+    console.log("Fetched page types:", response.result); // เพิ่มบรรทัดนี้เพื่อ log ค่าที่ได้มา
+    pageTypes.value = response.result;
   } catch (error) {
     console.error("Error fetching page types:", error);
   }
 };
+
 // Dialog states
 const dialog = ref(false);
 const pathDialog = ref(false);
@@ -223,14 +232,41 @@ const breadcrumbs = [
 const getBreadcrumbText = (index: number) => {
   return breadcrumbs[index].text;
 };
+const contents = ref<any[]>([]);
+
+// Function to fetch contents from API
+const fetchContents = async () => {
+  try {
+    const response = await getAllSinglePages();
+    console.log("🚀 ~ fetchContents ~ response:", response);
+    manageMenus.value = response.result.manageMenus;
+  } catch (error) {
+    console.error("Error fetching manage menus:", error);
+  }
+};
+
+// Function to handle content selection
+// Function to handle content selection
+const selectContent = (content: any) => {
+  // ทำอะไรก็ตามที่ต้องการเมื่อเลือก content
+  fetchContents(); // เรียกใช้ fetchContents เมื่อต้องการดึงข้อมูลเนื้อหา
+};
 
 onMounted(() => {
   fetchManageMenus();
-  fetchPageTypes();
+
+  fetchPageTypes(); // Call fetchPageTypes function when the component is mounted
 });
 </script>
 
 <template>
+  <v-select
+    :items="pageTypes"
+    item-text="{{pageTypes.typeName}}"
+    label="Page Type"
+    v-model="selectedPageType"
+  />
+
   <!-- Breadcrumb navigation -->
   <v-breadcrumbs>
     <v-breadcrumbs-item
@@ -295,7 +331,6 @@ onMounted(() => {
             </v-card-actions>
           </v-card>
         </v-dialog>
-
         <!-- Path Selection Dialog -->
         <v-dialog v-model="pathDialog" class="custom-path-dialog align-center">
           <v-card>
@@ -304,13 +339,12 @@ onMounted(() => {
               <v-row class="align-center">
                 <v-col cols="3">
                   <v-select
-                    v-model="category"
+                    v-model="selectedPageType"
                     :items="pageTypes"
-                    label="หมวดหมู่"
                     item-text="typeName"
                     item-value="id"
-                    outlined
-                  ></v-select>
+                  >
+                  </v-select>
                 </v-col>
                 <v-col cols="7">
                   <v-text-field
@@ -335,11 +369,11 @@ onMounted(() => {
               </v-row>
               <v-list>
                 <v-list-item
-                  v-for="(menu, index) in menuTree"
-                  :key="index"
-                  @click="selectLink(menu)"
+                  v-for="(content, index) in contents"
+                  :key="content.id"
+                  @click="selectContent(content)"
                 >
-                  <v-list-item-title>{{ menu.menuName }}</v-list-item-title>
+                  <v-list-item-title>{{ content.title }}</v-list-item-title>
                 </v-list-item>
               </v-list>
             </v-card-text>
@@ -394,7 +428,7 @@ onMounted(() => {
                 label="ชื่อเมนูย่อย"
                 outlined
               ></v-text-field>
-              <v-row>
+              <!-- <v-row>
                 <v-col cols="10">
                   <v-text-field
                     v-model="newSubMenuLink"
@@ -407,7 +441,7 @@ onMounted(() => {
                 <v-col cols="2">
                   <v-btn color="primary" @click="openPathDialog">เลือก</v-btn>
                 </v-col>
-              </v-row>
+              </v-row> -->
               <!-- <v-text-field v-model="newSubMenuLink" label="ลิงก์" outlined></v-text-field> -->
               <v-switch
                 v-model="isSubMenuActive"
@@ -432,7 +466,7 @@ onMounted(() => {
           :value="child.menuName"
         >
           <template v-slot:activator="{ props }">
-            <v-list-item v-bind="props" style="color: blue">
+            <v-list-item v-bind="props" style="color: #5b5b5b">
               <v-icon>{{
                 props.isOpen ? "mdi-menu-down" : "mdi-menu-right"
               }}</v-icon>

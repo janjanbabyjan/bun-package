@@ -129,9 +129,9 @@ watch(inputText, (newValue, oldValue) => {
               <div class="d-flex align-center">
                 <v-text-field type="text" v-model="inputText" label="เพิ่ม Tag ข่าว"
                   style="max-width: 200px;"></v-text-field>
-                <v-btn color="primary" class="ml-5 mt-2 align-self-start" v-model="inputText" @click="addTag">
+                <!-- <v-btn color="primary" class="ml-5 mt-2 align-self-start" v-model="inputText" @click="addTag">
                   <v-icon left>mdi-plus</v-icon>
-                </v-btn>
+                </v-btn> -->
               </div>
               <div class="d-flex flex-wrap-reverse">
                 <div v-for="(tag, index) in tags" :key="index" class="tag mr-4 tag-item">
