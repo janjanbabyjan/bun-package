@@ -123,4 +123,13 @@ const getAllPageTypes = async () => {
     throw error;
   }
 };
-export { getLogin, getAllManageMenus,createNewMenu,updateMenu,deleteMenu,createSinglePage ,getAllPageTypes};
+const getAllSinglePages = async () => {
+  try {
+    const response = await axios.get(`${baseApiUrl}/singlepage`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching single pages:', error);
+    throw error;
+  }
+};
+export { getLogin, getAllManageMenus,createNewMenu,updateMenu,deleteMenu,createSinglePage ,getAllPageTypes,getAllSinglePages};

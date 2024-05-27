@@ -1,3 +1,4 @@
+<!-- pages\admin\content\gallery\add\index.vue -->
 <script setup lang="ts">
 // api
 import axios from 'axios';
@@ -14,6 +15,9 @@ const breadcrumbs = [
   { text: 'เพิ่มรูปภาพ', href: '/admin/content/gallery/add' },
 ];
 
+const pageId = ref(null);  // Store the page ID for later updates
+const uploadedFile = ref<string | null>(null);
+
 const getBreadcrumbText = (index: number) => {
   return breadcrumbs[index].text;
 };
@@ -23,13 +27,13 @@ const saveName = ref('');
 const status = ref(true);
 const saveDate = ref('');
 const inputText = ref('');
-const uploadedFile = ref<string | null>(null);
+// const uploadedFile = ref<string | null>(null);
 
 const getsave = async () => {
   const currentDateTime = new Date().toISOString();
   const postdata = {
     title: saveName.value,
-    content: uploadedFile.value,
+    content: null,
     createdAt: currentDateTime,
     updatedAt: currentDateTime,
     timestampCreate: currentDateTime,
@@ -49,10 +53,8 @@ const getsave = async () => {
   try {
     const response = await createPage.createSinglePage(postdata);
     console.log('Page creation response:', response);
-    // Handle the response as needed
   } catch (error) {
     console.error('Error creating page:', error);
-    // Handle the error as needed
   }
 };
 
