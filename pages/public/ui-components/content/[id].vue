@@ -140,7 +140,7 @@ onMounted(async () => {
   </div>
 </template>
 
-<style scoped>
+<style>
 .image-container {
   display: flex;
   justify-content: center;

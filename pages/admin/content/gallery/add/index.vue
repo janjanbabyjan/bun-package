@@ -5,6 +5,9 @@ import createPage from '~/plugins/api/createPage.js';
 import { computed } from 'vue';
 
 
+definePageMeta({
+  layout: "admin",
+});
 
 // const baseUrl = 'http://localhost:8000';
 
