@@ -162,6 +162,7 @@ const saveName = ref('');
 const status = ref(true);
 const saveDate = ref('');
 const tags = ref<string[]>([]);
+
 const newTag = ref(''); // New tag input
 
 
@@ -187,6 +188,7 @@ const handleDate = (data: any) => {
 
 const handleTag = (data: string[]) => {
   tags.value = data;
+  console.log("🚀 ~ handleTag ~ data:", data)
 };
 
 const getsave = async () => {
@@ -203,7 +205,7 @@ const getsave = async () => {
     pageLink: '/new-page',
     isActive: status.value,
     typeId: 1,
-    tag: tags.value.map(tag => ({ tagName: tag })) ,// Format tags
+    tag: tags.value.map(tag => ({ tag })) ,// Format tags
     type: {
       id: 2,
       typeName: 'SinglePage',
@@ -218,32 +220,12 @@ const getsave = async () => {
     console.error('Error creating page:', error);
   }
 };
-const addTag = () => {
-  if (newTag.value.trim() !== "") {
-    tags.value.push(newTag.value.trim());
-    newTag.value = "";
-  }
-};
 
-// Remove tag
-const removeTag = (index: number) => {
-  tags.value.splice(index, 1);
-};
 
 </script>
 
 <template>
-  <!-- ช่องของแท็ก -->
-          <div class="tags-container">
-          <v-text-field v-model="newTag" label="Add Tag"></v-text-field>
-          <v-btn @click="addTag">Add Tag</v-btn>
-        </div>
-        <div class="tags-list">
-          <v-chip v-for="(tag, index) in tags" :key="index" @click:close="removeTag(index)">
-            {{ tag }}
-            <v-icon small @click="removeTag(index)">mdi-close</v-icon>
-          </v-chip>
-        </div>
+  
   <div>
 
     <!-- Breadcrumb navigation -->
@@ -256,7 +238,7 @@ const removeTag = (index: number) => {
     </v-breadcrumbs>
 
     <!-- เพิ่มตัวแปลด้วย ถ้าจะดึงจากลูก -->
-    <AdminHeadingInputHeading :name="saveName" @name="handleSave" @status="handleStatus" @day="handleDate"
+    <AdminHeadingInputHeading :name="saveName" @name="handleSave" @status="handleStatus" @day="handleDate "
       @tag="handleTag" />
 
     <div class="center-container">
