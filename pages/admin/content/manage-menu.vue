@@ -6,7 +6,7 @@ import {
   createNewMenu,
   updateMenu,
   getAllPageTypes,
-  getAllSinglePages
+  getAllSinglePages,
 } from "@/plugins/api/authService";
 import index from "@/components/public/layout/full/vertical-sidebar/NavItem/index.vue";
 
@@ -31,7 +31,6 @@ const fetchPageTypes = async () => {
     console.error("Error fetching page types:", error);
   }
 };
-
 
 // Dialog states
 const dialog = ref(false);
@@ -74,16 +73,24 @@ const fetchManageMenus = async () => {
     console.error("Error fetching manage menus:", error);
   }
 };
+interface SinglePage {
+  id: number;
+  title: string;
+  pageLink?: string;
+  // เพิ่มคุณสมบัติอื่น ๆ ตามต้องการ
+}
+
+const singlePages = ref<SinglePage[]>([]);
 
 const fetchSinglePages = async () => {
   try {
     const response = await getAllSinglePages();
-    console.log("🚀 ~ fetchSinglePages ~ response:", response)
-    manageMenus.value = response.result.manageMenus;
+    singlePages.value = response.result.singlePage;
   } catch (error) {
-    console.error("Error fetching manage menus:", error);
+    console.error("Error fetching single pages:", error);
   }
 };
+
 
 // Build menu tree from flat list
 const buildMenuTree = (menuItems: any[]) => {
@@ -249,7 +256,6 @@ onMounted(() => {
   fetchPageTypes(); // Call fetchPageTypes function when the component is mounted
   fetchSinglePages();
 });
-
 </script>
 
 <template>
@@ -260,11 +266,10 @@ onMounted(() => {
     v-model="selectedPageType"
   />
   <v-select
-      :items="pageTypes"
-      density="comfortable"
-      label="Comfortable"
-    ></v-select>
-
+    :items="pageTypes"
+    density="comfortable"
+    label="Comfortable"
+  ></v-select>
 
   <!-- Breadcrumb navigation -->
   <v-breadcrumbs>
@@ -330,49 +335,59 @@ onMounted(() => {
             </v-card-actions>
           </v-card>
         </v-dialog>
-          <!-- Path Selection Dialog -->
-  <v-dialog v-model="pathDialog" class="custom-path-dialog align-center">
-    <v-card>
-      <v-card-title class="mt-2">เลือกเส้นทาง</v-card-title>
-      <v-card-text class="scrollable-content">
-        <v-row class="align-center">
-          <v-col cols="3">
-            <v-select v-model="selectedPageType" :items="pageTypes" item-text="typeName" item-value="id">
-</v-select>
-
-          </v-col>
-          <v-col cols="7">
-            <v-text-field
-              style="max-width: 350px"
-              v-model="searchQuery"
-              label="ค้นหา"
-              outlined
-            ></v-text-field>
-          </v-col>
-          <v-col
-            style="margin-top: -23px"
-            cols="2"
-            class="d-flex justify-end align-items-center"
-          >
-            <v-btn class="btn" color="primary" @click="search">ค้นหา</v-btn>
-            <v-btn color="secondary" @click="clearSearch" class="ml-3">ล้าง</v-btn>
-          </v-col>
-        </v-row>
-        <v-list>
-          <v-list-item
-            v-for="(menu, index) in menuTree"
-            :key="menu.id"
-            @click="selectLink(menu)"
-          >
-            <v-list-item-title>{{ menu.menuName }}</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-card-text>
-      <v-card-actions>
-        <v-btn color="error" @click="pathDialog = false">ยกเลิก</v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+        <!-- Path Selection Dialog -->
+        <v-dialog v-model="pathDialog" class="custom-path-dialog align-center">
+          <v-card>
+            <v-card-title class="mt-2">เลือกเส้นทาง</v-card-title>
+            <v-card-text class="scrollable-content">
+              <v-row class="align-center">
+                <v-col cols="3">
+                  <v-select
+                    v-model="selectedPageType"
+                    :items="pageTypes"
+                    item-text="typeName"
+                    item-value="id"
+                  >
+                  </v-select>
+                </v-col>
+                <v-col cols="7">
+                  <v-text-field
+                    style="max-width: 350px"
+                    v-model="searchQuery"
+                    label="ค้นหา"
+                    outlined
+                  ></v-text-field>
+                </v-col>
+                <v-col
+                  style="margin-top: -23px"
+                  cols="2"
+                  class="d-flex justify-end align-items-center"
+                >
+                  <v-btn class="btn" color="primary" @click="search"
+                    >ค้นหา</v-btn
+                  >
+                  <v-btn color="secondary" @click="clearSearch" class="ml-3"
+                    >ล้าง</v-btn
+                  >
+                </v-col>
+              </v-row>
+              <v-list>
+                <v-list-item v-for="page in singlePages" :key="page.id">
+                  <v-list-item-content>
+                    <v-list-item-title>{{ page.title }}</v-list-item-title>
+                    <v-list-item-subtitle v-if="page.pageLink">{{
+                      page.pageLink
+                    }}</v-list-item-subtitle>
+                  </v-list-item-content>
+                  <!-- Any actions or buttons related to single pages -->
+                </v-list-item>
+              </v-list>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn color="error" @click="pathDialog = false">ยกเลิก</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </div>
     </v-card-item>
   </v-card>
