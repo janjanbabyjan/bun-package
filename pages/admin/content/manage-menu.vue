@@ -11,21 +11,28 @@ import {
 definePageMeta({
   layout: "admin",
 });
-const pageTypes = ref([]); // Variable to store fetched page types
+
 const selectCategory = (selectedCategory: any) => {
   category.value = selectedCategory.typeName;
   pathDialog.value = false; // Close the path dialog
 };
+
+const pageTypes = ref([]); // Variable to store fetched page types
 // Function to fetch and set page types
 const fetchPageTypes = async () => {
   try {
     const response = await getAllPageTypes();
-    console.log("🚀 ~ fetchPageTypes ~ response:", response)
-    pageTypes.value = response.result; // Assuming response.result contains the page types
+    if (response.result && Array.isArray(response.result)) {
+      pageTypes.value = response.result;
+    } else {
+      console.error("Invalid page types data:", response.result);
+    }
   } catch (error) {
     console.error("Error fetching page types:", error);
   }
 };
+
+
 // Dialog states
 const dialog = ref(false);
 const pathDialog = ref(false);
@@ -226,10 +233,22 @@ onMounted(() => {
   fetchManageMenus();
   fetchPageTypes();
 });
+
+
+
+
+
+
+
 </script>
 
 <template>
   <div>
+
+    <!-- <v-list-item v-for="(pageType, index) in pageTypes" :key="index">
+          {{ pageType.typeName }}
+        </v-list-item> -->
+
     <!-- Breadcrumb navigation -->
     <v-breadcrumbs>
       <v-breadcrumbs-item v-for="(breadcrumb, index) in breadcrumbs" :key="index" @click="navigateTo(breadcrumb.href)"
@@ -238,6 +257,7 @@ onMounted(() => {
         <template v-if="index < breadcrumbs.length - 1"> > </template>
       </v-breadcrumbs-item>
     </v-breadcrumbs>
+
 
     <!-- Main Card -->
     <v-card elevation="10" class="withbg">
@@ -278,16 +298,25 @@ onMounted(() => {
               <v-card-text class="scrollable-content">
                 <v-row class="align-center">
                   <v-col cols="3">
-      <v-select
-        v-model="category"
-        :items="pageTypes"
-        label="หมวดหมู่"
-        item-text="typeName"
-        item-value="id"
-        outlined
-      ></v-select>
-              
+                    <!-- <v-select v-model="category" :items="pageTypes" label="หมวดหมู่" item-text="typeName"
+                      item-value="id" outlined></v-select>
+                      {{ pageTypes }} -->
+
+                    <v-select v-model="category" :items="pageTypes" item-text="typeName" item-value="id"
+                      label="เลือกประเภท">
+                      <template #prepend-item>
+                        <v-list-item disabled>
+                          <v-list-item-content>
+                            <v-list-item-title>กรุณาเลือกประเภท</v-list-item-title>
+                          </v-list-item-content>
+                        </v-list-item>
+                      </template>
+                    </v-select>
+
+
+
                   </v-col>
+
                   <v-col cols="7">
                     <v-text-field style="max-width: 350px;" v-model="searchQuery" label="ค้นหา" outlined></v-text-field>
                   </v-col>
@@ -301,6 +330,13 @@ onMounted(() => {
                     <v-list-item-title>{{ menu.menuName }}</v-list-item-title>
                   </v-list-item>
                 </v-list>
+                
+                <v-list>
+                  <v-list-item v-for="(content, index) in contents" :key="content.id" @click="selectContent(content)">
+                    <v-list-item-title>{{ content.title }}</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+                
               </v-card-text>
               <v-card-actions>
                 <v-btn color="error" @click="pathDialog = false">ยกเลิก</v-btn>
@@ -328,7 +364,6 @@ onMounted(() => {
               </template>
             </v-list-item>
           </template>
-
           <!-- Submenu Dialog -->
           <v-dialog v-model="subMenuDialog" class="custom-dialog">
             <v-card>
