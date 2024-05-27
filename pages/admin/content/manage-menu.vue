@@ -6,6 +6,7 @@ import {
   createNewMenu,
   updateMenu,
   getAllPageTypes,
+  getAllSinglePages
 } from "@/plugins/api/authService";
 import index from "@/components/public/layout/full/vertical-sidebar/NavItem/index.vue";
 
@@ -68,6 +69,16 @@ const fetchManageMenus = async () => {
   try {
     const response = await getAllManageMenus();
     console.log("🚀 ~ fetchManageMenus ~ response:", response);
+    manageMenus.value = response.result.manageMenus;
+  } catch (error) {
+    console.error("Error fetching manage menus:", error);
+  }
+};
+
+const fetchSinglePages = async () => {
+  try {
+    const response = await getAllSinglePages();
+    console.log("🚀 ~ fetchSinglePages ~ response:", response)
     manageMenus.value = response.result.manageMenus;
   } catch (error) {
     console.error("Error fetching manage menus:", error);
@@ -236,6 +247,7 @@ const getBreadcrumbText = (index: number) => {
 onMounted(() => {
   fetchManageMenus();
   fetchPageTypes(); // Call fetchPageTypes function when the component is mounted
+  fetchSinglePages();
 });
 
 </script>
