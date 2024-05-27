@@ -233,6 +233,7 @@ const removeTag = (index: number) => {
 </script>
 
 <template>
+  <!-- ช่องของแท็ก -->
           <div class="tags-container">
           <v-text-field v-model="newTag" label="Add Tag"></v-text-field>
           <v-btn @click="addTag">Add Tag</v-btn>
