@@ -123,7 +123,7 @@ const getsave = async () => {
               <div class="d-flex flex-wrap-reverse">
                 <div v-for="(tag, index) in tags" :key="index" class="tag mr-4 tag-item">
                   <span @click="editTag(index)" class="editable-tag">{{ tag }}</span>
-                  <v-icon small @click="removeTag(index)">mdi-close</v-icon>
+                  <span @click="removeTag(index)" class="delete-icon">-</span>
                 </div>
               </div>
             </div>
