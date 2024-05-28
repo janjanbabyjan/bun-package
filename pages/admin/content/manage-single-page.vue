@@ -115,7 +115,7 @@ const closeDialog = () => {
                     </td>
                     <td>
                         <router-link to="/admin/content/article/edit/[id]">
-                            <v-icon class="ml-3" style="color: red;">mdi-pencil</v-icon>
+                            <v-icon class="move-up" style="color: red;">mdi-pencil</v-icon>
                         </router-link>
                     </td>
                 </tr>
@@ -137,5 +137,10 @@ const closeDialog = () => {
     /* จัดวางตรงกลางแนวตั้ง */
     height: 100%;
 
+}
+.move-up {
+  position: relative;
+  top: -10px; /* ปรับค่าตามต้องการ */
+  margin-left: 10px;
 }
 </style>
