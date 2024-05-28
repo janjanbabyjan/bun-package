@@ -55,3 +55,6 @@ bun add vuetify@next
 
 bun add @editorjs/image
 add @nuxt/composables
+
+
+bun add sweetalert2
