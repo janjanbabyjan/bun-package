@@ -25,16 +25,14 @@ interface PageType {
 const fetchSinglePages = async () => {
   try {
     const response = await getAllSinglePages();
-    console.log("🚀 ~ fetchSinglePages ~ response:", response)
-    singlePages.value = response.result.singlePage.map((page: any) => ({
-      ...page,
-      type: page.typeId ? { id: page.typeId, typeName: "" } : null,
-    })) as SinglePage[];
-    console.log(singlePages.value); // ตรวจสอบค่าที่ถูก set ให้กับ singlePages
+    console.log("🚀 ~ fetchSinglePages ~ response:", response);
+    singlePages.value = response.result.singlePage;
+    console.log("🚀 ~ fetchSinglePages ~ singlePages.value:", singlePages.value);
   } catch (error) {
     console.error("Error fetching single pages:", error);
   }
 };
+
 
 // เรียกใช้งาน fetchSinglePages เมื่อคอมโพเนนต์ถูกโหลด
 onMounted(() => {
@@ -133,34 +131,35 @@ onMounted(() => {
         </tr>
       </thead>
       <tbody>
-        <tr v-for="page in singlePages" :key="page.id" class="month-item">
-          <td>
-            <p class="text-15 font-weight-medium">{{ page.id }}</p>
-          </td>
-          <td>
-            <div class="">
-              <h6 class="text-subtitle-1 font-weight-bold">{{ page.title }}</h6>
-              <div class="text-subtitle-2 mt-1 text-muted">
-                {{ page.pageLink }}
-              </div>
-            </div>
-          </td>
-          <td>
-            <h6 class="text-body-1 text-muted" v-if="page.type">
-              {{ page.type.id }}{{ page.type.typeName }}{{ page.type }}
-            </h6>
-            <h6 class="text-body-1 text-muted" v-else>ไม่มีประเภท</h6>
-          </td>
-          <td>
-            <v-switch v-model="page.isActive" color="primary"></v-switch>
-          </td>
-          <td>
-            <router-link :to="`/admin/content/article/edit/${page.id}`">
-              <v-icon class="ml-3" style="color: red">mdi-pencil</v-icon>
-            </router-link>
-          </td>
-        </tr>
-      </tbody>
+  <tr v-for="page in singlePages" :key="page.id" class="month-item">
+    <td>
+      <p class="text-15 font-weight-medium">{{ page.id }}</p>
+    </td>
+    <td>
+      <div class="">
+        <h6 class="text-subtitle-1 font-weight-bold">{{ page.title }}</h6>
+        <div class="text-subtitle-2 mt-1 text-muted">
+          {{ page.pageLink }}
+        </div>
+      </div>
+    </td>
+    <td>
+      <h6 class="text-body-1 text-muted">
+        {{ page.type ? page.type.typeName : 'ไม่มีประเภท' }}
+      </h6>
+    </td>
+    <td>
+      <v-switch v-model="page.isActive" color="primary"></v-switch>
+    </td>
+    <td>
+      <router-link :to="`/admin/content/article/edit/${page.id}`">
+        <v-icon class="ml-3" style="color: red">mdi-pencil</v-icon>
+      </router-link>
+    </td>
+  </tr>
+</tbody>
+
+
     </v-table>
   </v-card>
   <!-- <v-btn color="primary" class="ml-auto" @click="showSuccessAlert"
