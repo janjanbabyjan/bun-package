@@ -23,18 +23,13 @@ const getLogin = async ( data) => {
       return jsonData;
 }
 
-const createNewMenu = async (
-  menuName,
-  menuLink,
-  isActive,
-  parentId // เพิ่มพารามิเตอร์ parentId ที่รับค่าเป็น string หรือ number
-) => {
+const createNewMenu = async (menuName, pathMenu, isActive, parentId) => {
   try {
     const response = await axios.post(`${baseApiUrl}/manage-menu`, {
       menuName,
-      menuLink,
+      pathMenu,
       isActive,
-      parentId, // ส่ง parentId ไปยังเซิร์ฟเวอร์เพื่อการประมวลผล
+      parentId,
       icons: null,
     });
 
@@ -45,7 +40,6 @@ const createNewMenu = async (
     // ดำเนินการต่อตามต้องการ เช่น แสดงข้อความแจ้งเตือนผู้ใช้เกี่ยวกับข้อผิดพลาด
   }
 };
-
 
 
 const updateMenu = async (id, updatedMenuData) => {

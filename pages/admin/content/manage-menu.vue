@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import {
   getAllManageMenus,
   deleteMenu,
@@ -126,7 +126,13 @@ const closeDialog = () => {
 const openSubMenuDialog = (parentId: number | string) => {
   subMenuDialog.value = true;
   selectedParentId.value = parentId;
+  newSubMenuName.value = "";
+  newSubMenuLink.value = "";
+  isSubMenuActive.value = false;
+  isSubMenuEditMode.value = false;
+  currentSubMenuId.value = null;
 };
+
 
 const closeSubMenuDialog = () => {
   subMenuDialog.value = false;
@@ -142,11 +148,12 @@ const saveMenu = async () => {
     if (isEditMode.value && currentMenuId.value !== null) {
       await updateMenu(currentMenuId.value, {
         menuName: newMenuName.value,
-        menuLink: newMenuLink.value,
+        pathMenu: newMenuLink.value,
         isActive: isActive.value,
+        parentId: null, // Add parentId if needed
       });
     } else {
-      await createNewMenu(newMenuName.value, newMenuLink.value, isActive.value);
+      await createNewMenu(newMenuName.value, newMenuLink.value, isActive.value, null); // Add parentId if needed
     }
     fetchManageMenus();
     closeDialog();
@@ -160,8 +167,9 @@ const saveSubMenu = async () => {
     if (isSubMenuEditMode.value && currentSubMenuId.value !== null) {
       await updateMenu(currentSubMenuId.value, {
         menuName: newSubMenuName.value,
-        menuLink: newSubMenuLink.value,
+        pathMenu: newSubMenuLink.value, // ตรวจสอบการส่งค่า pathMenu
         isActive: isSubMenuActive.value,
+        parentId: selectedParentId.value, // ตรวจสอบการส่งค่า parentId ด้วย
       });
     } else {
       await createNewMenu(newSubMenuName.value, newSubMenuLink.value, isSubMenuActive.value, selectedParentId.value);
@@ -172,6 +180,7 @@ const saveSubMenu = async () => {
     console.error("Error saving submenu:", error);
   }
 };
+
 
 const handleDeleteMenu = async (id: number) => {
   try {
@@ -185,7 +194,7 @@ const handleDeleteMenu = async (id: number) => {
 const handleEditMenu = (menu: any) => {
   currentMenuId.value = menu.id;
   newMenuName.value = menu.menuName;
-  newMenuLink.value = menu.menuLink;
+  newMenuLink.value = menu.pathMenu; // Update to pathMenu
   isActive.value = menu.isActive;
   isEditMode.value = true;
   dialog.value = true;
@@ -194,7 +203,7 @@ const handleEditMenu = (menu: any) => {
 const handleEditSubMenu = (menu: any) => {
   currentSubMenuId.value = menu.id;
   newSubMenuName.value = menu.menuName;
-  newSubMenuLink.value = menu.menuLink;
+  newSubMenuLink.value = menu.pathMenu; // Update to pathMenu
   isSubMenuActive.value = menu.isActive;
   isSubMenuEditMode.value = true;
   openSubMenuDialog(menu.parentId);
@@ -202,17 +211,33 @@ const handleEditSubMenu = (menu: any) => {
 
 const selectLink = (page: SinglePage) => {
   if (page.pageLink) {
-    newMenuLink.value = page.pageLink;
+    // ตรวจสอบว่ามาจาก dialog ของเมนูหลักหรือเมนูย่อย
+    if (subMenuDialog.value) {
+      newSubMenuLink.value = page.pageLink;
+      console.log('Selected link (submenu):', page.pageLink);
+      console.log('newSubMenuLink updated:', newSubMenuLink.value);
+    } else {
+      newMenuLink.value = page.pageLink;
+      console.log('Selected link:', page.pageLink);
+      console.log('newMenuLink updated:', newMenuLink.value);
+    }
   } else {
-    newMenuLink.value = ''; // Handle the case where pageLink is undefined
+    if (subMenuDialog.value) {
+      newSubMenuLink.value = '';
+    } else {
+      newMenuLink.value = '';
+    }
   }
   pathDialog.value = false;
 };
 
+
 const openPathDialog = () => {
   pathDialog.value = true;
 };
-
+const closePathDialog = () => {
+  pathDialog.value = false;
+};
 const clearSearch = () => {
   searchQuery.value = "";
   category.value = "";
@@ -236,7 +261,13 @@ onMounted(() => {
   fetchPageTypes();
   fetchSinglePages();
 });
+
+// Watcher for debugging newMenuLink updates
+watch(newMenuLink, (newValue) => {
+  console.log("newMenuLink updated:", newValue);
+});
 </script>
+
 
 
 <template>
@@ -258,22 +289,14 @@ onMounted(() => {
     <v-card-item class="pa-6">
       <div class="d-flex align-center justify-space-between pt-sm-2">
         <v-card-title class="text-h5">จัดการเมนู</v-card-title>
-        <v-btn color="primary" class="ml-auto" @click="openDialog"
-          >เพิ่มเมนูหลัก</v-btn
-        >
+        <v-btn color="primary" class="ml-auto" @click="openDialog">เพิ่มเมนูหลัก</v-btn>
 
         <!-- Main Dialog -->
         <v-dialog v-model="dialog" class="custom-dialog">
           <v-card>
-            <v-card-title class="mt-2">{{
-              isEditMode ? "แก้ไขเมนู" : "เพิ่มเมนู"
-            }}</v-card-title>
+            <v-card-title class="mt-2">{{ isEditMode ? "แก้ไขเมนู" : "เพิ่มเมนู" }}</v-card-title>
             <v-card-text>
-              <v-text-field
-                v-model="newMenuName"
-                label="ชื่อเมนู"
-                outlined
-              ></v-text-field>
+              <v-text-field v-model="newMenuName" label="ชื่อเมนู" outlined></v-text-field>
               <v-row>
                 <v-col cols="10">
                   <v-text-field
@@ -288,72 +311,46 @@ onMounted(() => {
                   <v-btn color="primary" @click="openPathDialog">เลือก</v-btn>
                 </v-col>
               </v-row>
-              <v-switch
-                v-model="isActive"
-                label="แสดงเมนู"
-                color="primary"
-                :input-value="true"
-                :false-value="false"
-              ></v-switch>
+              <v-switch v-model="isActive" label="แสดงเมนู" color="primary"></v-switch>
             </v-card-text>
             <v-card-actions>
-              <v-btn color="primary" @click="saveMenu">{{
-                isEditMode ? "บันทึกการเปลี่ยนแปลง" : "เพิ่ม"
-              }}</v-btn>
+              <v-btn color="primary" @click="saveMenu">{{ isEditMode ? "บันทึกการเปลี่ยนแปลง" : "เพิ่ม" }}</v-btn>
               <v-btn color="error" @click="closeDialog">ยกเลิก</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
+
         <!-- Path Selection Dialog -->
         <v-dialog v-model="pathDialog" class="custom-path-dialog align-center">
-  <v-card>
-    <v-card-title class="mt-2">เลือกเส้นทาง</v-card-title>
-    <v-card-text class="scrollable-content">
-      <v-row class="align-center">
-        <v-col cols="3">
-          <v-select
-            label="Select"
-            :items="pageTypes"
-            variant="outlined"
-          ></v-select>
-        </v-col>
-        <v-col cols="7">
-          <v-text-field
-            style="max-width: 350px"
-            v-model="searchQuery"
-            label="ค้นหา"
-            outlined
-          ></v-text-field>
-        </v-col>
-        <v-col
-          style="margin-top: -23px"
-          cols="2"
-          class="d-flex justify-end align-items-center"
-        >
-          <v-btn class="btn" color="primary" @click="search">ค้นหา</v-btn>
-          <v-btn color="secondary" @click="clearSearch" class="ml-3">ล้าง</v-btn>
-        </v-col>
-      </v-row>
-
-      <v-list>
-        <v-list-item
-          v-for="page in singlePages"
-          :key="page.id"
-          @click="selectLink(page)"
-        >
-          <v-list-item-content>
-            <v-list-item-title>{{ page.title }}</v-list-item-title>
-            <v-list-item-subtitle v-if="page.pageLink">{{ page.pageLink }}</v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-card-text>
-    <v-card-actions>
-      <v-btn color="error" @click="pathDialog = false">ยกเลิก</v-btn>
-    </v-card-actions>
-  </v-card>
-</v-dialog>
-
+          <v-card>
+            <v-card-title class="mt-2">เลือกเส้นทาง</v-card-title>
+            <v-card-text class="scrollable-content">
+              <v-row class="align-center">
+                <v-col cols="3">
+                  <v-select label="Select" :items="pageTypes" variant="outlined"></v-select>
+                </v-col>
+                <v-col cols="7">
+                  <v-text-field style="max-width: 350px" v-model="searchQuery" label="ค้นหา" outlined></v-text-field>
+                </v-col>
+                <v-col style="margin-top: -23px" cols="2" class="d-flex justify-end align-items-center">
+                  <v-btn class="btn" color="primary" @click="search">ค้นหา</v-btn>
+                  <v-btn color="secondary" @click="clearSearch" class="ml-3">ล้าง</v-btn>
+                </v-col>
+              </v-row>
+              <v-list>
+                <v-list-item v-for="page in filteredPages" :key="page.id" @click="selectLink(page)">
+                  <v-list-item-content>
+                    <v-list-item-title>{{ page.title }}</v-list-item-title>
+                    <v-list-item-subtitle v-if="page.pageLink">{{ page.pageLink }}</v-list-item-subtitle>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn color="error" @click="pathDialog = false">ยกเลิก</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </div>
     </v-card-item>
   </v-card>
@@ -362,100 +359,84 @@ onMounted(() => {
 
   <!-- Menu List -->
   <v-card elevation="10" class="withbg">
-  <v-list>
-    <v-list-group
-      v-for="menu in menuTree"
-      :key="menu.id"
-      :value="menu.menuName"
-    >
-      <template v-slot:activator="{ props }">
-        <v-list-item v-bind="props">
-          <v-icon>{{ props.isOpen ? "mdi-menu-down" : "mdi-menu-right" }}</v-icon>
-          {{ menu.menuName }}
-          <template v-slot:append>
-            <v-icon class="icon-size" @click.stop="openSubMenuDialog(menu.id)">mdi-plus</v-icon>
-            <v-icon class="mr-1 icon-size" @click.stop="handleEditMenu(menu)">mdi-pencil</v-icon>
-            <v-icon class="icon-size" @click.stop="handleDeleteMenu(menu.id)">mdi-delete</v-icon>
-          </template>
-        </v-list-item>
-      </template>
-
-      <!-- Submenu Dialog -->
-      <v-dialog v-model="subMenuDialog" class="custom-dialog">
-        <v-card>
-          <v-card-title class="mt-2">{{ isSubMenuEditMode ? "แก้ไขเมนูย่อย" : "เพิ่มเมนูย่อย" }}</v-card-title>
-          <v-card-text>
-            <v-text-field v-model="newSubMenuName" label="ชื่อเมนูย่อย" outlined></v-text-field>
-            <v-row>
-              <v-col cols="10">
-                <v-text-field
-                  v-model="newSubMenuLink"
-                  label="ลิงก์"
-                  outlined
-                  readonly
-                  @click="openPathDialog"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="2">
-                <v-btn color="primary" @click="openPathDialog">เลือก</v-btn>
-              </v-col>
-            </v-row>
-            <v-switch v-model="isSubMenuActive" label="แสดงเมนูย่อย" color="primary"></v-switch>
-          </v-card-text>
-          <v-card-actions>
-            <v-btn color="primary" @click="saveSubMenu">{{ isSubMenuEditMode ? "บันทึกการเปลี่ยนแปลง" : "เพิ่ม" }}</v-btn>
-            <v-btn color="error" @click="closeSubMenuDialog">ยกเลิก</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-
-      <!-- Nested submenus -->
-      <v-list-group
-        v-if="menu.children && menu.children.length > 0"
-        v-for="child in menu.children"
-        :key="child.id"
-        :value="child.menuName"
-      >
+    <v-list>
+      <v-list-group v-for="menu in menuTree" :key="menu.id" :value="menu.menuName">
         <template v-slot:activator="{ props }">
-          <v-list-item v-bind="props" style="color: #5b5b5b">
+          <v-list-item v-bind="props">
             <v-icon>{{ props.isOpen ? "mdi-menu-down" : "mdi-menu-right" }}</v-icon>
-            {{ child.menuName }}
+            {{ menu.menuName }}
             <template v-slot:append>
-              <v-icon class="icon-size" @click.stop="openSubMenuDialog(child.id)">mdi-plus</v-icon>
-              <v-icon class="mr-1 icon-size" @click.stop="handleEditMenu(child)">mdi-pencil</v-icon>
-              <v-icon class="icon-size" @click.stop="handleDeleteMenu(child.id)">mdi-delete</v-icon>
+              <v-icon class="icon-size" @click.stop="openSubMenuDialog(menu.id)">mdi-plus</v-icon>
+              <v-icon class="mr-1 icon-size" @click.stop="handleEditMenu(menu)">mdi-pencil</v-icon>
+              <v-icon class="icon-size" @click.stop="handleDeleteMenu(menu.id)">mdi-delete</v-icon>
             </template>
           </v-list-item>
         </template>
-        
-        <!-- Display page.title under the submenu -->
-        <v-list-item
-          v-for="page in child.pages"
-          :key="page.id"
-          @click="navigateTo(page.link)"
-        >
+
+        <!-- Submenu Dialog -->
+        <v-dialog v-model="subMenuDialog" class="custom-dialog">
+          <v-card>
+            <v-card-title class="mt-2">{{ isSubMenuEditMode ? "แก้ไขเมนูย่อย" : "เพิ่มเมนูย่อย" }}</v-card-title>
+            <v-card-text>
+              <v-text-field v-model="newSubMenuName" label="ชื่อเมนูย่อย" outlined></v-text-field>
+              <v-row>
+                <v-col cols="10">
+                  <v-text-field
+                    v-model="newSubMenuLink"
+                    label="ลิงก์"
+                    outlined
+                    readonly
+                    @click="openPathDialog"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="2">
+                  <v-btn color="primary" @click="openPathDialog">เลือก</v-btn>
+                </v-col>
+              </v-row>
+              <v-switch v-model="isSubMenuActive" label="แสดงเมนูย่อย" color="primary"></v-switch>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn color="primary" @click="saveSubMenu">{{ isSubMenuEditMode ? "บันทึกการเปลี่ยนแปลง" : "เพิ่ม" }}</v-btn>
+              <v-btn color="error" @click="closeSubMenuDialog">ยกเลิก</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+
+        <!-- Nested submenus -->
+        <v-list-group v-if="menu.children && menu.children.length > 0" v-for="child in menu.children" :key="child.id" :value="child.menuName">
+          <template v-slot:activator="{ props }">
+            <v-list-item v-bind="props" style="color: #5b5b5b">
+              <v-icon>{{ props.isOpen ? "mdi-menu-down" : "mdi-menu-right" }}</v-icon>
+              {{ child.menuName }}
+              <template v-slot:append>
+                <v-icon class="icon-size" @click.stop="openSubMenuDialog(child.id)">mdi-plus</v-icon>
+                <v-icon class="mr-1 icon-size" @click.stop="handleEditMenu(child)">mdi-pencil</v-icon>
+                <v-icon class="icon-size" @click.stop="handleDeleteMenu(child.id)">mdi-delete</v-icon>
+              </template>
+            </v-list-item>
+          </template>
+
+          <!-- Display page.title under the submenu -->
+          <v-list-item v-for="page in child.pages" :key="page.id" @click="navigateTo(page.link)">
+            <v-list-item-content>
+              <v-list-item-title>{{ page.title }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-group>
+
+        <!-- Display page.title under the main menu -->
+        <v-list-item v-for="page in menu.pages" :key="page.id" @click="navigateTo(page.link)">
           <v-list-item-content>
             <v-list-item-title>{{ page.title }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-
       </v-list-group>
-      
-      <!-- Display page.title under the main menu -->
-      <v-list-item
-        v-for="page in menu.pages"
-        :key="page.id"
-        @click="navigateTo(page.link)"
-      >
-        <v-list-item-content>
-          <v-list-item-title>{{ page.title }}</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-
-    </v-list-group>
-  </v-list>
-</v-card>
+    </v-list>
+  </v-card>
 </template>
+
+
+
 <style>
 .edit-icon,
 .delete-icon {
