@@ -8,6 +8,7 @@ import {
   getAllPageTypes,
   getAllSinglePages,
 } from "@/plugins/api/authService";
+
 import index from "@/components/public/layout/full/vertical-sidebar/NavItem/index.vue";
 
 definePageMeta({
@@ -409,7 +410,7 @@ watch(newMenuLink, (newValue) => {
               <v-icon>{{ props.isOpen ? "mdi-menu-down" : "mdi-menu-right" }}</v-icon>
               {{ child.menuName }}
               <template v-slot:append>
-                <v-icon class="icon-size" @click.stop="openSubMenuDialog(child.id)">mdi-plus</v-icon>
+                <!-- <v-icon class="icon-size" @click.stop="openSubMenuDialog(child.id)">mdi-plus</v-icon> -->
                 <v-icon class="mr-1 icon-size" @click.stop="handleEditMenu(child)">mdi-pencil</v-icon>
                 <v-icon class="icon-size" @click.stop="handleDeleteMenu(child.id)">mdi-delete</v-icon>
               </template>
