@@ -56,6 +56,7 @@ const fetchBlogData = async () => {
   }
 };
 
+
 // Fetch the blog data when the component is mounted
 onMounted(fetchBlogData);
 
