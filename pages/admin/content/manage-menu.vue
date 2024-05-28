@@ -10,6 +10,7 @@ import {
 } from "@/plugins/api/authService";
 
 import index from "@/components/public/layout/full/vertical-sidebar/NavItem/index.vue";
+import Swal from "sweetalert2";
 
 definePageMeta({
   layout: "admin",
@@ -154,15 +155,34 @@ const saveMenu = async () => {
         isActive: isActive.value,
         parentId: null, // Add parentId if needed
       });
+      Swal.fire({
+        icon: "success",
+        title: "Menu updated successfully!",
+        showConfirmButton: false,
+        timer: 1500
+      });
     } else {
       await createNewMenu(newMenuName.value, newMenuLink.value, isActive.value, null); // Add parentId if needed
+      Swal.fire({
+        icon: "success",
+        title: "Menu created successfully!",
+        showConfirmButton: false,
+        timer: 1500
+      });
     }
     fetchManageMenus();
     closeDialog();
   } catch (error) {
     console.error("Error saving menu:", error);
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: "Error saving menu!",
+      footer: '<a href="#">Why do I have this issue?</a>'
+    });
   }
 };
+
 
 const saveSubMenu = async () => {
   try {
@@ -186,12 +206,32 @@ const saveSubMenu = async () => {
 
 const handleDeleteMenu = async (id: number) => {
   try {
-    await deleteMenu(id);
-    fetchManageMenus();
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (result.isConfirmed) {
+      await deleteMenu(id);
+      fetchManageMenus();
+      Swal.fire("Deleted!", "The menu has been deleted.", "success");
+    }
   } catch (error) {
     console.error("Error deleting menu:", error);
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: "Error deleting menu!",
+      footer: '<a href="#">Why do I have this issue?</a>',
+    });
   }
 };
+
 
 const handleEditMenu = (menu: any) => {
   currentMenuId.value = menu.id;
