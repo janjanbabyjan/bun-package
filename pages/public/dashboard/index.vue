@@ -4,8 +4,9 @@
 
 <template>
     <PublicDashboardHeaders />
+    <PublicDashboardCarousel />
     <PublicUiComponentsCardrender />
-    <PublicUiComponentsGallery />
+    <!-- <PublicUiComponentsGallery /> -->
     <PublicUiComponentsFooter />
 </template>
 
