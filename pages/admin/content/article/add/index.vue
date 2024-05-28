@@ -219,7 +219,6 @@ const getsave = async () => {
   try {
     const response = await createPage.createSinglePage(postdata);
     console.log('Page creation response:', response);
-
     // เมื่อสร้างหน้าเสร็จสิ้น แสดง SweetAlert แจ้งเตือน
     Swal.fire({
       icon: 'success',
