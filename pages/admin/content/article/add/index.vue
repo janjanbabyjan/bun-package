@@ -24,6 +24,7 @@ import CodeTool from "@editorjs/code"; // Import CodeTool
 import NestedList from "@editorjs/nested-list";
 import createPage from '~/plugins/api/createPage.js';
 import ImageTool from '@editorjs/image';
+import Swal from 'sweetalert2';
 
 
 
@@ -218,10 +219,27 @@ const getsave = async () => {
   try {
     const response = await createPage.createSinglePage(postdata);
     console.log('Page creation response:', response);
+
+    // เมื่อสร้างหน้าเสร็จสิ้น แสดง SweetAlert แจ้งเตือน
+    Swal.fire({
+      icon: 'success',
+      title: 'สร้างหน้าใหม่สำเร็จ!',
+      showConfirmButton: false,
+      timer: 1500
+    });
   } catch (error) {
     console.error('Error creating page:', error);
+
+    // เมื่อเกิดข้อผิดพลาดในการสร้างหน้า แสดง SweetAlert แจ้งเตือน
+    Swal.fire({
+      icon: 'error',
+      title: 'เกิดข้อผิดพลาดในการสร้างหน้า!',
+      text: 'กรุณาลองใหม่อีกครั้ง',
+      footer: '<a href="#">ติดต่อเรา</a>'
+    });
   }
 };
+
 
 
 </script>
