@@ -34,6 +34,8 @@ const saveName = ref('');
 const status = ref(true);
 const saveDate = ref('');
 const inputText = ref('');
+const tags = ref<string[]>([]);
+
 
 const getsave = async () => {
   const currentDateTime = new Date().toISOString();
@@ -47,7 +49,7 @@ const getsave = async () => {
     pageLink: '/new-page',
     isActive: status.value,
     typeId: 2,
-    tag: inputText.value,
+    tag: tags.value.map(tag => ({ tagName : tag})) ,
     type: { id: 2, typeName: 'gallery', createdAt: currentDateTime, updatedAt: currentDateTime }
   };
   try {
@@ -70,8 +72,9 @@ const handleDate = (data: any) => {
   saveDate.value = data;
 };
 
-const handleTag = (data: any) => {
-  inputText.value = data;
+const handleTag = (data: string[]) => {
+  tags.value = data;
+  console.log("🚀 ~ handleTag ~ data:", data)
 };
 
 

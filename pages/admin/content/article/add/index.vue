@@ -207,7 +207,7 @@ const getsave = async () => {
     pageLink: '/new-page',
     isActive: status.value,
     typeId: 1,
-    tag: tags.value.map(tag => ({ tag })) ,// Format tags
+    tag: tags.value.map(tag => ({ tagName : tag})) ,
     type: {
       id: 1,
       typeName: 'single pages',

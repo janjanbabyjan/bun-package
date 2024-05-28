@@ -208,4 +208,9 @@ interface PageType {
   /* จัดวางตรงกลางแนวตั้ง */
   height: 100%;
 }
+.move-up {
+  position: relative;
+  top: -10px; /* ปรับค่าตามต้องการ */
+  margin-left: 10px;
+}
 </style>

@@ -135,6 +135,7 @@ const openSubMenuDialog = (parentId: number | string) => {
 };
 
 
+
 const closeSubMenuDialog = () => {
   subMenuDialog.value = false;
   newSubMenuName.value = "";
@@ -267,6 +268,9 @@ onMounted(() => {
 watch(newMenuLink, (newValue) => {
   console.log("newMenuLink updated:", newValue);
 });
+
+
+
 </script>
 
 
@@ -274,12 +278,8 @@ watch(newMenuLink, (newValue) => {
 <template>
   <!-- Breadcrumb navigation -->
   <v-breadcrumbs>
-    <v-breadcrumbs-item
-      v-for="(breadcrumb, index) in breadcrumbs"
-      :key="index"
-      @click="navigateTo(breadcrumb.href)"
-      class="breadcrumb-item"
-    >
+    <v-breadcrumbs-item v-for="(breadcrumb, index) in breadcrumbs" :key="index" @click="navigateTo(breadcrumb.href)"
+      class="breadcrumb-item">
       {{ getBreadcrumbText(index) }}
       <template v-if="index < breadcrumbs.length - 1"> > </template>
     </v-breadcrumbs-item>
@@ -300,13 +300,8 @@ watch(newMenuLink, (newValue) => {
               <v-text-field v-model="newMenuName" label="ชื่อเมนู" outlined></v-text-field>
               <v-row>
                 <v-col cols="10">
-                  <v-text-field
-                    v-model="newMenuLink"
-                    label="ลิงก์"
-                    outlined
-                    readonly
-                    @click="openPathDialog"
-                  ></v-text-field>
+                  <v-text-field v-model="newMenuLink" label="ลิงก์" outlined readonly
+                    @click="openPathDialog"></v-text-field>
                 </v-col>
                 <v-col cols="2">
                   <v-btn color="primary" @click="openPathDialog">เลือก</v-btn>
@@ -374,7 +369,6 @@ watch(newMenuLink, (newValue) => {
           </v-list-item>
         </template>
 
-        <!-- Submenu Dialog -->
         <v-dialog v-model="subMenuDialog" class="custom-dialog">
           <v-card>
             <v-card-title class="mt-2">{{ isSubMenuEditMode ? "แก้ไขเมนูย่อย" : "เพิ่มเมนูย่อย" }}</v-card-title>
@@ -382,13 +376,8 @@ watch(newMenuLink, (newValue) => {
               <v-text-field v-model="newSubMenuName" label="ชื่อเมนูย่อย" outlined></v-text-field>
               <v-row>
                 <v-col cols="10">
-                  <v-text-field
-                    v-model="newSubMenuLink"
-                    label="ลิงก์"
-                    outlined
-                    readonly
-                    @click="openPathDialog"
-                  ></v-text-field>
+                  <v-text-field v-model="newSubMenuLink" label="ลิงก์" outlined readonly
+                    @click="openPathDialog"></v-text-field>
                 </v-col>
                 <v-col cols="2">
                   <v-btn color="primary" @click="openPathDialog">เลือก</v-btn>
@@ -397,43 +386,41 @@ watch(newMenuLink, (newValue) => {
               <v-switch v-model="isSubMenuActive" label="แสดงเมนูย่อย" color="primary"></v-switch>
             </v-card-text>
             <v-card-actions>
-              <v-btn color="primary" @click="saveSubMenu">{{ isSubMenuEditMode ? "บันทึกการเปลี่ยนแปลง" : "เพิ่ม" }}</v-btn>
+              <v-btn color="primary" @click="saveSubMenu">{{ isSubMenuEditMode ? "บันทึกการเปลี่ยนแปลง" : "เพิ่ม"
+                }}</v-btn>
               <v-btn color="error" @click="closeSubMenuDialog">ยกเลิก</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
 
-        <!-- Nested submenus -->
-        <v-list-group v-if="menu.children && menu.children.length > 0" v-for="child in menu.children" :key="child.id" :value="child.menuName">
+
+
+        <v-list-group v-if="menu.children && menu.children.length > 0" v-for="child in menu.children" :key="child.id"
+          :value="child.menuName">
           <template v-slot:activator="{ props }">
             <v-list-item v-bind="props" style="color: #5b5b5b">
               <v-icon>{{ props.isOpen ? "mdi-menu-down" : "mdi-menu-right" }}</v-icon>
               {{ child.menuName }}
               <template v-slot:append>
-                <!-- <v-icon class="icon-size" @click.stop="openSubMenuDialog(child.id)">mdi-plus</v-icon> -->
+                <!-- <v-icon class="icon-size" @click.stop="addminiMenuDialog(child.id)">mdi-plus</v-icon> -->
                 <v-icon class="mr-1 icon-size" @click.stop="handleEditMenu(child)">mdi-pencil</v-icon>
                 <v-icon class="icon-size" @click.stop="handleDeleteMenu(child.id)">mdi-delete</v-icon>
               </template>
             </v-list-item>
           </template>
 
-          <!-- Display page.title under the submenu -->
-          <v-list-item v-for="page in child.pages" :key="page.id" @click="navigateTo(page.link)">
-            <v-list-item-content>
-              <v-list-item-title>{{ page.title }}</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-group>
+          
 
-        <!-- Display page.title under the main menu -->
-        <v-list-item v-for="page in menu.pages" :key="page.id" @click="navigateTo(page.link)">
-          <v-list-item-content>
-            <v-list-item-title>{{ page.title }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
+          <v-list-item class="ml-5" v-for="page in filteredPages" :key="page.id" @click="selectLink(page)">
+            <v-list-item-title style="color: #5b5b5b;">{{ page.title }}</v-list-item-title>
+          </v-list-item>
+
+
+        </v-list-group>
       </v-list-group>
     </v-list>
   </v-card>
+
 </template>
 
 

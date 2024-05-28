@@ -10,10 +10,9 @@ import outputData from '~/components/public/ui-components/cardrender.vue';
     <v-col cols="12">
       <v-row>
         <v-col cols="12">
-          <PublicUiComponentsCardrender/>
+          <PublicUiComponentsCardrender />
         </v-col>
       </v-row>
     </v-col>
   </v-row>
 </template>
-

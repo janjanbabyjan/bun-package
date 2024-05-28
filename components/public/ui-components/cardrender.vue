@@ -1,6 +1,15 @@
+<!-- components\public\ui-components\cardrender.vue -->
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
+
+interface Props {
+  limitCards?: number;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  limitCards: undefined,
+});
 
 interface ContentBlock {
   id: string;
@@ -27,7 +36,7 @@ interface BlogData {
   pageLink: string;
   isActive: boolean;
   typeId: number;
-  tag: string[];
+  tag: { tagName: string }[];
 }
 
 const Blog = ref<BlogData[]>([]);
@@ -73,35 +82,33 @@ const getImageUrl = (blocks: ContentBlock[]): string | null => {
         <v-col cols="12" sm="8">
           <div class="text-center">
             <div class="d-flex align-center mb-5 justify-center" data-aos="fade-right" data-aos-delay="200"
-                data-aos-duration="1000">
+              data-aos-duration="1000">
               <span class="bg-success pa-2 rounded-circle mr-2"></span>
-              <h6 class="text-subtitle-1 text-dark font-weight-bold">Blog</h6>
+              <h6 class="text-subtitle-1 text-dark font-weight-bold">Banpu</h6>
             </div>
-            <h2 class="text-h2 text-dark mb-3" data-aos="fade-left" data-aos-delay="200"
-                data-aos-duration="1000">ตัวอย่างตัวอย่างตัวอย่าง</h2>
-            <p class="text-muted mb-4">Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
+            <h2 class="text-h2 text-dark mb-3" data-aos="fade-left" data-aos-delay="200" data-aos-duration="1000">
+              ข่าวสาร</h2>
+            <!-- <p class="text-muted mb-4">Newsroom</p> -->
           </div>
         </v-col>
       </v-row>
       <v-row class="justify-center">
-        <v-col cols="12" md="4" sm="6" v-for="card in Blog" :key="card.id" class="mb-4">
+        <v-col cols="12" md="4" sm="6"
+          v-for="(card, index) in props.limitCards ? Blog.slice(0, props.limitCards) : Blog" :key="card.id"
+          class="mb-4">
           <v-card elevation="0" variant="outlined" class="card-with-min-height">
             <div class="hover-card overflow-hidden lh-10 rounded-md rounded-be-0 position-relative">
               <NuxtLink :to="card.pageLink" class="text-decoration-none">
-                <v-img
-                  :src="getImageUrl(card.content.blocks) || card.titleImages"
-                  height="250px"
-                  alt="post"
-                  cover
-                  class="zoom-in w-100"
-                ></v-img>
+                <v-img :src="getImageUrl(card.content.blocks) || card.titleImages" height="250px" alt="post" cover
+                  class="zoom-in w-100"></v-img>
               </NuxtLink>
             </div>
             <div class="pa-4 mt-2">
               <div class="d-flex justify-space-between align-center">
                 <p class="text-muted text-subtitle-1">{{ new Date(card.createdAt).toLocaleDateString() }}</p>
-                <v-chip color="primary" height="auto" size="small" variant="tonal" rounded="md">
-                  {{ card.tag }}
+                <v-chip v-for="tag in card.tag" :key="tag.tagName" color="primary" height="auto" size="small"
+                  variant="tonal" rounded="md">
+                  {{ tag.tagName }}
                 </v-chip>
               </div>
               <div class="mt-4">
@@ -118,3 +125,13 @@ const getImageUrl = (blocks: ContentBlock[]): string | null => {
     </v-container>
   </div>
 </template>
+<style scoped>
+.line-clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+}
+</style>
