@@ -124,6 +124,9 @@ const handleFileUpload = async (files: any) => {
     max-height: 100%;
     transition: transform .3s ease-in-out;
 }
+.v-img{
+    border-radius: 8px !important;
+}
 
 .image-container img:hover {
     transform: scale(1.2);
