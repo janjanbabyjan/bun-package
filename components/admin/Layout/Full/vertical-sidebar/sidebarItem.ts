@@ -28,11 +28,11 @@ import {
   
   const sidebarItem: menu[] = [
     { header: 'Home' },
-    {
-      title: 'Dashboard',
-      icon: LayoutDashboardIcon,
-      to: '/dashboard'
-    },
+    // {
+    //   title: 'Dashboard',
+    //   icon: LayoutDashboardIcon,
+    //   to: '/dashboard'
+    // },
     {
       title: 'Manage single page',
       icon: BallpenIcon,
@@ -44,21 +44,21 @@ import {
       to: '/content/manage-menu'
     },
     // { header: 'ui' },
-    {
-      title: "Alert",
-      icon: AlertCircleIcon,
-      to: "/ui-components/alerts",
-    },
+    // {
+    //   title: "Alert",
+    //   icon: AlertCircleIcon,
+    //   to: "/ui-components/alerts",
+    // },
     // {
     //   title: "Button",
     //   icon: CircleDotIcon,
     //   to: "/ui-components/buttons",
     // },
-    {
-      title: "Cards",
-      icon: BoxMultiple1Icon,
-      to: "/ui-components/cards",
-    },
+    // {
+    //   title: "Cards",
+    //   icon: BoxMultiple1Icon,
+    //   to: "/ui-components/cards",
+    // },
     // {
     //   title: "Tables",
     //   icon: BorderAllIcon,

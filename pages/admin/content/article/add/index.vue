@@ -116,14 +116,7 @@ onMounted(() => {
           defaultStyle: "unordered",
         },
       },
-      image: {
-        class: ImageTool,
-        config: {
-          endpoints: {
-            byFile: 'http://localhost:8000/upload'
-          }
-        }
-      },
+      image: SimpleImage,
       checklist: {
         class: Checklist,
         inlineToolbar: true,
@@ -214,7 +207,7 @@ const getsave = async () => {
     pageLink: '/new-page',
     isActive: status.value,
     typeId: 1,
-    tag: tags.value.map(tag => ({ tag })) ,// Format tags
+    tag: tags.value.map(tag => ({ tagName : tag })) ,// Format tags
     type: {
       id: 1,
       typeName: 'single pages',
