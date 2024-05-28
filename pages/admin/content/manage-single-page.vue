@@ -5,6 +5,9 @@ import Swal from "sweetalert2";
 const singlePages = ref<SinglePage[]>([]);
 const searchQuery = ref("");
 // ประกาศตัวแปรแบบ ref สำหรับเก็บข้อมูล
+definePageMeta({
+  layout: "admin",
+});
 
 // กำหนด interface สำหรับข้อมูล SinglePage และ PageType
 interface SinglePage {
@@ -32,7 +35,17 @@ const fetchSinglePages = async () => {
     console.error("Error fetching single pages:", error);
   }
 };
+const isOpen = ref(false); // เริ่มต้นเปิดปิด
 
+// ตัวป๊อปอัพ
+const dialog = ref(false);
+
+const openDialog = () => {
+    dialog.value = true;
+};
+const closeDialog = () => {
+    dialog.value = false;
+};
 
 // เรียกใช้งาน fetchSinglePages เมื่อคอมโพเนนต์ถูกโหลด
 onMounted(() => {
