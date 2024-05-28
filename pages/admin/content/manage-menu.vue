@@ -13,11 +13,13 @@ import index from "@/components/public/layout/full/vertical-sidebar/NavItem/inde
 definePageMeta({
   layout: "admin",
 });
+
 interface PageType {
   id: number;
   typeName: string;
 }
-const selectedPageType = ref<PageType | null>(null); // กำหนด selectedPageType เป็น ref ที่เก็บข้อมูลของ PageType หรือ null
+
+const selectedPageType = ref<PageType | null>(null);
 const category = ref("");
 
 const pageTypes = ref<string[]>([]);
@@ -25,57 +27,44 @@ const pageTypes = ref<string[]>([]);
 const fetchPageTypes = async () => {
   try {
     const response = await getAllPageTypes();
-    console.log("Fetched page types:", response.result);
-    pageTypes.value = response.result.map(
-      (type: { typeName: string }) => type.typeName
-    );
+    pageTypes.value = response.result.map((type: { typeName: string }) => type.typeName);
   } catch (error) {
     console.error("Error fetching page types:", error);
   }
 };
 
-// Dialog states
 const dialog = ref(false);
 const pathDialog = ref(false);
 const subMenuDialog = ref(false);
 
-// New menu fields
 const newMenuName = ref("");
 const newMenuLink = ref("");
 const isActive = ref(false);
 
-// New submenu fields
 const newSubMenuName = ref("");
 const newSubMenuLink = ref("");
 const isSubMenuActive = ref(false);
 
-// Search and category
-
 const searchQuery = ref("");
 
-// State for editing menu
 const isEditMode = ref(false);
 const currentMenuId = ref<number | null>(null);
 
-// State for editing submenu
 const isSubMenuEditMode = ref(false);
 const currentSubMenuId = ref<number | null>(null);
 const selectedParentId = ref<number | string | null>(null);
 
-// Manage menus data
 const manageMenus = ref([]);
 
-
-// Fetch all menus
 const fetchManageMenus = async () => {
   try {
     const response = await getAllManageMenus();
-    console.log("🚀 ~ fetchManageMenus ~ response:", response);
     manageMenus.value = response.result.manageMenus;
   } catch (error) {
     console.error("Error fetching manage menus:", error);
   }
 };
+
 interface SinglePage {
   id: number;
   title: string;
@@ -93,7 +82,13 @@ const fetchSinglePages = async () => {
   }
 };
 
-// Build menu tree from flat list
+const filteredPages = computed(() => {
+  if (searchQuery.value) {
+    return singlePages.value.filter((page) => page.title.includes(searchQuery.value));
+  }
+  return singlePages.value;
+});
+
 const buildMenuTree = (menuItems: any[]) => {
   const menuMap = new Map();
   const roots: any[] = [];
@@ -113,15 +108,12 @@ const buildMenuTree = (menuItems: any[]) => {
   return roots;
 };
 
-// Computed menu tree
 const menuTree = computed(() => buildMenuTree(manageMenus.value));
 
-// Open main dialog
 const openDialog = () => {
   dialog.value = true;
 };
 
-// Close main dialog
 const closeDialog = () => {
   dialog.value = false;
   newMenuName.value = "";
@@ -131,13 +123,11 @@ const closeDialog = () => {
   currentMenuId.value = null;
 };
 
-// Open submenu dialog
 const openSubMenuDialog = (parentId: number | string) => {
   subMenuDialog.value = true;
   selectedParentId.value = parentId;
 };
 
-// Close submenu dialog
 const closeSubMenuDialog = () => {
   subMenuDialog.value = false;
   newSubMenuName.value = "";
@@ -147,7 +137,6 @@ const closeSubMenuDialog = () => {
   currentSubMenuId.value = null;
 };
 
-// Save menu (create or update)
 const saveMenu = async () => {
   try {
     if (isEditMode.value && currentMenuId.value !== null) {
@@ -166,7 +155,6 @@ const saveMenu = async () => {
   }
 };
 
-// Save submenu
 const saveSubMenu = async () => {
   try {
     if (isSubMenuEditMode.value && currentSubMenuId.value !== null) {
@@ -176,12 +164,7 @@ const saveSubMenu = async () => {
         isActive: isSubMenuActive.value,
       });
     } else {
-      await createNewMenu(
-        newSubMenuName.value,
-        newSubMenuLink.value,
-        isSubMenuActive.value,
-        selectedParentId.value
-      );
+      await createNewMenu(newSubMenuName.value, newSubMenuLink.value, isSubMenuActive.value, selectedParentId.value);
     }
     fetchManageMenus();
     closeSubMenuDialog();
@@ -190,7 +173,6 @@ const saveSubMenu = async () => {
   }
 };
 
-// Delete menu
 const handleDeleteMenu = async (id: number) => {
   try {
     await deleteMenu(id);
@@ -200,7 +182,6 @@ const handleDeleteMenu = async (id: number) => {
   }
 };
 
-// Edit menu
 const handleEditMenu = (menu: any) => {
   currentMenuId.value = menu.id;
   newMenuName.value = menu.menuName;
@@ -210,7 +191,6 @@ const handleEditMenu = (menu: any) => {
   dialog.value = true;
 };
 
-// Edit submenu
 const handleEditSubMenu = (menu: any) => {
   currentSubMenuId.value = menu.id;
   newSubMenuName.value = menu.menuName;
@@ -220,28 +200,28 @@ const handleEditSubMenu = (menu: any) => {
   openSubMenuDialog(menu.parentId);
 };
 
-const selectLink = (page: any) => {
-  newMenuLink.value = page.title; // หรือ page.pageLink หรือข้อมูลที่ต้องการแสดงใน newMenuLink
+const selectLink = (page: SinglePage) => {
+  if (page.pageLink) {
+    newMenuLink.value = page.pageLink;
+  } else {
+    newMenuLink.value = ''; // Handle the case where pageLink is undefined
+  }
   pathDialog.value = false;
 };
 
-// Open path dialog
 const openPathDialog = () => {
   pathDialog.value = true;
 };
 
-// Clear search
 const clearSearch = () => {
   searchQuery.value = "";
   category.value = "";
 };
 
-// Search function (placeholder)
 const search = () => {
   console.log("Search query:", searchQuery.value, "Category:", category.value);
 };
 
-// Breadcrumbs
 const breadcrumbs = [
   { text: "หน้าแรก", href: "/admin" },
   { text: "จัดการเมนู", href: "/admin/content/manage-menu" },
@@ -251,13 +231,13 @@ const getBreadcrumbText = (index: number) => {
   return breadcrumbs[index].text;
 };
 
-
 onMounted(() => {
   fetchManageMenus();
-  fetchPageTypes(); // Call fetchPageTypes function when the component is mounted
+  fetchPageTypes();
   fetchSinglePages();
 });
 </script>
+
 
 <template>
   <!-- Breadcrumb navigation -->
@@ -326,60 +306,54 @@ onMounted(() => {
         </v-dialog>
         <!-- Path Selection Dialog -->
         <v-dialog v-model="pathDialog" class="custom-path-dialog align-center">
-          <v-card>
-            <v-card-title class="mt-2">เลือกเส้นทาง</v-card-title>
-            <v-card-text class="scrollable-content">
-              <v-row class="align-center">
-                <v-col cols="3">
-                  <v-select
-                    label="Select"
-                    :items="pageTypes"
-                    variant="outlined"
-                  ></v-select>
-                </v-col>
-                <v-col cols="7">
-                  <v-text-field
-                    style="max-width: 350px"
-                    v-model="searchQuery"
-                    label="ค้นหา"
-                    outlined
-                  ></v-text-field>
-                </v-col>
-                <v-col
-                  style="margin-top: -23px"
-                  cols="2"
-                  class="d-flex justify-end align-items-center"
-                >
-                  <v-btn class="btn" color="primary" @click="search"
-                    >ค้นหา</v-btn
-                  >
-                  <v-btn color="secondary" @click="clearSearch" class="ml-3"
-                    >ล้าง</v-btn
-                  >
-                </v-col>
-              </v-row>
+  <v-card>
+    <v-card-title class="mt-2">เลือกเส้นทาง</v-card-title>
+    <v-card-text class="scrollable-content">
+      <v-row class="align-center">
+        <v-col cols="3">
+          <v-select
+            label="Select"
+            :items="pageTypes"
+            variant="outlined"
+          ></v-select>
+        </v-col>
+        <v-col cols="7">
+          <v-text-field
+            style="max-width: 350px"
+            v-model="searchQuery"
+            label="ค้นหา"
+            outlined
+          ></v-text-field>
+        </v-col>
+        <v-col
+          style="margin-top: -23px"
+          cols="2"
+          class="d-flex justify-end align-items-center"
+        >
+          <v-btn class="btn" color="primary" @click="search">ค้นหา</v-btn>
+          <v-btn color="secondary" @click="clearSearch" class="ml-3">ล้าง</v-btn>
+        </v-col>
+      </v-row>
 
-              <v-list>
-                <v-list-item
-                  v-for="page in singlePages"
-                  :key="page.id"
-                  @click="selectLink(page)"
-                >
-                  <v-list-item-content>
-                    <v-list-item-title>{{ page.title }}</v-list-item-title>
-                    <v-list-item-subtitle v-if="page.pageLink">{{
-                      page.pageLink
-                    }}</v-list-item-subtitle>
-                  </v-list-item-content>
-                  <!-- Any actions or buttons related to single pages -->
-                </v-list-item>
-              </v-list>
-            </v-card-text>
-            <v-card-actions>
-              <v-btn color="error" @click="pathDialog = false">ยกเลิก</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
+      <v-list>
+        <v-list-item
+          v-for="page in singlePages"
+          :key="page.id"
+          @click="selectLink(page)"
+        >
+          <v-list-item-content>
+            <v-list-item-title>{{ page.title }}</v-list-item-title>
+            <v-list-item-subtitle v-if="page.pageLink">{{ page.pageLink }}</v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-card-text>
+    <v-card-actions>
+      <v-btn color="error" @click="pathDialog = false">ยกเลิก</v-btn>
+    </v-card-actions>
+  </v-card>
+</v-dialog>
+
       </div>
     </v-card-item>
   </v-card>
@@ -388,105 +362,99 @@ onMounted(() => {
 
   <!-- Menu List -->
   <v-card elevation="10" class="withbg">
-    <v-list>
+  <v-list>
+    <v-list-group
+      v-for="menu in menuTree"
+      :key="menu.id"
+      :value="menu.menuName"
+    >
+      <template v-slot:activator="{ props }">
+        <v-list-item v-bind="props">
+          <v-icon>{{ props.isOpen ? "mdi-menu-down" : "mdi-menu-right" }}</v-icon>
+          {{ menu.menuName }}
+          <template v-slot:append>
+            <v-icon class="icon-size" @click.stop="openSubMenuDialog(menu.id)">mdi-plus</v-icon>
+            <v-icon class="mr-1 icon-size" @click.stop="handleEditMenu(menu)">mdi-pencil</v-icon>
+            <v-icon class="icon-size" @click.stop="handleDeleteMenu(menu.id)">mdi-delete</v-icon>
+          </template>
+        </v-list-item>
+      </template>
+
+      <!-- Submenu Dialog -->
+      <v-dialog v-model="subMenuDialog" class="custom-dialog">
+        <v-card>
+          <v-card-title class="mt-2">{{ isSubMenuEditMode ? "แก้ไขเมนูย่อย" : "เพิ่มเมนูย่อย" }}</v-card-title>
+          <v-card-text>
+            <v-text-field v-model="newSubMenuName" label="ชื่อเมนูย่อย" outlined></v-text-field>
+            <v-row>
+              <v-col cols="10">
+                <v-text-field
+                  v-model="newSubMenuLink"
+                  label="ลิงก์"
+                  outlined
+                  readonly
+                  @click="openPathDialog"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="2">
+                <v-btn color="primary" @click="openPathDialog">เลือก</v-btn>
+              </v-col>
+            </v-row>
+            <v-switch v-model="isSubMenuActive" label="แสดงเมนูย่อย" color="primary"></v-switch>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn color="primary" @click="saveSubMenu">{{ isSubMenuEditMode ? "บันทึกการเปลี่ยนแปลง" : "เพิ่ม" }}</v-btn>
+            <v-btn color="error" @click="closeSubMenuDialog">ยกเลิก</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <!-- Nested submenus -->
       <v-list-group
-        v-for="menu in menuTree"
-        :key="menu.id"
-        :value="menu.menuName"
+        v-if="menu.children && menu.children.length > 0"
+        v-for="child in menu.children"
+        :key="child.id"
+        :value="child.menuName"
       >
         <template v-slot:activator="{ props }">
-          <v-list-item v-bind="props">
-            <v-icon>{{
-              props.isOpen ? "mdi-menu-down" : "mdi-menu-right"
-            }}</v-icon>
-            {{ menu.menuName }}
+          <v-list-item v-bind="props" style="color: #5b5b5b">
+            <v-icon>{{ props.isOpen ? "mdi-menu-down" : "mdi-menu-right" }}</v-icon>
+            {{ child.menuName }}
             <template v-slot:append>
-              <v-icon class="icon-size" @click.stop="openSubMenuDialog(menu.id)"
-                >mdi-plus</v-icon
-              >
-              <v-icon class="mr-1 icon-size" @click.stop="handleEditMenu(menu)"
-                >mdi-pencil</v-icon
-              >
-              <v-icon class="icon-size" @click.stop="handleDeleteMenu(menu.id)"
-                >mdi-delete</v-icon
-              >
+              <v-icon class="icon-size" @click.stop="openSubMenuDialog(child.id)">mdi-plus</v-icon>
+              <v-icon class="mr-1 icon-size" @click.stop="handleEditMenu(child)">mdi-pencil</v-icon>
+              <v-icon class="icon-size" @click.stop="handleDeleteMenu(child.id)">mdi-delete</v-icon>
             </template>
           </v-list-item>
         </template>
-
-        <!-- Submenu Dialog -->
-        <v-dialog v-model="subMenuDialog" class="custom-dialog">
-          <v-card>
-            <v-card-title class="mt-2">{{
-              isSubMenuEditMode ? "แก้ไขเมนูย่อย" : "เพิ่มเมนูย่อย"
-            }}</v-card-title>
-            <v-card-text>
-              <v-text-field
-                v-model="newSubMenuName"
-                label="ชื่อเมนูย่อย"
-                outlined
-              ></v-text-field>
-              <!-- <v-row>
-                <v-col cols="10">
-                  <v-text-field
-                    v-model="newSubMenuLink"
-                    label="ลิงก์"
-                    outlined
-                    readonly
-                    @click="openPathDialog"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="2">
-                  <v-btn color="primary" @click="openPathDialog">เลือก</v-btn>
-                </v-col>
-              </v-row> -->
-              <!-- <v-text-field v-model="newSubMenuLink" label="ลิงก์" outlined></v-text-field> -->
-              <v-switch
-                v-model="isSubMenuActive"
-                label="แสดงเมนูย่อย"
-                color="primary"
-              ></v-switch>
-            </v-card-text>
-            <v-card-actions>
-              <v-btn color="primary" @click="saveSubMenu">{{
-                isSubMenuEditMode ? "บันทึกการเปลี่ยนแปลง" : "เพิ่ม"
-              }}</v-btn>
-              <v-btn color="error" @click="closeSubMenuDialog">ยกเลิก</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-
-        <!-- Nested submenus -->
-        <v-list-group
-          v-if="menu.children && menu.children.length > 0"
-          v-for="child in menu.children"
-          :key="child.id"
-          :value="child.menuName"
+        
+        <!-- Display page.title under the submenu -->
+        <v-list-item
+          v-for="page in child.pages"
+          :key="page.id"
+          @click="navigateTo(page.link)"
         >
-          <template v-slot:activator="{ props }">
-            <v-list-item v-bind="props" style="color: #5b5b5b">
-              <v-icon>{{
-                props.isOpen ? "mdi-menu-down" : "mdi-menu-right"
-              }}</v-icon>
-              {{ child.menuName }}
-              <template v-slot:append>
-                <v-icon
-                  class="mr-1 icon-size"
-                  @click.stop="handleEditMenu(child)"
-                  >mdi-pencil</v-icon
-                >
-                <v-icon
-                  class="icon-size"
-                  @click.stop="handleDeleteMenu(child.id)"
-                  >mdi-delete</v-icon
-                >
-              </template>
-            </v-list-item>
-          </template>
-        </v-list-group>
+          <v-list-item-content>
+            <v-list-item-title>{{ page.title }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
       </v-list-group>
-    </v-list>
-  </v-card>
+      
+      <!-- Display page.title under the main menu -->
+      <v-list-item
+        v-for="page in menu.pages"
+        :key="page.id"
+        @click="navigateTo(page.link)"
+      >
+        <v-list-item-content>
+          <v-list-item-title>{{ page.title }}</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+
+    </v-list-group>
+  </v-list>
+</v-card>
 </template>
 <style>
 .edit-icon,
