@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { getAllSinglePages } from "@/plugins/api/authService";
-
+import Swal from "sweetalert2";
 const singlePages = ref<SinglePage[]>([]);
 const searchQuery = ref("");
-// สร้างตัวแปร ref สำหรับการเปิด-ปิด dialog
-// สร้าง interface สำหรับข้อมูล SinglePage และ PageType
+// ประกาศตัวแปรแบบ ref สำหรับเก็บข้อมูล
+
+// กำหนด interface สำหรับข้อมูล SinglePage และ PageType
 interface SinglePage {
   id: number;
   title: string;
@@ -19,9 +20,12 @@ interface PageType {
   id: number;
   typeName: string;
 }
+
+// สร้างฟังก์ชันเพื่อดึงข้อมูล
 const fetchSinglePages = async () => {
   try {
     const response = await getAllSinglePages();
+    console.log("🚀 ~ fetchSinglePages ~ response:", response)
     singlePages.value = response.result.singlePage.map((page: any) => ({
       ...page,
       type: page.typeId ? { id: page.typeId, typeName: "" } : null,
@@ -32,48 +36,10 @@ const fetchSinglePages = async () => {
   }
 };
 
-
+// เรียกใช้งาน fetchSinglePages เมื่อคอมโพเนนต์ถูกโหลด
 onMounted(() => {
-    fetchSinglePages();
+  fetchSinglePages();
 });
-
-definePageMeta({
-  layout: "admin",
-});
-
-const breadcrumbs = [
-  { text: "หน้าแรก", href: "/admin" },
-  { text: "รายชื่อหน้าเว็บไซต์", href: "/admin/content/manage-single-page" },
-];
-
-const getBreadcrumbText = (index: number) => {
-  return breadcrumbs[index].text;
-};
-
-const isOpen = ref(false); // เริ่มต้นเปิดปิด
-
-const dialog = ref(false);
-
-const openDialog = () => {
-  dialog.value = true;
-};
-const closeDialog = () => {
-  dialog.value = false;
-};
-
-interface SinglePage {
-  id: number;
-  title: string;
-  pageLink?: string;
-  typeId: number;
-  isActive: boolean;
-  type: PageType | null;
-}
-
-interface PageType {
-  id: number;
-  typeName: string;
-}
 </script>
 <template>
   <!-- Breadcrumb navigation -->
@@ -145,8 +111,12 @@ interface PageType {
           class="d-flex justify-between align-center"
           style="margin-top: -5px"
         >
-          <v-btn style="margin-top: -1.2rem" color="primary" class="ml-3">ค้นหา</v-btn>
-          <v-btn style="margin-top: -1.2rem" color="error" class="ml-3">ล้าง</v-btn>
+          <v-btn style="margin-top: -1.2rem" color="primary" class="ml-3"
+            >ค้นหา</v-btn
+          >
+          <v-btn style="margin-top: -1.2rem" color="error" class="ml-3"
+            >ล้าง</v-btn
+          >
         </div>
       </v-row>
     </v-card-item>
@@ -157,7 +127,7 @@ interface PageType {
         <tr>
           <th class="text-subtitle-1 font-weight-bold">#</th>
           <th class="text-subtitle-1 font-weight-bold">หัวข้อ</th>
-          <!-- <th class="text-subtitle-1 font-weight-bold">ประเภท</th> -->
+          <th class="text-subtitle-1 font-weight-bold">ประเภท</th>
           <th class="text-subtitle-1 font-weight-bold">สถานะ</th>
           <th class="text-subtitle-1 font-weight-bold">จัดการ</th>
         </tr>
@@ -175,12 +145,12 @@ interface PageType {
               </div>
             </div>
           </td>
-          <!-- <td>
+          <td>
             <h6 class="text-body-1 text-muted" v-if="page.type">
-              {{ page.type.id }}{{ page.type.typeName }}{{ page.type.typeName }}
+              {{ page.type.id }}{{ page.type.typeName }}{{ page.type }}
             </h6>
             <h6 class="text-body-1 text-muted" v-else>ไม่มีประเภท</h6>
-          </td> -->
+          </td>
           <td>
             <v-switch v-model="page.isActive" color="primary"></v-switch>
           </td>
@@ -193,6 +163,9 @@ interface PageType {
       </tbody>
     </v-table>
   </v-card>
+  <!-- <v-btn color="primary" class="ml-auto" @click="showSuccessAlert"
+    >สร้าง Content ใหม่</v-btn
+  > -->
 </template>
 
 <style>

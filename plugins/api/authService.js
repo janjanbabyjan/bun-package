@@ -119,13 +119,14 @@ const getAllPageTypes = async () => {
 };
 const getAllSinglePages = async () => {
   try {
-    const response = await axios.get(`${baseApiUrl}/singlepage`);
+    const response = await axios.get(`${baseApiUrl}/singlepage?_expand=type`);
     return response.data;
   } catch (error) {
     console.error('Error fetching single pages:', error);
     throw error;
   }
 };
+
 const getPageTypeById = async (id) => {
   try {
     const response = await axios.get(`${baseApiUrl}/pagetype/${id}`);
