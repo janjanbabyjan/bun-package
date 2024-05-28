@@ -134,6 +134,7 @@ const openSubMenuDialog = (parentId: number | string) => {
 };
 
 
+
 const closeSubMenuDialog = () => {
   subMenuDialog.value = false;
   newSubMenuName.value = "";
@@ -266,6 +267,9 @@ onMounted(() => {
 watch(newMenuLink, (newValue) => {
   console.log("newMenuLink updated:", newValue);
 });
+
+
+
 </script>
 
 
@@ -389,6 +393,7 @@ watch(newMenuLink, (newValue) => {
         </v-dialog>
 
 
+
         <v-list-group v-if="menu.children && menu.children.length > 0" v-for="child in menu.children" :key="child.id"
           :value="child.menuName">
           <template v-slot:activator="{ props }">
@@ -396,16 +401,17 @@ watch(newMenuLink, (newValue) => {
               <v-icon>{{ props.isOpen ? "mdi-menu-down" : "mdi-menu-right" }}</v-icon>
               {{ child.menuName }}
               <template v-slot:append>
-                <v-icon class="icon-size" @click.stop="openSubMenuDialog(child.id)">mdi-plus</v-icon>
+                <!-- <v-icon class="icon-size" @click.stop="addminiMenuDialog(child.id)">mdi-plus</v-icon> -->
                 <v-icon class="mr-1 icon-size" @click.stop="handleEditMenu(child)">mdi-pencil</v-icon>
                 <v-icon class="icon-size" @click.stop="handleDeleteMenu(child.id)">mdi-delete</v-icon>
               </template>
             </v-list-item>
           </template>
 
+          
 
-          <v-list-item class = "ml-5"  v-for="page in filteredPages" :key="page.id" @click="selectLink(page)">
-            <v-list-item-title style="color: #5b5b5b;" >{{ page.title }}</v-list-item-title>
+          <v-list-item class="ml-5" v-for="page in filteredPages" :key="page.id" @click="selectLink(page)">
+            <v-list-item-title style="color: #5b5b5b;">{{ page.title }}</v-list-item-title>
           </v-list-item>
 
 
