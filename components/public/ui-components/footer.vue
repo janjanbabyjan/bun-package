@@ -9,32 +9,27 @@
           First Column
         ----------------------------------------------- -->
         <v-col cols="12" md="4" sm="8" class="px-xs-0">
-          <h4 class="font-weight-medium mb-5 text-h6">Address</h4>
-          <p class="mt-5 text-muted">Digix Technology Co.,Ltd.
-            11/8 Sritatprachasanti Rd.
-            T.Naimuang,
-            Muang Khon Kaen
-            Khon Kaen 40000</p>
+          <h4 class="font-weight-medium mb-5 text-h6">ที่อยู่</h4>
+          <p class="mt-5 text-muted">Digix Technology Co.,Ltd. <br>
+            บริษัท ดิจิค เทคโนโลยี จำกัด
+            11/8 ถ.ศรีธาตุประชาสันติ <br>
+            ตำบลในเมือง อำเภอเมืองขอนแก่น จังหวัดขอนแก่น 40000</p>
         </v-col>
         <!-- -----------------------------------------------
           Second Column
         ----------------------------------------------- -->
         <v-col cols="12" md="4" sm="8" class="px-xs-0">
-          <h4 class="font-weight-medium mb-5 text-h6">Phone</h4>
-          <p class="mt-5 text-muted">Reception : +205 123 4567</p>
-          <p class="text-muted">Office : +207 235 7890</p>
+          <h4 class="font-weight-medium mb-5 text-h6">ติดต่อเรา</h4>
+          <p class="mt-5 text-muted">+205 123 4567</p>
+          <p class="text-muted">+207 235 7890</p>
         </v-col>
         <!-- -----------------------------------------------
           Third Column
         ----------------------------------------------- -->
         <v-col cols="12" md="4" sm="8" class="px-xs-0">
-          <h4 class="font-weight-medium mb-5 text-h6">Email</h4>
-          <p class="mt-5 text-muted">
-            Office : <NuxtLink class="text-dark text-decoration-none" to="mailto:info@adminmart.com">info@adminmart.com
-            </NuxtLink>
-          </p>
+          <h4 class="font-weight-medium mb-5 text-h6">อีเมล</h4>
           <p>
-            <span class="text-muted">Site : </span>
+            <span class="text-muted">เว็บไซต์ : </span>
             <NuxtLink class="text-dark text-decoration-none" href="https://digix.co.th/">Digix Technology Co.,Ltd.
             </NuxtLink>
           </p>

@@ -112,7 +112,7 @@ const getImageUrl = (blocks: ContentBlock[]): string | null => {
                 </v-chip>
               </div>
               <div class="mt-4">
-                <h5 class="text-h5 font-weight-bold mb-3 lh-normal title-line-clamp">
+                <h5 class="text-h5 font-weight-bold mb-3 lh-normal line-clamp">
                   <NuxtLink class="text-decoration-none text-dark hover-primary" :to="card.pageLink">
                     {{ card.title }}
                   </NuxtLink>
@@ -127,11 +127,11 @@ const getImageUrl = (blocks: ContentBlock[]): string | null => {
 </template>
 <style scoped>
 .line-clamp {
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: normal;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: normal !important;
 }
 </style>
