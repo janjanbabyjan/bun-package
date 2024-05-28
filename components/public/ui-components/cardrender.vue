@@ -1,6 +1,15 @@
+<!-- components\public\ui-components\cardrender.vue -->
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
+
+interface Props {
+  limitCards?: number;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  limitCards: undefined,
+});
 
 interface ContentBlock {
   id: string;
@@ -27,7 +36,7 @@ interface BlogData {
   pageLink: string;
   isActive: boolean;
   typeId: number;
-  tag: string[];
+  tag: { tagName: string }[];
 }
 
 const Blog = ref<BlogData[]>([]);
@@ -84,7 +93,9 @@ const getImageUrl = (blocks: ContentBlock[]): string | null => {
         </v-col>
       </v-row>
       <v-row class="justify-center">
-        <v-col cols="12" md="4" sm="6" v-for="card in Blog" :key="card.id" class="mb-4">
+        <v-col cols="12" md="4" sm="6"
+          v-for="(card, index) in props.limitCards ? Blog.slice(0, props.limitCards) : Blog" :key="card.id"
+          class="mb-4">
           <v-card elevation="0" variant="outlined" class="card-with-min-height">
             <div class="hover-card overflow-hidden lh-10 rounded-md rounded-be-0 position-relative">
               <NuxtLink :to="card.pageLink" class="text-decoration-none">
@@ -95,8 +106,9 @@ const getImageUrl = (blocks: ContentBlock[]): string | null => {
             <div class="pa-4 mt-2">
               <div class="d-flex justify-space-between align-center">
                 <p class="text-muted text-subtitle-1">{{ new Date(card.createdAt).toLocaleDateString() }}</p>
-                <v-chip color="primary" height="auto" size="small" variant="tonal" rounded="md">
-                  {{ card.tag }}
+                <v-chip v-for="tag in card.tag" :key="tag.tagName" color="primary" height="auto" size="small"
+                  variant="tonal" rounded="md">
+                  {{ tag.tagName }}
                 </v-chip>
               </div>
               <div class="mt-4">

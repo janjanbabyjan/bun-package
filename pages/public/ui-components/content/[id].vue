@@ -89,8 +89,9 @@ onMounted(async () => {
     <template v-if="jsonData">
       <template v-if="jsonData.data.typeId === 1">
         <v-card>
-          <div :id="editorId"></div>
-          <pre>{{ editorOutput }}</pre>
+          <div :id="editorId">
+          </div>
+          
         </v-card>
       </template>
       <template v-else>
@@ -165,5 +166,17 @@ onMounted(async () => {
 .v-dialog .v-container .v-card-actions {
   justify-content: center;
   align-items: center;
+}
+
+.ce-block__content .cdx-simple-image .cdx-simple-image__caption {
+  display: none;
+}
+
+.codex-editor__redactor {
+  padding-bottom: 100px !important;
+}
+
+.cdx-block {
+  text-align: justify
 }
 </style>
