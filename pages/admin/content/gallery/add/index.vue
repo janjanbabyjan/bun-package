@@ -37,6 +37,8 @@ const inputText = ref('');
 const tags = ref<string[]>([]);
 
 
+import Swal from 'sweetalert2';
+
 const getsave = async () => {
   const currentDateTime = new Date().toISOString();
   const postdata = {
@@ -55,10 +57,25 @@ const getsave = async () => {
   try {
     const response = await createPage.createSinglePage(postdata);
     console.log('Page creation response:', response);
+    // แสดง SweetAlert หลังจากสร้างหน้าเสร็จสิ้น
+    Swal.fire({
+      icon: 'success',
+      title: 'สร้างอัลบั้มสำเร็จ!',
+      showConfirmButton: false,
+      timer: 1500
+    });
   } catch (error) {
     console.error('Error creating page:', error);
+    // แสดง SweetAlert เมื่อเกิดข้อผิดพลาดในการสร้างหน้า
+    Swal.fire({
+      icon: 'error',
+      title: 'เกิดข้อผิดพลาดในการสร้างหน้า!',
+      text: 'กรุณาลองใหม่อีกครั้ง',
+      footer: '<a href="#">ติดต่อเรา</a>'
+    });
   }
 };
+
 
 const handleSave = (data: any) => {
   saveName.value = data;

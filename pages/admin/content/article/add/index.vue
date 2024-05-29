@@ -1,12 +1,10 @@
 <script setup lang="ts">
-
 definePageMeta({
   layout: "admin",
 });
 
-
 //ดึงมาจาก
-import AdminHeadingInputHeading from '@/components/admin/heading/input_heading.vue';
+import AdminHeadingInputHeading from "@/components/admin/heading/input_heading.vue";
 
 import { ref, onMounted, onBeforeUnmount } from "vue";
 import EditorJS from "@editorjs/editorjs";
@@ -22,31 +20,26 @@ import SimpleImage from "@editorjs/simple-image";
 import InlineCode from "@editorjs/inline-code";
 import CodeTool from "@editorjs/code"; // Import CodeTool
 import NestedList from "@editorjs/nested-list";
-import createPage from '~/plugins/api/createPage.js';
-import ImageTool from '@editorjs/image';
-import Swal from 'sweetalert2';
-
-
+import createPage from "~/plugins/api/createPage.js";
+import ImageTool from "@editorjs/image";
+import Swal from "sweetalert2";
 
 const router = useRouter();
-
 
 const editor = ref<EditorJS | null>(null);
 const editorContent = ref<any>(null);
 const outputEditor = ref<EditorJS | null>(null);
 
-
 // ตัวบอกหน้า
 const breadcrumbs = [
-  { text: 'หน้าแรก', href: '/admin' },
-  { text: 'รายชื่อหน้าเว็บไซต์', href: '/admin/content/manage-single-page' },
-  { text: 'เพิ่มคำบรรยาย', href: '/admin/content/article/add' },
+  { text: "หน้าแรก", href: "/admin" },
+  { text: "รายชื่อหน้าเว็บไซต์", href: "/admin/content/manage-single-page" },
+  { text: "เพิ่มคำบรรยาย", href: "/admin/content/article/add" },
 ];
 
 const getBreadcrumbText = (index: number) => {
   return breadcrumbs[index].text;
 };
-
 
 const initOutputEditor = () => {
   if (outputEditor.value) {
@@ -96,7 +89,7 @@ const initOutputEditor = () => {
         class: NestedList,
         inlineToolbar: true,
         config: {
-          defaultStyle: 'unordered',
+          defaultStyle: "unordered",
         },
       },
     },
@@ -159,39 +152,35 @@ onBeforeUnmount(() => {
   }
 });
 
-
 // เพิ่ม code เพื่อดึงลูกมา  -----------------
-const saveName = ref('');
+const saveName = ref("");
 const status = ref(true);
-const saveDate = ref('');
+const saveDate = ref("");
 const tags = ref<string[]>([]);
 
-const newTag = ref(''); // New tag input
-
+const newTag = ref(""); // New tag input
 
 const handleSave = (data: any) => {
-  console.log("🚀 ~ handleSave ~ data:", data)
+  console.log("🚀 ~ handleSave ~ data:", data);
   // เก็บข้อมูลที่ได้รับจาก component ตัวลูกเมื่อกดบันทึก
   saveName.value = data;
 };
 
 const handleStatus = (data: any) => {
-  console.log("🚀 ~ handleSave ~ data:", data)
+  console.log("🚀 ~ handleSave ~ data:", data);
   // เก็บข้อมูลที่ได้รับจาก component ตัวลูกเมื่อกดบันทึก
   status.value = data;
 };
 
 const handleDate = (data: any) => {
-  console.log("🚀 ~ handleSave ~ data:", data)
+  console.log("🚀 ~ handleSave ~ data:", data);
   // เก็บข้อมูลที่ได้รับจาก component ตัวลูกเมื่อกดบันทึก
   saveDate.value = data;
 };
 
-
-
 const handleTag = (data: string[]) => {
   tags.value = data;
-  console.log("🚀 ~ handleTag ~ data:", data)
+  console.log("🚀 ~ handleTag ~ data:", data);
 };
 
 const getsave = async () => {
@@ -204,64 +193,68 @@ const getsave = async () => {
     createdAt: currentDateTime,
     updatedAt: currentDateTime,
     timestampCreate: currentDateTime,
-    titleImages: 'image-url',
-    pageLink: '/new-page',
+    titleImages: "image-url",
+    pageLink: "/new-page",
     isActive: status.value,
     typeId: 1,
-    tag: tags.value.map(tag => ({ tagName : tag})) ,
+    tag: tags.value.map((tag) => ({ tagName: tag })),
     type: {
       id: 1,
-      typeName: 'single pages',
+      typeName: "single pages",
       createdAt: currentDateTime,
-      updatedAt: currentDateTime
-    }
+      updatedAt: currentDateTime,
+    },
   };
   try {
     const response = await createPage.createSinglePage(postdata);
-    console.log('Page creation response:', response);
+    console.log("Page creation response:", response);
     // เมื่อสร้างหน้าเสร็จสิ้น แสดง SweetAlert แจ้งเตือน
     Swal.fire({
-      icon: 'success',
-      title: 'สร้างหน้าใหม่สำเร็จ!',
+      icon: "success",
+      title: "สร้างหน้าใหม่สำเร็จ!",
       showConfirmButton: false,
-      timer: 1500
+      timer: 1500,
     });
   } catch (error) {
-    console.error('Error creating page:', error);
+    console.error("Error creating page:", error);
 
     // เมื่อเกิดข้อผิดพลาดในการสร้างหน้า แสดง SweetAlert แจ้งเตือน
     Swal.fire({
-      icon: 'error',
-      title: 'เกิดข้อผิดพลาดในการสร้างหน้า!',
-      text: 'กรุณาลองใหม่อีกครั้ง',
-      footer: '<a href="#">ติดต่อเรา</a>'
+      icon: "error",
+      title: "เกิดข้อผิดพลาดในการสร้างหน้า!",
+      text: "กรุณาลองใหม่อีกครั้ง",
+      footer: '<a href="#">ติดต่อเรา</a>',
     });
   }
 };
-
-
-
 </script>
 
 <template>
-  
   <div>
-
     <!-- Breadcrumb navigation -->
     <v-breadcrumbs>
-      <v-breadcrumbs-item v-for="(breadcrumb, index) in breadcrumbs" :key="index" @click="navigateTo(breadcrumb.href)"
-        class="breadcrumb-item">
+      <v-breadcrumbs-item
+        v-for="(breadcrumb, index) in breadcrumbs"
+        :key="index"
+        @click="navigateTo(breadcrumb.href)"
+        class="breadcrumb-item"
+      >
         {{ getBreadcrumbText(index) }}
         <template v-if="index < breadcrumbs.length - 1"> > </template>
       </v-breadcrumbs-item>
     </v-breadcrumbs>
 
     <!-- เพิ่มตัวแปลด้วย ถ้าจะดึงจากลูก -->
-    <AdminHeadingInputHeading :name="saveName" @name="handleSave" @status="handleStatus" @day="handleDate "
-      @tag="handleTag" />
+    <AdminHeadingInputHeading
+      :name="saveName"
+      @name="handleSave"
+      @status="handleStatus"
+      @day="handleDate"
+      @tag="handleTag"
+    />
 
     <div class="center-container">
-      <v-card class="withbg mt-4 " style="max-width: 1000px;">
+      <v-card class="withbg mt-4" style="max-width: 1000px">
         <div class="title-section">
           <v-card-title class="text-h5 ml-3">เพิ่มคำบรรยาย</v-card-title>
         </div>
@@ -272,7 +265,6 @@ const getsave = async () => {
         <v-btn color="primary" class="ml-5 mb-6" @click="getsave">บันทึก</v-btn>
       </v-card>
     </div>
-
   </div>
 </template>
 
