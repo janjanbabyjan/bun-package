@@ -477,7 +477,7 @@ const saveNewPage = async (
         <!-- Path Selection Dialog -->
         <v-dialog v-model="pathDialog" class="custom-path-dialog align-center">
           <v-card>
-            <v-card-title class="mt-2">เลือกเส้นทาง</v-card-title>
+            <v-card-title class="mt-2">เลือกเส้นทาง </v-card-title>
             <v-card-text class="scrollable-content">
               <v-row class="align-center">
                 <v-col cols="3">
