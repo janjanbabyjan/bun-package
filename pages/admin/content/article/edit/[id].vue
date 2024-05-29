@@ -2,71 +2,32 @@
 definePageMeta({
   layout: "admin",
 });
-import { getSinglePageById } from '~/plugins/api/authService'; // แก้ไขเป็นชื่อโมดูลและฟังก์ชั่น API ของคุณ
-import { format } from 'date-fns'
+import { getSinglePageById } from "~/plugins/api/authService"; // แก้ไขเป็นชื่อโมดูลและฟังก์ชั่น API ของคุณ
+import { format } from "date-fns";
 import AdminHeadingInputHeading from "@/components/admin/heading/input_heading.vue";
 
-const date = ref(new Date())
+const date = ref(new Date());
 
-const getsave = async () => {
-  const currentDateTime = new Date().toISOString();
-  const editorData = await editor.value?.save();
+const router = useRouter();
+const pageId = ref(null);
+const pageData = ref(null);
 
-  const postdata = {
-    title: saveName.value,
-    content: editorData,
-    createdAt: currentDateTime,
-    updatedAt: currentDateTime,
-    timestampCreate: currentDateTime,
-    titleImages: "image-url",
-    pageLink: "/new-page",
-    isActive: status.value,
-    typeId: 1,
-    tag: tags.value.map((tag) => ({ tagName: tag })),
-    type: {
-      id: 1,
-      typeName: "single pages",
-      createdAt: currentDateTime,
-      updatedAt: currentDateTime,
-    },
-  };
-  try {
-    const response = await createPage.createSinglePage(postdata);
-    console.log("Page creation response:", response);
-    // เมื่อสร้างหน้าเสร็จสิ้น แสดง SweetAlert แจ้งเตือน
-    Swal.fire({
-      icon: "success",
-      title: "สร้างหน้าใหม่สำเร็จ!",
-      showConfirmButton: false,
-      timer: 1500,
-    });
-  } catch (error) {
-    console.error("Error creating page:", error);
 
-    Swal.fire({
-      icon: "error",
-      title: "เกิดข้อผิดพลาดในการสร้างหน้า!",
-      text: "กรุณาลองใหม่อีกครั้ง",
-      footer: '<a href="#">ติดต่อเรา</a>',
-    });
-  }
-};
 onMounted(async () => {
+  pageId.value = router.currentRoute.value.params.id;
   try {
-    // เรียกใช้ getSinglePageById และระบุ ID ของ Single Page ที่ต้องการดึงข้อมูล
-    const response = await getSinglePageById(/* ระบุ ID ของ Single Page ที่ต้องการ */);
-    singlePage.value = response.data; // แปลงข้อมูลให้อยู่ในรูปแบบที่เหมาะสมกับโค้ด Vue ของคุณ
+    const response = await getSinglePageById(pageId.value);
+    pageData.value = response.data;
   } catch (error) {
-    console.error('Error fetching single page:', error);
+    console.error("Error fetching single page:", error);
   }
 });
 </script>
 
 <template>
-  
-    <div> Hello Index Content Edit Article</div>
-    <div> {{}}</div>
-    <div>
+
+  <div>
+    {{ pageData}}
     <!-- Breadcrumb navigation -->
     <v-breadcrumbs>
       <v-breadcrumbs-item
@@ -102,16 +63,14 @@ onMounted(async () => {
       </v-card>
     </div>
   </div>
-    <UPopover :popper="{ placement: 'bottom-start' }">
-    <UButton icon="i-heroicons-calendar-days-20-solid" :label="format(date, 'd MMM, yyy')" />
+  <UPopover :popper="{ placement: 'bottom-start' }">
+    <UButton
+      icon="i-heroicons-calendar-days-20-solid"
+      :label="format(date, 'd MMM, yyy')"
+    />
 
     <template #panel="{ close }">
       <DatePicker v-model="date" is-required @close="close" />
     </template>
   </UPopover>
-
 </template>
-
-
-
-
