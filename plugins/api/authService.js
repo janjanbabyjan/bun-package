@@ -41,7 +41,6 @@ const createNewMenu = async (menuName, pathMenu, isActive, parentId) => {
   }
 };
 
-
 const updateMenu = async (id, updatedMenuData) => {
   try {
     const response = await axios.post(`${baseApiUrl}/manage-menu/${id}`, updatedMenuData);
@@ -136,4 +135,25 @@ const getPageTypeById = async (id) => {
     throw error;
   }
 };
-export { getLogin, getAllManageMenus,createNewMenu,updateMenu,deleteMenu,createSinglePage ,getAllPageTypes,getAllSinglePages,};
+const updateSinglePageById = async (id, updatedData) => {
+  try {
+    const response = await axios.post(`${baseApiUrl}/singlepage/${id}`, updatedData);
+    return response.data;
+  } catch (error) {
+    console.log("🚀 ~ updateSinglePageById ~ error:", error);
+    throw error;
+  }
+};
+const getSinglePageById = async (id) => {
+  try {
+    const response = await axios.get(`${baseApiUrl}/singlepage/${id}?_expand=type`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching single page by ID:', error);
+    throw error;
+  }
+};
+
+
+
+export { getLogin, getAllManageMenus,createNewMenu,updateMenu,deleteMenu,createSinglePage ,getAllPageTypes,getAllSinglePages,updateSinglePageById,getPageTypeById,getSinglePageById,};
