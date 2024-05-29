@@ -34,13 +34,13 @@ onMounted(() => {
 
         <v-list-item-title>{{ menu.menuName }}</v-list-item-title>
 
-        <v-list-item-group v-if="menu.children && menu.children.length > 0">
+        <!-- <v-list-item-group v-if="menu.children && menu.children.length > 0">
           <template v-for="child in menu.children" :key="child.id">
             <v-list-item v-if="child.isActive" :to="child.to" rounded class="mb-1 sub-menu-item" :disabled="child.disabled" :target="child.type === 'external' ? '_blank' : ''">
               <v-list-item-title>{{ child.menuName }}</v-list-item-title>
             </v-list-item>
           </template>
-        </v-list-item-group>
+        </v-list-item-group> -->
 
       </v-list-item>
     </template>
