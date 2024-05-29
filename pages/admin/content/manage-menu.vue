@@ -344,13 +344,16 @@ const dialogadd3 = ref(false);
 const addPageDialog = ref(false);
 const currentChildId = ref<number | null>(null);
 
-const filteredPagesByMenu = (menu: Menu, child: Menu) => {
+const filteredPagesByMenu = (menu: Menu, child: Menu, pages: Menu) => {
   return filteredPages.value.filter((page) => {
     if (page.pageLink && menu.pageLink) {
       return page.pageLink.startsWith(menu.pageLink);
     }
     if (page.pageLink && child.pageLink) {
       return page.pageLink.startsWith(child.pageLink);
+    }
+    if (page.pageLink && pages.pageLink) {
+      return page.pageLink.startsWith(pages.pageLink);
     }
     return false;
   });
@@ -535,46 +538,30 @@ const addPage = async () => {
               }}</v-icon>
               {{ child.menuName }}
               <template v-slot:append>
-                <v-icon class="icon-size" @click.stop="openAddPage3Dialog(child.id)">mdi-plus</v-icon>
+                <v-icon class="icon-size" @click.stop="openSubMenuDialog(child.id)">mdi-plus</v-icon>
                 <v-icon class="mr-1 icon-size" @click.stop="handleEditMenu(child)">mdi-pencil</v-icon>
                 <v-icon class="icon-size" @click.stop="handleDeleteMenu(child.id)">mdi-delete</v-icon>
               </template>
             </v-list-item>
           </template>
 
-          <!-- <v-dialog v-model="dialogadd3" max-width="500px">
-            <v-card>
-              <v-card-title class="mt-2">เพิ่มหน้าใหม่</v-card-title>
-              <v-card-text>
-                <v-text-field v-model="newPageName" label="ชื่อหน้า" outlined></v-text-field>
-                <v-row>
-                  <v-col cols="10">
-                    <v-text-field v-model="newSubMenuLink" label="ลิงก์" outlined readonly
-                      @click="openPathDialog"></v-text-field>
-                  </v-col>
-                  <v-col cols="2">
-                    <v-btn color="primary" @click="openPathDialog">เลือก</v-btn>
-                  </v-col>
-                </v-row>
-                <v-switch v-model="isPageActive" label="แสดงหน้า" color="primary"></v-switch>
-              </v-card-text>
-              <v-card-actions>
-                <v-btn color="primary" @click="addPage">เพิ่ม</v-btn>
-                <v-btn color="error" @click="closeAddPageDialog">ยกเลิก</v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog> -->
 
-          <!-- <v-list-item v-if="children.page && children.page.length > 0" v-for="page in children.page" :key="page.id">            :value="page.children">
-            <v-list-item-title style="color: #5b5b5b;">{{ page.child }}</v-list-item-title>
-          </v-list-item> -->
 
-          <!-- <v-list-item class="ml-5" v-for="page in filteredPages" :key="page.id" @click="selectLink(page)">
-            <v-list-item-title style="color: #5b5b5b;">{{ page.title }}</v-list-item-title>
-          </v-list-item> -->
+          <v-list-group v-if="menu.children && menu.children.length > 0" v-for="child in menu.children" :key="child.id"
+            :value="child.menuName" append-icon>
+            <!-- Your existing code -->
+            <template v-slot:activator="{ props }">
+              <v-list-item v-bind="props" style="color: #5b5b5b">
+                <v-icon>{{
+                  props.isOpen ? "mdi-menu-down" : "mdi-menu-right"
+                  }}</v-icon>
+                {{ child.menuName }}
+              </v-list-item>
+            </template>
+          </v-list-group>
 
         </v-list-group>
-        
+
       </v-list-group>
     </v-list>
   </v-card>

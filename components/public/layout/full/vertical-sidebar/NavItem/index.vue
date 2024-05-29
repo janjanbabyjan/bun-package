@@ -15,7 +15,9 @@
             </v-list-item>
           </template>
           
-            <v-list-item-title style="color: #5b5b5b;">{{ menu.menuName }}</v-list-item-title>
+          <!-- <v-list-item v-bind="props" style="color: #5b5b5b">
+              {{ page.menuName }}
+            </v-list-item> -->
          
           
         </v-list-group>
