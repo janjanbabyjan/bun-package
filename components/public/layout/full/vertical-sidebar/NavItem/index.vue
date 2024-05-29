@@ -1,31 +1,3 @@
-<template>
-  <v-list>
-    <template v-for="menu in menuTree">
-      <v-list-group v-if="!menu.parentId" :key="menu.id" :value="menu.menuName">
-        <template v-slot:activator="{ props }">
-          <v-list-item v-bind="props">
-            {{ menu.menuName }}
-          </v-list-item>
-        </template>
-
-        <v-list-group v-if="menu.children && menu.children.length > 0" v-for="child in menu.children" :key="child.id" :value="child.menuName">
-          <template v-slot:activator="{ props }">
-            <v-list-item v-bind="props" style="color: #5b5b5b">
-              {{ child.menuName }}
-            </v-list-item>
-          </template>
-          
-          <!-- <v-list-item v-bind="props" style="color: #5b5b5b">
-              {{ page.menuName }}
-            </v-list-item> -->
-         
-          
-        </v-list-group>
-      </v-list-group>
-    </template>
-  </v-list>
-</template>
-
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import { getAllManageMenus, getAllSinglePages } from "@/plugins/api/authService";
@@ -99,7 +71,34 @@ onMounted(() => {
   fetchManageMenus();
   fetchSinglePages();
 });
-</script>
+</script><template>
+  <v-list>
+    <template v-for="menu in menuTree">
+      <v-list-group v-if="!menu.parentId" :key="menu.id" :value="menu.menuName">
+        <template v-slot:activator="{ props }">
+          <v-list-item v-bind="props">
+            {{ menu.menuName }}
+          </v-list-item>
+        </template>
+
+        <v-list-group v-if="menu.children && menu.children.length > 0" v-for="child in menu.children" :key="child.id" :value="child.menuName">
+          <template v-slot:activator="{ props }">
+            <v-list-item v-bind="props" style="color: #5b5b5b">
+              {{ child.menuName }}
+            </v-list-item>
+          </template>
+          
+          <v-list-item v-bind="props" style="color: #5b5b5b">
+              {{ child.menuName }}
+            </v-list-item>         
+          
+        </v-list-group>
+      </v-list-group>
+    </template>
+  </v-list>
+</template>
+
+
 
 <style scoped>
 
