@@ -13,84 +13,33 @@ import {
     NewsIcon,
     NewSectionIcon,
     FilesIcon,
-} from 'vue-tabler-icons';
-
-export interface menu {
+  } from 'vue-tabler-icons';
+  
+  export interface Menu {
     header?: string;
     title?: string;
-    icon?: any;
+    icon?: any; // Change any to specific type (e.g., typeof ApertureIcon)
     to?: string;
     chip?: string;
     chipColor?: string;
     chipVariant?: string;
     chipIcon?: string;
-    children?: menu[];
+    children?: Menu[];
     disabled?: boolean;
     type?: string;
     subCaption?: string;
     active?: boolean; // Add this line
-}
-
-const sidebarItem: menu[] = [
+  }
+  
+  // Define the icons for each item
+  const sidebarItem: Menu[] = [
     {
-        title: 'Dashboard',
-        icon: LayoutDashboardIcon,
-        to: '/public/dashboard'
+      title: 'Dashboard',
+      icon: LayoutDashboardIcon,
+      to: '/public/dashboard'
     },
-
-    // chidren1
-    {
-        title: 'Page',
-        icon: NewSectionIcon,
-        active: true,
-        children: [
-            {
-                title: 'Render Page',
-                to: '/public/ui-components/cardrender'
-            },
-            {
-                title: 'Gallery',
-                to: '/public/ui-components/gallery'
-            },
-            {
-                title: 'About',
-                children: [
-                    {
-                        title: 'Contact',
-                        to: '/nested-child-1'
-                    },
-                    {
-                        title: 'Marketing',
-                        to: '/nested-child-2'
-                    },
-                ],
-            },
-
-        ],
-    },
-    // chidren2
-    {
-        title: 'News',
-        icon: NewsIcon,
-        active: true,
-        children: [
-            {
-                title: 'Activity',
-                to: '/public/ui-components/content/10'
-            },
-            {
-                title: 'Gallery',
-                to: '/public/ui-components/content/5'
-            },
-
-        ],
-    },
-    {
-        title: 'Output',
-        icon: FilesIcon,
-        to: '/public/ui-components/output'
-    },
-
-];
-
-export default sidebarItem;
+    // Other items...
+  ];
+  
+  export default sidebarItem;
+  

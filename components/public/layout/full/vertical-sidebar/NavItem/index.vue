@@ -1,25 +1,24 @@
 <template>
-  
   <v-list>
-    <!-- Loop through the manageMenus array to create the main list groups -->
-    <template v-for="menu in menuTree" :key="menu.id">
-      <v-list-group :value="menu.menuName">
+    <template v-for="menu in menuTree">
+      <v-list-group v-if="!menu.parentId" :key="menu.id" :value="menu.menuName">
         <template v-slot:activator="{ props }">
           <v-list-item v-bind="props">
             {{ menu.menuName }}
           </v-list-item>
         </template>
 
-        <!-- Nested list groups and items -->
-        <template v-for="child in menu.children" :key="child.id">
-          <v-list-group v-if="child.children && child.children.length > 0" :value="child.menuName">
-            <template v-slot:activator="{ props }">
-              <v-list-item v-bind="props" style="color: #5b5b5b">
-                {{ child.menuName }}
-              </v-list-item>
-            </template>
-          </v-list-group>
-        </template>
+        <v-list-group v-if="menu.children && menu.children.length > 0" v-for="child in menu.children" :key="child.id" :value="child.menuName">
+          <template v-slot:activator="{ props }">
+            <v-list-item v-bind="props" style="color: #5b5b5b">
+              {{ child.menuName }}
+            </v-list-item>
+          </template>
+          
+            <v-list-item-title style="color: #5b5b5b;">{{ menu.menuName }}</v-list-item-title>
+         
+          
+        </v-list-group>
       </v-list-group>
     </template>
   </v-list>
@@ -28,15 +27,26 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import { getAllManageMenus, getAllSinglePages } from "@/plugins/api/authService";
+import { ApertureIcon, CopyIcon, LayoutDashboardIcon, NewsIcon, NewSectionIcon, FilesIcon } from 'vue-tabler-icons'; // Adjust the import as needed
 
 interface Menu {
   id: number;
   menuName: string;
-  parentId: number | null;
+  path?: string;
+  pageLink?: string;
+  parentId?: number | null;
   children?: Menu[];
 }
 
+interface SinglePage {
+  id: number;
+  title: string;
+  pageLink?: string;
+}
+
 const manageMenus = ref<Menu[]>([]);
+const singlePages = ref<SinglePage[]>([]);
+
 const fetchManageMenus = async () => {
   try {
     const response = await getAllManageMenus();
@@ -46,13 +56,6 @@ const fetchManageMenus = async () => {
   }
 };
 
-interface SinglePage {
-  id: number;
-  title: string;
-  menuId: number;
-}
-
-const singlePages = ref<SinglePage[]>([]);
 const fetchSinglePages = async () => {
   try {
     const response = await getAllSinglePages();
@@ -62,36 +65,33 @@ const fetchSinglePages = async () => {
   }
 };
 
-// ฟังก์ชันกรองหน้าโดยใช้ menuId
-const filteredPages = (menuId: number) => {
-  return singlePages.value.filter(page => page.menuId === menuId);
-};
-
 const selectLink = (page: SinglePage) => {
   // Handle link selection here
 };
 
-// สร้างโครงสร้างต้นไม้ของเมนูจาก manageMenus
-const menuTree = computed(() => {
+const buildMenuTree = (menuItems: Menu[]) => {
   const menuMap = new Map<number, Menu>();
-  manageMenus.value.forEach((menu) => {
-    menuMap.set(menu.id, { ...menu, children: [] });
+  const roots: Menu[] = [];
+
+  menuItems.forEach(item => {
+    menuMap.set(item.id, { ...item, children: [] });
   });
 
-  const roots: Menu[] = [];
-  menuMap.forEach((menu) => {
-    if (menu.parentId === null) {
-      roots.push(menu);
+  menuMap.forEach(item => {
+    if (item.parentId === null || item.parentId === undefined) {
+      roots.push(item);
     } else {
-      const parent = menuMap.get(menu.parentId);
+      const parent = menuMap.get(item.parentId);
       if (parent) {
-        parent.children!.push(menu);
+        parent.children?.push(item);
       }
     }
   });
 
   return roots;
-});
+};
+
+const menuTree = computed(() => buildMenuTree(manageMenus.value));
 
 onMounted(() => {
   fetchManageMenus();
@@ -100,7 +100,5 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.icon-size {
-  font-size: 20px;
-}
+
 </style>
