@@ -339,6 +339,8 @@ const newPageName = ref("");
 const newPageLink = ref("");
 const isPageActive = ref(false);
 
+const dialogadd3 = ref(false);
+
 const addPageDialog = ref(false);
 const currentChildId = ref<number | null>(null);
 
@@ -357,6 +359,10 @@ const filteredPagesByMenu = (menu: Menu, child: Menu) => {
 const openAddPageDialog = (childId: number) => {
   currentChildId.value = childId;
   addPageDialog.value = true;
+};
+
+const openAddPage3Dialog = (childId: number) => {
+  dialogadd3.value = true;
 };
 
 const closeAddPageDialog = () => {
@@ -386,17 +392,15 @@ const addPage = async () => {
   }
 };
 
+
+
 </script>
 
 <template>
   <!-- Breadcrumb navigation -->
   <v-breadcrumbs>
-    <v-breadcrumbs-item
-      v-for="(breadcrumb, index) in breadcrumbs"
-      :key="index"
-      @click="navigateTo(breadcrumb.href)"
-      class="breadcrumb-item"
-    >
+    <v-breadcrumbs-item v-for="(breadcrumb, index) in breadcrumbs" :key="index" @click="navigateTo(breadcrumb.href)"
+      class="breadcrumb-item">
       {{ getBreadcrumbText(index) }}
       <template v-if="index < breadcrumbs.length - 1"> > </template>
     </v-breadcrumbs-item>
@@ -407,9 +411,7 @@ const addPage = async () => {
     <v-card-item class="pa-6">
       <div class="d-flex align-center justify-space-between pt-sm-2">
         <v-card-title class="text-h5">จัดการเมนู</v-card-title>
-        <v-btn color="primary" class="ml-auto" @click="openDialog"
-          >เพิ่มเมนูหลัก</v-btn
-        >
+        <v-btn color="primary" class="ml-auto" @click="openDialog">เพิ่มเมนูหลัก</v-btn>
 
         <!-- Main Dialog -->
         <v-dialog v-model="dialog" class="custom-dialog">
@@ -418,30 +420,17 @@ const addPage = async () => {
               isEditMode ? "แก้ไขเมนู" : "เพิ่มเมนู"
             }}</v-card-title>
             <v-card-text>
-              <v-text-field
-                v-model="newMenuName"
-                label="ชื่อเมนู"
-                outlined
-              ></v-text-field>
+              <v-text-field v-model="newMenuName" label="ชื่อเมนู" outlined></v-text-field>
               <v-row>
                 <v-col cols="10">
-                  <v-text-field
-                    v-model="newMenuLink"
-                    label="ลิงก์"
-                    outlined
-                    readonly
-                    @click="openPathDialog"
-                  ></v-text-field>
+                  <v-text-field v-model="newMenuLink" label="ลิงก์" outlined readonly
+                    @click="openPathDialog"></v-text-field>
                 </v-col>
                 <v-col cols="2">
                   <v-btn color="primary" @click="openPathDialog">เลือก</v-btn>
                 </v-col>
               </v-row>
-              <v-switch
-                v-model="isActive"
-                label="แสดงเมนู"
-                color="primary"
-              ></v-switch>
+              <v-switch v-model="isActive" label="แสดงเมนู" color="primary"></v-switch>
             </v-card-text>
             <v-card-actions>
               <v-btn color="primary" @click="saveMenu">{{
@@ -459,39 +448,18 @@ const addPage = async () => {
             <v-card-text class="scrollable-content">
               <v-row class="align-center">
                 <v-col cols="3">
-                  <v-select
-                    label="Select"
-                    :items="pageTypes"
-                    variant="outlined"
-                  ></v-select>
+                  <v-select label="Select" :items="pageTypes" variant="outlined"></v-select>
                 </v-col>
                 <v-col cols="7">
-                  <v-text-field
-                    style="max-width: 350px"
-                    v-model="searchQuery"
-                    label="ค้นหา"
-                    outlined
-                  ></v-text-field>
+                  <v-text-field style="max-width: 350px" v-model="searchQuery" label="ค้นหา" outlined></v-text-field>
                 </v-col>
-                <v-col
-                  style="margin-top: -23px"
-                  cols="2"
-                  class="d-flex justify-end align-items-center"
-                >
-                  <v-btn class="btn" color="primary" @click="search"
-                    >ค้นหา</v-btn
-                  >
-                  <v-btn color="secondary" @click="clearSearch" class="ml-3"
-                    >ล้าง</v-btn
-                  >
+                <v-col style="margin-top: -23px" cols="2" class="d-flex justify-end align-items-center">
+                  <v-btn class="btn" color="primary" @click="search">ค้นหา</v-btn>
+                  <v-btn color="secondary" @click="clearSearch" class="ml-3">ล้าง</v-btn>
                 </v-col>
               </v-row>
               <v-list>
-                <v-list-item
-                  v-for="page in filteredPages"
-                  :key="page.id"
-                  @click="selectLink(page)"
-                >
+                <v-list-item v-for="page in filteredPages" :key="page.id" @click="selectLink(page)">
                   <v-list-item-content>
                     <v-list-item-title>{{ page.title }}</v-list-item-title>
                     <v-list-item-subtitle v-if="page.pageLink">{{
@@ -515,11 +483,7 @@ const addPage = async () => {
   <!-- Menu List -->
   <v-card elevation="10" class="withbg">
     <v-list>
-      <v-list-group
-        v-for="menu in menuTree"
-        :key="menu.id"
-        :value="menu.menuName"
-      >
+      <v-list-group v-for="menu in menuTree" :key="menu.id" :value="menu.menuName">
         <template v-slot:activator="{ props }">
           <v-list-item v-bind="props">
             <v-icon>{{
@@ -527,15 +491,9 @@ const addPage = async () => {
             }}</v-icon>
             {{ menu.menuName }}
             <template v-slot:append>
-              <v-icon class="icon-size" @click.stop="openSubMenuDialog(menu.id)"
-                >mdi-plus</v-icon
-              >
-              <v-icon class="mr-1 icon-size" @click.stop="handleEditMenu(menu)"
-                >mdi-pencil</v-icon
-              >
-              <v-icon class="icon-size" @click.stop="handleDeleteMenu(menu.id)"
-                >mdi-delete</v-icon
-              >
+              <v-icon class="icon-size" @click.stop="openSubMenuDialog(menu.id)">mdi-plus</v-icon>
+              <v-icon class="mr-1 icon-size" @click.stop="handleEditMenu(menu)">mdi-pencil</v-icon>
+              <v-icon class="icon-size" @click.stop="handleDeleteMenu(menu.id)">mdi-delete</v-icon>
             </template>
           </v-list-item>
         </template>
@@ -546,30 +504,17 @@ const addPage = async () => {
               isSubMenuEditMode ? "แก้ไขเมนูย่อย" : "เพิ่มเมนูย่อย"
             }}</v-card-title>
             <v-card-text>
-              <v-text-field
-                v-model="newSubMenuName"
-                label="ชื่อเมนูย่อย"
-                outlined
-              ></v-text-field>
+              <v-text-field v-model="newSubMenuName" label="ชื่อเมนูย่อย" outlined></v-text-field>
               <v-row>
                 <v-col cols="10">
-                  <v-text-field
-                    v-model="newSubMenuLink"
-                    label="ลิงก์"
-                    outlined
-                    readonly
-                    @click="openPathDialog"
-                  ></v-text-field>
+                  <v-text-field v-model="newSubMenuLink" label="ลิงก์" outlined readonly
+                    @click="openPathDialog"></v-text-field>
                 </v-col>
                 <v-col cols="2">
                   <v-btn color="primary" @click="openPathDialog">เลือก</v-btn>
                 </v-col>
               </v-row>
-              <v-switch
-                v-model="isSubMenuActive"
-                label="แสดงเมนูย่อย"
-                color="primary"
-              ></v-switch>
+              <v-switch v-model="isSubMenuActive" label="แสดงเมนูย่อย" color="primary"></v-switch>
             </v-card-text>
             <v-card-actions>
               <v-btn color="primary" @click="saveSubMenu">{{
@@ -580,12 +525,9 @@ const addPage = async () => {
           </v-card>
         </v-dialog>
 
-        <v-list-group
-          v-if="menu.children && menu.children.length > 0"
-          v-for="child in menu.children"
-          :key="child.id"
-          :value="child.menuName"
-        >
+
+        <v-list-group v-if="menu.children && menu.children.length > 0" v-for="child in menu.children" :key="child.id"
+          :value="child.menuName">
           <template v-slot:activator="{ props }">
             <v-list-item v-bind="props" style="color: #5b5b5b">
               <v-icon>{{
@@ -593,24 +535,39 @@ const addPage = async () => {
               }}</v-icon>
               {{ child.menuName }}
               <template v-slot:append>
-                <v-icon
-                  class="icon-size"
-                  @click.stop="openAddPageDialog(child.id)"
-                  >mdi-plus</v-icon
-                >
-                <v-icon
-                  class="mr-1 icon-size"
-                  @click.stop="handleEditMenu(child)"
-                  >mdi-pencil</v-icon
-                >
-                <v-icon
-                  class="icon-size"
-                  @click.stop="handleDeleteMenu(child.id)"
-                  >mdi-delete</v-icon
-                >
+                <v-icon class="icon-size" @click.stop="openAddPage3Dialog(child.id)">mdi-plus</v-icon>
+                <v-icon class="mr-1 icon-size" @click.stop="handleEditMenu(child)">mdi-pencil</v-icon>
+                <v-icon class="icon-size" @click.stop="handleDeleteMenu(child.id)">mdi-delete</v-icon>
               </template>
             </v-list-item>
           </template>
+
+          <!-- <v-dialog v-model="dialogadd3" max-width="500px">
+            <v-card>
+              <v-card-title class="mt-2">เพิ่มหน้าใหม่</v-card-title>
+              <v-card-text>
+                <v-text-field v-model="newPageName" label="ชื่อหน้า" outlined></v-text-field>
+                <v-row>
+                  <v-col cols="10">
+                    <v-text-field v-model="newSubMenuLink" label="ลิงก์" outlined readonly
+                      @click="openPathDialog"></v-text-field>
+                  </v-col>
+                  <v-col cols="2">
+                    <v-btn color="primary" @click="openPathDialog">เลือก</v-btn>
+                  </v-col>
+                </v-row>
+                <v-switch v-model="isPageActive" label="แสดงหน้า" color="primary"></v-switch>
+              </v-card-text>
+              <v-card-actions>
+                <v-btn color="primary" @click="addPage">เพิ่ม</v-btn>
+                <v-btn color="error" @click="closeAddPageDialog">ยกเลิก</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog> -->
+
+          <!-- <v-list-item v-if="children.page && children.page.length > 0" v-for="page in children.page" :key="page.id">            :value="page.children">
+            <v-list-item-title style="color: #5b5b5b;">{{ page.child }}</v-list-item-title>
+          </v-list-item> -->
 
           <!-- <v-list-item class="ml-5" v-for="page in filteredPages" :key="page.id" @click="selectLink(page)">
             <v-list-item-title style="color: #5b5b5b;">{{ page.title }}</v-list-item-title>
@@ -621,35 +578,27 @@ const addPage = async () => {
       </v-list-group>
     </v-list>
   </v-card>
+
+
+
+
+
   <!-- Dialog for adding page -->
   <v-dialog v-model="addPageDialog" class="custom-dialog">
     <v-card>
       <v-card-title class="mt-2">เพิ่มหน้าใหม่</v-card-title>
       <v-card-text>
-        <v-text-field
-          v-model="newPageName"
-          label="ชื่อหน้า"
-          outlined
-        ></v-text-field>
+        <v-text-field v-model="newPageName" label="ชื่อหน้า" outlined></v-text-field>
         <v-row>
           <v-col cols="10">
-            <v-text-field
-              v-model="newSubMenuLink"
-              label="ลิงก์"
-              outlined
-              readonly
-              @click="openPathDialog"
-            ></v-text-field>
+            <v-text-field v-model="newSubMenuLink" label="ลิงก์" outlined readonly
+              @click="openPathDialog"></v-text-field>
           </v-col>
           <v-col cols="2">
             <v-btn color="primary" @click="openPathDialog">เลือก</v-btn>
           </v-col>
         </v-row>
-        <v-switch
-          v-model="isPageActive"
-          label="แสดงหน้า"
-          color="primary"
-        ></v-switch>
+        <v-switch v-model="isPageActive" label="แสดงหน้า" color="primary"></v-switch>
       </v-card-text>
       <v-card-actions>
         <v-btn color="primary" @click="addPage">เพิ่ม</v-btn>
