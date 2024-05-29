@@ -1,35 +1,88 @@
 <script setup>
-definePageMeta({
-  layout: "admin",
-});
+definePageMeta({ layout: "admin", });
+
+import { ref, onMounted, watch } from 'vue';
 import AdminHeadingInputHeading from "@/components/admin/heading/input_heading.vue";
-import { format } from 'date-fns'
 import { useRoute } from 'vue-router';
 import axios from 'axios';
 
-const date = ref(new Date())
 const route = useRoute();
 const id = route.params.id;
-const galleryData = ref(null);
+const galleryData = ref({
+  title: '',
+  status: false,
+  day: '',
+  tag: []
+});
 
 const fetchGalleryData = async () => {
-  const response = await axios.get(`http://localhost:8000/singlepage/${id}`);
-  galleryData.value = response.data;
+  try {
+    const response = await axios.get(`http://localhost:8000/singlepage/${id}`);
+    const data = response.data.data;
+    galleryData.value = {
+      title: data.title,
+      status: data.isActive,
+      day: data.createdAt,
+      tag: data.tag ? data.tag.map(t => t.tagName) : []
+    };
+  } catch (error) {
+    console.error('Error fetching gallery data:', error);
+  }
 };
 
 onMounted(fetchGalleryData);
 
+watch(galleryData, (newVal) => {
+  console.log('Updated Gallery Data:', newVal);
+});
+
+const handleSave = (newName) => {
+  galleryData.value.title = newName;
+};
+
+const handleStatus = (newStatus) => {
+  galleryData.value.status = newStatus;
+};
+
+const handleDate = (newDate) => {
+  galleryData.value.day = newDate;
+};
+
+const handleTag = (newTag) => {
+  galleryData.value.tag = newTag;
+};
+
+const handleAddTag = (newTag) => {
+  galleryData.value.tag.push(newTag);
+};
+
+const handleEditTag = (index, updatedTag) => {
+  galleryData.value.tag[index] = updatedTag;
+};
+
+const handleRemoveTag = (index) => {
+  galleryData.value.tag.splice(index, 1);
+};
+
+// const getsave = async () => {
+//   try {
+//     await axios.put(`http://localhost:8000/singlepage/${id}`, galleryData.value);
+//     alert('Data updated successfully!');
+//   } catch (error) {
+//     console.error('Error updating data:', error);
+//   }
+// };
 </script>
 
 <template>
-
-  <AdminHeadingInputHeading :name="saveName" @name="handleSave" @status="handleStatus" @day="handleDate"
-    @tag="handleTag" />
+  <AdminHeadingInputHeading :name="galleryData.title" :status="galleryData.status" :day="galleryData.day"
+    :tag="galleryData.tag" @name="galleryData.title" @status="handleStatus" @day="handleDate" @tag="handleTag"
+    @addTag="handleAddTag" @editTag="handleEditTag" @removeTag="handleRemoveTag" />
   <div class="center-container">
     <v-card class="withbg mt-4" style="max-width: 1000px;">
       <AdminBodyGalleryInput @imageUploaded="handleImageUpload" />
       <v-btn color="primary" class="ml-5 mb-6" @click="getsave">Save</v-btn>
     </v-card>
   </div>
-
 </template>
+as
