@@ -612,9 +612,9 @@ const addPage = async () => {
             </v-list-item>
           </template>
 
-          <v-list-item class="ml-5" v-for="page in filteredPages" :key="page.id" @click="selectLink(page)">
+          <!-- <v-list-item class="ml-5" v-for="page in filteredPages" :key="page.id" @click="selectLink(page)">
             <v-list-item-title style="color: #5b5b5b;">{{ page.title }}</v-list-item-title>
-          </v-list-item>
+          </v-list-item> -->
 
         </v-list-group>
         

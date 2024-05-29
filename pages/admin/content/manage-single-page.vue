@@ -48,17 +48,28 @@ const filterPages = () => {
       .toLowerCase()
       .includes(searchQuery.value.toLowerCase());
     const matchesStatus =
-      selectedStatus.value === null ||
-      (selectedStatus.value === true && page.isActive) ||
-      (selectedStatus.value === false && !page.isActive);
+      selectedIsActive.value === "แสดงทั้งหมด" ||
+      (selectedIsActive.value === "แสดงอยู่" && page.isActive) ||
+      (selectedIsActive.value === "ไม่แสดง" && !page.isActive);
     const matchesCategory =
       selectedCategory.value === null ||
       (page.type && page.type.typeName === selectedCategory.value);
     return matchesQuery && matchesStatus && matchesCategory;
   });
-};
 
-watch([searchQuery, selectedStatus, selectedCategory], filterPages);
+  // Update isActiveOptions based on the filtered pages
+  isActiveOptions.value = ["แสดงทั้งหมด", "แสดงอยู่", "ไม่แสดง"].filter((option) => {
+    if (option === "แสดงทั้งหมด") return true;
+    if (option === "แสดงอยู่")
+      return filteredPages.value.some((page) => page.isActive);
+    if (option === "ไม่แสดง")
+      return filteredPages.value.some((page) => !page.isActive);
+  });
+};
+const isActiveOptions = ref(["แสดงทั้งหมด", "แสดงอยู่", "ไม่แสดง"]);
+const selectedIsActive = ref("แสดงทั้งหมด");
+
+watch([searchQuery, selectedIsActive, selectedCategory], filterPages);
 
 const isOpen = ref(false);
 
@@ -91,20 +102,6 @@ const resetFilters = () => {
   selectedCategory.value = null;
   filterPages();
 };
-
-interface StatusOption {
-  texts: string;
-  value: boolean | null;
-}
-
-const statusOptions: StatusOption[] = [
-  { texts: "เปิด", value: true },
-  { texts: "ปิด", value: false },
-];
-
-const filteredStatusOptions = computed(() =>
-  statusOptions.filter((option) => option.value !== null)
-);
 
 const updateSinglePageByIds = async (pageId: number, updatedData: any) => {
   try {
@@ -184,11 +181,9 @@ onMounted(() => {
         </v-col>
         <v-col cols="12" md="4" style="max-width: 200px">
           <v-select
+            v-model="selectedIsActive"
+            :items="isActiveOptions"
             label="สถานะ"
-            :items="statusOptins"
-            v-model="selectedStatus"
-            item-text="texts"
-            item-value="value"
             variant="outlined"
           ></v-select>
         </v-col>

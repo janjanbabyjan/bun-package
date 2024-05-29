@@ -154,6 +154,4 @@ const getSinglePageById = async (id) => {
   }
 };
 
-
-
 export { getLogin, getAllManageMenus,createNewMenu,updateMenu,deleteMenu,createSinglePage ,getAllPageTypes,getAllSinglePages,updateSinglePageById,getPageTypeById,getSinglePageById,};
