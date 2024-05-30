@@ -48,7 +48,7 @@ const filterPages = () => {
       .toLowerCase()
       .includes(searchQuery.value.toLowerCase());
     const matchesStatus =
-      selectedIsActive.value === "แสดงทั้งหมด" ||
+      selectedIsActive.value === "ทั้งหมด" ||
       (selectedIsActive.value === "แสดงอยู่" && page.isActive) ||
       (selectedIsActive.value === "ไม่แสดง" && !page.isActive);
     const matchesCategory =
@@ -58,16 +58,11 @@ const filterPages = () => {
   });
 
   // Update isActiveOptions based on the filtered pages
-  isActiveOptions.value = ["แสดงทั้งหมด", "แสดงอยู่", "ไม่แสดง"].filter((option) => {
-    if (option === "แสดงทั้งหมด") return true;
-    if (option === "แสดงอยู่")
-      return filteredPages.value.some((page) => page.isActive);
-    if (option === "ไม่แสดง")
-      return filteredPages.value.some((page) => !page.isActive);
-  });
+  isActiveOptions.value = ["ทั้งหมด", "แสดงอยู่", "ไม่แสดง"];
 };
-const isActiveOptions = ref(["แสดงทั้งหมด", "แสดงอยู่", "ไม่แสดง"]);
-const selectedIsActive = ref("แสดงทั้งหมด");
+const isActiveOptions = ref(["ทั้งหมด", "แสดงอยู่", "ไม่แสดง"]);
+const selectedIsActive = ref("ทั้งหมด");
+const selectedIsActives = ref<string | null>(null);
 
 watch([searchQuery, selectedIsActive, selectedCategory], filterPages);
 
