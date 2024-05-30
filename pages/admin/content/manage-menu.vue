@@ -467,54 +467,50 @@ const saveNewPage = async (
 
   <!-- Menu List -->
   <v-card elevation="10" class="withbg">
-    <v-list>
-      <template v-for="menu in menuTree">
-        <v-list-group v-for="menu in menuTree" :key="menu.id" :value="menu.menuName">
+
+    <v-list v-for="menu in menuTree" :key="menu.id" :value="menu.menuName">
+      <v-list-group value="Users">
+        <template v-slot:activator="{ props }">
+          <v-list-item v-bind="props">
+            <v-icon>{{
+              props.isOpen ? "mdi-menu-down" : "mdi-menu-right"
+            }}</v-icon>
+            {{ menu.menuName }}
+            <template v-slot:append>
+              <v-icon class="icon-size" @click.stop="openSubMenuDialog(menu.id)">mdi-plus</v-icon>
+              <v-icon class="mr-1 icon-size" @click.stop="handleEditMenu(menu)">mdi-pencil</v-icon>
+              <v-icon class="icon-size" @click.stop="handleDeleteMenu(menu.id)">mdi-delete</v-icon>
+            </template>
+          </v-list-item>
+        </template>
+
+        <v-list-group v-for="child in menu.children" :key="child.id" :value="child.menuName">
           <template v-slot:activator="{ props }">
-            <v-list-item v-bind="props">
-              <v-icon>{{
-                props.isOpen ? "mdi-menu-down" : "mdi-menu-right"
-                }}</v-icon>
-              {{ menu.menuName }}
+            <v-list-item v-bind="props" style="color: #5b5b5b">
+              <v-icon>{{ props.isOpen ? "mdi-menu-down" : "mdi-menu-right" }}</v-icon>
+              {{ child.menuName }}
               <template v-slot:append>
-                <v-icon class="icon-size" @click.stop="openSubMenuDialog(menu.id)">mdi-plus</v-icon>
-                <v-icon class="mr-1 icon-size" @click.stop="handleEditMenu(menu)">mdi-pencil</v-icon>
-                <v-icon class="icon-size" @click.stop="handleDeleteMenu(menu.id)">mdi-delete</v-icon>
+                <v-icon class="icon-size" @click.stop="openSubMenuDialog(child.id)">mdi-plus</v-icon>
+                <v-icon class="mr-1 icon-size" @click.stop="handleEditMenu(child)">mdi-pencil</v-icon>
+                <v-icon class="icon-size" @click.stop="handleDeleteMenu(child.id)">mdi-delete</v-icon>
               </template>
             </v-list-item>
           </template>
 
-          <template v-if="menu.children && menu.children.length > 0">
-            <v-list-group v-for="child in menu.children" :key="child.id" :value="child.menuName">
-              <template v-slot:activator="{ props }">
-                <v-list-item v-bind="props" style="color: #5b5b5b">
-                  <v-icon>{{ props.isOpen ? "mdi-menu-down" : "mdi-menu-right" }}</v-icon>
-                  {{ child.menuName }}
+          <template v-if="child.children && child.children.length > 0">
+            <v-list-group v-for="subMenu in child.children" :key="subMenu.id" :value="subMenu.menuName">
+              <template v-slot:activator="{ on, isActive }">
+                <v-list-item @click="isActive && on.click" style="color: #5b5b5b">
+                  {{ subMenu.menuName }}
                   <template v-slot:append>
-                    <v-icon class="icon-size" @click.stop="openSubMenuDialog(child.id)">mdi-plus</v-icon>
-                    <v-icon class="mr-1 icon-size" @click.stop="handleEditMenu(child)">mdi-pencil</v-icon>
                     <v-icon class="icon-size" @click.stop="handleDeleteMenu(child.id)">mdi-delete</v-icon>
                   </template>
                 </v-list-item>
               </template>
-
-              <template v-if="child.children && child.children.length > 0">
-                <v-list-group v-for="subMenu in child.children" :key="subMenu.id" :value="subMenu.menuName">
-                  <template v-slot:activator="{ on, isActive }">
-                    <v-list-item @click="isActive && on.click" style="color: #5b5b5b">
-                      {{ subMenu.menuName }}
-                      <template v-slot:append>
-                        <v-icon class="icon-size" @click.stop="handleDeleteMenu(child.id)">mdi-delete</v-icon>
-                      </template>
-                    </v-list-item>
-                  </template>
-                </v-list-group>
-              </template>
-              
             </v-list-group>
           </template>
         </v-list-group>
-      </template>
+      </v-list-group>
     </v-list>
 
 
