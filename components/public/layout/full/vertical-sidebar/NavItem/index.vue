@@ -3,23 +3,10 @@ import { ref, computed, onMounted } from "vue";
 import { getAllManageMenus, getAllSinglePages } from "@/plugins/api/authService";
 import { ApertureIcon, CopyIcon, LayoutDashboardIcon, NewsIcon, NewSectionIcon, FilesIcon } from 'vue-tabler-icons'; // Adjust the import as needed
 
-interface Menu {
-  id: number;
-  menuName: string;
-  path?: string;
-  pageLink?: string;
-  parentId?: number | null;
-  children?: Menu[];
-}
 
-interface SinglePage {
-  id: number;
-  title: string;
-  pageLink?: string;
-}
 
-const manageMenus = ref<Menu[]>([]);
-const singlePages = ref<SinglePage[]>([]);
+const manageMenus = ref<[]>([]);
+const singlePages = ref<[]>([]);
 
 const fetchManageMenus = async () => {
   try {
@@ -39,9 +26,7 @@ const fetchSinglePages = async () => {
   }
 };
 
-const selectLink = (page: SinglePage) => {
-  // Handle link selection here
-};
+
 
 const buildMenuTree = (menuItems: Menu[]) => {
   const menuMap = new Map<number, Menu>();
@@ -71,7 +56,9 @@ onMounted(() => {
   fetchManageMenus();
   fetchSinglePages();
 });
-</script><template>
+</script>
+
+<template>
   <v-list>
     <template v-for="menu in menuTree">
       <v-list-group v-if="!menu.parentId" :key="menu.id" :value="menu.menuName">
@@ -89,7 +76,7 @@ onMounted(() => {
           </template>
           
           <v-list-item v-bind="props" style="color: #5b5b5b">
-              {{ child.menuName }}
+            
             </v-list-item>         
           
         </v-list-group>
