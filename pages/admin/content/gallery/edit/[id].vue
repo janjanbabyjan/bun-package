@@ -63,9 +63,9 @@ const handleEditTag = (index, updatedTag) => {
   galleryData.value.tag[index] = updatedTag;
 };
 
-const handleRemoveTag = (index) => {
-  galleryData.value.tag.splice(index, 1);
-};
+// const handleRemoveTag = (index) => {
+//   galleryData.value.tag.splice(index, 1);
+// };
 
 const handleImageRemoved = (removedImageUrl) => {
   // if(removedImageUrl) {

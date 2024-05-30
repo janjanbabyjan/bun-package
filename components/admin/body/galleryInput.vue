@@ -20,7 +20,7 @@ onMounted(() => {
 
         }
     }
-}); 
+});
 
 const emit = defineEmits(['imageUploaded', 'imageRemoved', 'initialImageUrls']);
 const imageUrls = ref<string[]>([]);
@@ -53,8 +53,11 @@ const handleFileUpload = async (event: any) => {
             if (response.status === 201) {
                 const uploadedFiles = response.data.file;
                 console.log(uploadedFiles)
-                backUPImage.value.push(uploadedFiles)
-                uploadedFiles.forEach((file: any) => uploadedFilePaths.push(file.path));
+                backUPImage.value.push()
+                uploadedFiles.forEach((file: any) => {
+    uploadedFilePaths.push(file.path);
+    backUPImage.value.push(file.path); // This needs to match how you handle paths
+});
                 emit('imageUploaded', uploadedFilePaths);
                 for (let i = 0; i < files.length; i++) {
                     if (files[i].type.startsWith('image/')) {
@@ -77,30 +80,54 @@ const openDialog = (imageUrl: string) => {
 };
 
 const deleteImage = async (index: number) => {
-  console.log("🚀 ~ deleteImage ~ index:", index)
-    console.log("🚀 ~ deleteImage ~ removedImageUrl:", backUPImage.value)
-backUPImage.value.splice(index, 1);
-  console.log("🚀 ~ deleteImage ~ removedImageUrl:", imageUrls.value)
-  const response = await axios.post(`http://localhost:8000/singlepage/${props.id}`, {
-      content: backUPImage.value
-    });
-    console.log("🚀 ~ deleteImage ~ response:", response)
-    if(response.data.statusCode === 200) { 
-        console.log(backUPImage.value)
-        imageUrls.value = []
-        for (let i = 0; i < backUPImage.value.length; i++) {
-        //    let list = []
-        //    list.push(`http://localhost:8000${backUPImage.value[i]}`);
-           imageUrls.value.push(`http://localhost:8000${backUPImage.value[i]}`);
-           console.log("🚀 ~ deleteImage ~ imageUrls.value:", imageUrls.value)
+    console.log("🚀 ~ deleteImage ~ Index :", index)
+    const [removedImageUrl] = backUPImage.value.splice(index, 1);
+
+    try {
+        const response = await axios.post(`http://localhost:8000/singlepage/${props.id}`, {
+            content: backUPImage.value
+        });
+
+        if (response.data.statusCode === 200) {
+            imageUrls.value.splice(index, 1);
+            emit('imageRemoved', removedImageUrl);
+        } else {
+            console.error('Failed to update the server. Reverting changes.');
+            backUPImage.value.splice(index, 0, removedImageUrl);
         }
+    } catch (error) {
+        console.error('Error while deleting image:', error);
+        // Revert changes locally on error
+        backUPImage.value.splice(index, 0, removedImageUrl);
+      
     }
-//   emit('imageRemoved', true);
 };
+
+
+
+
+// const deleteImage = async (index: number) => {
+//     const updatedImageUrls = [...imageUrls.value];
+//     updatedImageUrls.splice(index, 1);
+//     imageUrls.value = updatedImageUrls;
+
+//     try {
+//         const response = await axios.post(`http://localhost:8000/singlepage/${props.id}`, {
+//             content: updatedImageUrls.map(url => url.replace('http://localhost:8000/', ''))
+//         });
+//         if (response.data.statusCode === 200) {
+//             emit('initialImageUrlsUpdated', updatedImageUrls.map(url => url.replace('http://localhost:8000/', '')));
+//         }
+//     } catch (error) {
+//         console.error('Error updating image URLs:', error);
+//     }
+// };
 
 watch(() => props.initialImageUrls, (newUrls) => {
     imageUrls.value = [...newUrls];
 });
+
+
 
 watch(imageUrls, (newUrls) => {
     emit('initialImageUrls', newUrls);
