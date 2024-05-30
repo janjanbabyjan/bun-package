@@ -8,6 +8,7 @@ import axios from 'axios';
 
 const route = useRoute();
 const id = route.params.id;
+
 const galleryData = ref({
   title: '',
   status: false,
@@ -16,25 +17,24 @@ const galleryData = ref({
 });
 
 const fetchGalleryData = async () => {
-  try {
-    const response = await axios.get(`http://localhost:8000/singlepage/${id}`);
-    const data = response.data.data;
-    galleryData.value = {
-      title: data.title,
-      status: data.isActive,
-      day: data.createdAt,
-      tag: data.tag ? data.tag.map(t => t.tagName) : []
-    };
-  } catch (error) {
-    console.error('Error fetching gallery data:', error);
-  }
-};
+    try {
+        const response = await axios.get(`http://localhost:8000/singlepage/${id}`);
+        console.log('API response:', response.data); // Debug log
+        const data = response.data.data;
+        galleryData.value = {
+          title: data.title,
+          status: data.isActive,
+          day: data.createdAt,
+          tag: data.tag ? data.tag.map(t => t.tagName) : []
+        };
+        console.log('Updated galleryData:', galleryData.value); // Debug log
+    } catch (error) {
+        console.error('Error fetching gallery data:', error);
+    }
+  };
 
 onMounted(fetchGalleryData);
 
-watch(galleryData, (newVal) => {
-  console.log('Updated Gallery Data:', newVal);
-});
 
 const handleSave = (newName) => {
   galleryData.value.title = newName;
@@ -76,7 +76,7 @@ const handleRemoveTag = (index) => {
 
 <template>
   <AdminHeadingInputHeading :name="galleryData.title" :status="galleryData.status" :day="galleryData.day"
-    :tag="galleryData.tag" @name="galleryData.title" @status="handleStatus" @day="handleDate" @tag="handleTag"
+    :tag="galleryData.tag" @name="handleSave" @status="handleStatus" @day="handleDate" @tag="handleTag"
     @addTag="handleAddTag" @editTag="handleEditTag" @removeTag="handleRemoveTag" />
   <div class="center-container">
     <v-card class="withbg mt-4" style="max-width: 1000px;">
@@ -85,4 +85,3 @@ const handleRemoveTag = (index) => {
     </v-card>
   </div>
 </template>
-as
