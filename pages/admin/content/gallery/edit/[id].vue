@@ -1,3 +1,4 @@
+<!-- pages\admin\content\gallery\edit\[id].vue -->
 <script setup>
 definePageMeta({ layout: "admin", });
 
@@ -13,7 +14,8 @@ const galleryData = ref({
   title: '',
   status: false,
   day: '',
-  tag: []
+  tag: [],
+  content: []
 });
 
 const fetchGalleryData = async () => {
@@ -25,7 +27,8 @@ const fetchGalleryData = async () => {
           title: data.title,
           status: data.isActive,
           day: data.createdAt,
-          tag: data.tag ? data.tag.map(t => t.tagName) : []
+          tag: data.tag ? data.tag.map(t => t.tagName) : [],
+          content: data.content ? data.content : []
         };
         console.log('Updated galleryData:', galleryData.value); // Debug log
     } catch (error) {
@@ -64,6 +67,17 @@ const handleRemoveTag = (index) => {
   galleryData.value.tag.splice(index, 1);
 };
 
+const handleImageUpload = (uploadedImages) => {
+  galleryData.value.content.push(...uploadedImages);
+};
+
+const handleImageRemove = (removedImageUrl) => {
+  const index = galleryData.value.images.indexOf(removedImageUrl);
+  if (index !== -1) {
+    galleryData.value.content.splice(index, 1);
+  }
+};
+
 // const getsave = async () => {
 //   try {
 //     await axios.put(`http://localhost:8000/singlepage/${id}`, galleryData.value);
@@ -75,12 +89,12 @@ const handleRemoveTag = (index) => {
 </script>
 
 <template>
-  <AdminHeadingInputHeading :name="galleryData.title" :status="galleryData.status" :day="galleryData.day"
-    :tag="galleryData.tag" @name="handleSave" @status="handleStatus" @day="handleDate" @tag="handleTag"
+  <AdminHeadingInputHeading :title="galleryData.title" :status="galleryData.status" :day="galleryData.day"
+    :tag="galleryData.tag" @title="handleSave" @status="handleStatus" @day="handleDate" @tag="handleTag"
     @addTag="handleAddTag" @editTag="handleEditTag" @removeTag="handleRemoveTag" />
   <div class="center-container">
     <v-card class="withbg mt-4" style="max-width: 1000px;">
-      <AdminBodyGalleryInput @imageUploaded="handleImageUpload" />
+      <AdminBodyGalleryInput :initialImageUrls="galleryData.content" @imageUploaded="handleImageUpload" @imageRemoved="handleImageRemove" />
       <v-btn color="primary" class="ml-5 mb-6" @click="getsave">Save</v-btn>
     </v-card>
   </div>

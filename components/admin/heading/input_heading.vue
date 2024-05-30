@@ -6,7 +6,7 @@ import { createSinglePage } from '~/plugins/api/authService';
 const router = useRouter();
 
 const props = defineProps({
-  name: { type: String, default: "" },
+  title: { type: String, default: "" },
   status: { type: Boolean, default: true },
   day: { type: String, default: "" },
   tag: { type: Array as () => string[], default: () => [] },
@@ -15,7 +15,7 @@ const props = defineProps({
 });
 
 const emits = defineEmits([
-  "name",
+  "title",
   "status",
   "day",
   "tag",
@@ -24,7 +24,7 @@ const emits = defineEmits([
   "removeTag",
 ]);
 
-const saveName = ref(props.name);
+const saveName = ref(props.title);
 const saveStatus = ref(props.status);
 const saveDate = ref(props.day);
 const tags = ref<string[]>([...props.tag]);
@@ -57,7 +57,7 @@ const editTag = (index: number) => {
   editingIndex.value = index;
 };
 
-watch(() => props.name, (newValue) => {
+watch(() => props.title, (newValue) => {
   saveName.value = newValue;
 });
 
@@ -74,7 +74,7 @@ watch(() => props.tag, (newValue) => {
 });
 
 watch(saveName, (newValue) => {
-  emits("name", newValue);
+  emits("title", newValue);
 });
 
 watch(saveStatus, (newValue) => {
