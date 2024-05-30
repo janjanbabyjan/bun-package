@@ -1,92 +1,66 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
-import { getAllManageMenus, getAllSinglePages } from "@/plugins/api/authService";
-import { ApertureIcon, CopyIcon, LayoutDashboardIcon, NewsIcon, NewSectionIcon, FilesIcon } from 'vue-tabler-icons'; // Adjust the import as needed
+import { ref, onMounted } from "vue";
+import { getAllManageMenus } from "@/plugins/api/authService";
 
+interface ManageMenu {
+  id: number;
+  name: string;
+  parentId?: number | null;
+  pathMenu?: string;
+  children?: ManageMenu[];
+  isActive?: boolean;
+}
 
-
-const manageMenus = ref<[]>([]);
-const singlePages = ref<[]>([]);
+const manageMenus = ref<ManageMenu[]>([]);
 
 const fetchManageMenus = async () => {
   try {
     const response = await getAllManageMenus();
-    manageMenus.value = response.result.manageMenus;
+    manageMenus.value = response.result;
+    console.log("🚀 ~ fetchManageMenus ~ manageMenus.value:", manageMenus.value);
+    console.log("🚀 ~ fetchManageMenus ~ response:", response);
+    console.log("🚀 ~ fetchManageMenus ~ response:", response.result);
   } catch (error) {
     console.error("Error fetching manage menus:", error);
   }
 };
 
-const fetchSinglePages = async () => {
-  try {
-    const response = await getAllSinglePages();
-    singlePages.value = response.result.singlePage;
-  } catch (error) {
-    console.error("Error fetching single pages:", error);
-  }
-};
-
-
-
-const buildMenuTree = (menuItems: Menu[]) => {
-  const menuMap = new Map<number, Menu>();
-  const roots: Menu[] = [];
-
-  menuItems.forEach(item => {
-    menuMap.set(item.id, { ...item, children: [] });
-  });
-
-  menuMap.forEach(item => {
-    if (item.parentId === null || item.parentId === undefined) {
-      roots.push(item);
-    } else {
-      const parent = menuMap.get(item.parentId);
-      if (parent) {
-        parent.children?.push(item);
-      }
-    }
-  });
-
-  return roots;
-};
-
-const menuTree = computed(() => buildMenuTree(manageMenus.value));
-
 onMounted(() => {
   fetchManageMenus();
-  fetchSinglePages();
 });
+
+const navigateTo = (path: string | undefined) => {
+  if (path) {
+    // Replace with your navigation logic
+    window.location.href = path; // ไปยัง path ที่กำหนด
+  }
+};
 </script>
 
 <template>
   <v-list>
-    <template v-for="menu in menuTree">
-      <v-list-group v-if="!menu.parentId" :key="menu.id" :value="menu.menuName">
+    <template v-for="mainMenu in manageMenus" :key="mainMenu.id">
+      <v-list-group>
         <template v-slot:activator="{ props }">
-          <v-list-item v-bind="props">
-            {{ menu.menuName }}
+          <v-list-item v-bind="props" @click="navigateTo(mainMenu.pathMenu)">
+            {{ mainMenu.name }}
           </v-list-item>
         </template>
 
-        <v-list-group v-if="menu.children && menu.children.length > 0" v-for="child in menu.children" :key="child.id" :value="child.menuName">
+        <v-list-group v-for="subMenu in mainMenu.children" :key="subMenu.id" v-if="mainMenu.children && mainMenu.children.length">
           <template v-slot:activator="{ props }">
-            <v-list-item v-bind="props" style="color: #5b5b5b">
-              {{ child.menuName }}
+            <v-list-item v-bind="props" @click="navigateTo(subMenu.pathMenu)" style="color: #5b5b5b">
+              {{ subMenu.name }}
             </v-list-item>
           </template>
-          
-          <v-list-item v-bind="props" style="color: #5b5b5b">
-            
-            </v-list-item>         
-          
+
+          <v-list-item v-for="child in subMenu.children" :key="child.id" @click="navigateTo(child.pathMenu)" style="color: #5b5b5b">
+            {{ child.name }}
+          </v-list-item>
         </v-list-group>
       </v-list-group>
     </template>
   </v-list>
 </template>
 
-
-
-<style scoped>
-
-</style>
+<style scoped></style>

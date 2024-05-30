@@ -61,6 +61,7 @@ const deleteMenu = async (id) => {
     console.error('Error deleting menu:', error);
   }
 };
+
 const getAllManageMenus = async () => {
   try {
     let res = await fetch(`${baseApiUrl}/manage-menu`, {
@@ -81,6 +82,7 @@ const getAllManageMenus = async () => {
     throw error;
   }
 };
+
 const createSinglePage = async (data) => {
   try {
       const token = localStorage.getItem('token')
