@@ -23,6 +23,7 @@ const fetchGalleryData = async () => {
     const response = await axios.get(`http://localhost:8000/singlepage/${id}`);
     console.log('API response:', response.data); // Debug log
     const data = response.data.data;
+
     galleryData.value = {
       title: data.title,
       status: data.isActive,
@@ -66,23 +67,28 @@ const handleRemoveTag = (index) => {
   galleryData.value.tag.splice(index, 1);
 };
 
-const handleImageUpload = (uploadedImages) => {
-  galleryData.value.content.push(...uploadedImages);
+const handleImageRemoved = (removedImageUrl) => {
+  // if(removedImageUrl) {
+  //   fetchGalleryData()
+  // }
+  // galleryData.value.
+  // console.log('Removed image URL:', removedImageUrl);
 };
 
-const handleImageRemove = (removedImageUrl) => {
-  const index = galleryData.value.content.indexOf(removedImageUrl);
-  if (index !== -1) {
-    galleryData.value.content.splice(index, 1);
-  }
-};
 
 const getSave = async () => {
   try {
-    await axios.put(`http://localhost:8000/singlepage/${id}`, galleryData.value);
-    alert('Data updated successfully!');
+    const response = await axios.post(`http://localhost:8000/singlepage/${id}`, {
+      title: galleryData.value.title,
+      isActive: galleryData.value.status,
+      createdAt: galleryData.value.day,
+      tag: galleryData.value.tag.map(tagName => ({ tagName })),
+      content: galleryData.value.content
+    });
+
+    console.log('Save response:', response.data);
   } catch (error) {
-    console.error('Error updating data:', error);
+    console.error('Error saving gallery data:', error);
   }
 };
 </script>
@@ -91,10 +97,11 @@ const getSave = async () => {
   <AdminHeadingInputHeading :title="galleryData.title" :status="galleryData.status" :day="galleryData.day"
     :tag="galleryData.tag" @title="handleSave" @status="handleStatus" @day="handleDate" @tag="handleTag"
     @addTag="handleAddTag" @editTag="handleEditTag" @removeTag="handleRemoveTag" />
-  <div class="center-container">
+  <div v-if="galleryData.content.length" class="center-container">
     <v-card class="withbg mt-4" style="max-width: 1000px;">
-      <AdminBodyGalleryInput :initialImageUrls="galleryData.content" @imageUploaded="handleImageUpload" @imageRemoved="handleImageRemove" />
-      <v-btn color="primary" class="ml-5 mb-6" @click="getsave">Save</v-btn>
+      <AdminBodyGalleryInput :initialImageUrls="galleryData.content" :id="id" @imageUploaded="handleImageUpload"
+        @imageRemoved="handleImageRemoved" />
+      <v-btn color="primary" class="ml-5 mb-6" @click="getSave">Save</v-btn>
     </v-card>
   </div>
 </template>
