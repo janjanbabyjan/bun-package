@@ -2,7 +2,7 @@
 <script setup>
 definePageMeta({ layout: "admin", });
 
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted } from 'vue';
 import AdminHeadingInputHeading from "@/components/admin/heading/input_heading.vue";
 import { useRoute } from 'vue-router';
 import axios from 'axios';
@@ -19,25 +19,24 @@ const galleryData = ref({
 });
 
 const fetchGalleryData = async () => {
-    try {
-        const response = await axios.get(`http://localhost:8000/singlepage/${id}`);
-        console.log('API response:', response.data); // Debug log
-        const data = response.data.data;
-        galleryData.value = {
-          title: data.title,
-          status: data.isActive,
-          day: data.createdAt,
-          tag: data.tag ? data.tag.map(t => t.tagName) : [],
-          content: data.content ? data.content : []
-        };
-        console.log('Updated galleryData:', galleryData.value); // Debug log
-    } catch (error) {
-        console.error('Error fetching gallery data:', error);
-    }
-  };
+  try {
+    const response = await axios.get(`http://localhost:8000/singlepage/${id}`);
+    console.log('API response:', response.data); // Debug log
+    const data = response.data.data;
+    galleryData.value = {
+      title: data.title,
+      status: data.isActive,
+      day: data.createdAt,
+      tag: data.tag ? data.tag.map(t => t.tagName) : [],
+      content: data.content ? data.content : []
+    };
+    console.log('Updated galleryData:', galleryData.value); // Debug log
+  } catch (error) {
+    console.error('Error fetching gallery data:', error);
+  }
+};
 
 onMounted(fetchGalleryData);
-
 
 const handleSave = (newName) => {
   galleryData.value.title = newName;
@@ -72,20 +71,20 @@ const handleImageUpload = (uploadedImages) => {
 };
 
 const handleImageRemove = (removedImageUrl) => {
-  const index = galleryData.value.images.indexOf(removedImageUrl);
+  const index = galleryData.value.content.indexOf(removedImageUrl);
   if (index !== -1) {
     galleryData.value.content.splice(index, 1);
   }
 };
 
-// const getsave = async () => {
-//   try {
-//     await axios.put(`http://localhost:8000/singlepage/${id}`, galleryData.value);
-//     alert('Data updated successfully!');
-//   } catch (error) {
-//     console.error('Error updating data:', error);
-//   }
-// };
+const getSave = async () => {
+  try {
+    await axios.put(`http://localhost:8000/singlepage/${id}`, galleryData.value);
+    alert('Data updated successfully!');
+  } catch (error) {
+    console.error('Error updating data:', error);
+  }
+};
 </script>
 
 <template>
