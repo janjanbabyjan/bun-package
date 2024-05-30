@@ -1,17 +1,34 @@
 <!-- components\admin\body\galleryInput.vue -->
 <script setup lang="ts">
-import { ref } from 'vue';
-import { defineEmits } from 'vue';
 import axios from 'axios';
 
-const imageUrl = ref<string>('');
+const props = defineProps({
+    initialImageUrls: {
+        type: Array as () => string[],
+        default: () => []
+    },
+    id: {
+        type: Number,
+        default: null
+    }
+});
+
+onMounted(() => {
+    if (props.initialImageUrls.length > 0) {
+        for (let i = 0; i < props.initialImageUrls.length; i++) {
+            imageUrls.value.push(`http://localhost:8000${props.initialImageUrls[i]}`);
+
+        }
+    }
+});
+
+const emit = defineEmits(['imageUploaded', 'imageRemoved', 'initialImageUrls']);
 const imageUrls = ref<string[]>([]);
 const selectedImageUrl = ref<string>('');
 const dialog = ref<boolean>(false);
 const fileInput = ref<HTMLInputElement | null>(null);
-const emit = defineEmits(['imageUploaded']);
-const previewImageUrl = ref<string>('');
 const uploadedFilePaths: any[] = [];
+const backUPImage = ref(props.initialImageUrls)
 
 const openFileInput = () => {
     if (fileInput.value) {
@@ -22,7 +39,6 @@ const openFileInput = () => {
 const handleFileUpload = async (event: any) => {
     const target = event.target as HTMLInputElement;
     const files = target.files;
-    imageUrls.value = [];
     if (files) {
         const formData = new FormData();
         for (let i = 0; i < files.length; i++) {
@@ -37,16 +53,16 @@ const handleFileUpload = async (event: any) => {
             if (response.status === 201) {
                 const uploadedFiles = response.data.file;
                 console.log(uploadedFiles)
-                uploadedFiles.forEach((file: any) => uploadedFilePaths.push(file.path));
-
-                // Emit the imageUploaded event with the uploaded file paths
+                backUPImage.value.push()
+                uploadedFiles.forEach((file: any) => {
+    uploadedFilePaths.push(file.path);
+    backUPImage.value.push(file.path); // This needs to match how you handle paths
+});
                 emit('imageUploaded', uploadedFilePaths);
                 for (let i = 0; i < files.length; i++) {
                     if (files[i].type.startsWith('image/')) {
                         const previewUrl = URL.createObjectURL(files[i]);
                         imageUrls.value.push(previewUrl);
-                    } else {
-                        console.error('Upload failed:', response.data.message);
                     }
                 }
             } else {
@@ -63,9 +79,60 @@ const openDialog = (imageUrl: string) => {
     dialog.value = true;
 };
 
-const deleteImage = (index: number) => {
-    imageUrls.value.splice(index, 1);
+const deleteImage = async (index: number) => {
+    console.log("🚀 ~ deleteImage ~ Index :", index)
+    const [removedImageUrl] = backUPImage.value.splice(index, 1);
+
+    try {
+        const response = await axios.post(`http://localhost:8000/singlepage/${props.id}`, {
+            content: backUPImage.value
+        });
+
+        if (response.data.statusCode === 200) {
+            imageUrls.value.splice(index, 1);
+            emit('imageRemoved', removedImageUrl);
+        } else {
+            console.error('Failed to update the server. Reverting changes.');
+            backUPImage.value.splice(index, 0, removedImageUrl);
+        }
+    } catch (error) {
+        console.error('Error while deleting image:', error);
+        // Revert changes locally on error
+        backUPImage.value.splice(index, 0, removedImageUrl);
+      
+    }
 };
+
+
+
+
+// const deleteImage = async (index: number) => {
+//     const updatedImageUrls = [...imageUrls.value];
+//     updatedImageUrls.splice(index, 1);
+//     imageUrls.value = updatedImageUrls;
+
+//     try {
+//         const response = await axios.post(`http://localhost:8000/singlepage/${props.id}`, {
+//             content: updatedImageUrls.map(url => url.replace('http://localhost:8000/', ''))
+//         });
+//         if (response.data.statusCode === 200) {
+//             emit('initialImageUrlsUpdated', updatedImageUrls.map(url => url.replace('http://localhost:8000/', '')));
+//         }
+//     } catch (error) {
+//         console.error('Error updating image URLs:', error);
+//     }
+// };
+
+watch(() => props.initialImageUrls, (newUrls) => {
+    imageUrls.value = [...newUrls];
+});
+
+
+
+watch(imageUrls, (newUrls) => {
+    emit('initialImageUrls', newUrls);
+}, { deep: true });
+
 </script>
 
 <template>
@@ -89,6 +156,7 @@ const deleteImage = (index: number) => {
         </v-dialog>
     </div>
 </template>
+
 
 
 

@@ -6,7 +6,7 @@ import { createSinglePage } from '~/plugins/api/authService';
 const router = useRouter();
 
 const props = defineProps({
-  name: { type: String, default: "" },
+  title: { type: String, default: "" },
   status: { type: Boolean, default: true },
   day: { type: String, default: "" },
   tag: { type: String, default: "" },
@@ -15,7 +15,7 @@ const props = defineProps({
 });
 
 const emits = defineEmits([
-  "name",
+  "title",
   "status",
   "day",
   "tag",
@@ -24,7 +24,7 @@ const emits = defineEmits([
   "removeTag",
 ]);
 
-const saveName = ref(props.name);
+const saveName = ref(props.title);
 const saveStatus = ref(props.status);
 const saveDate = ref(props.day);
 const inputText = ref(props.tag);
@@ -58,8 +58,24 @@ const editTag = (index: number) => {
   editingIndex.value = index;
 };
 
+watch(() => props.title, (newValue) => {
+  saveName.value = newValue;
+});
+
+watch(() => props.status, (newValue) => {
+  saveStatus.value = newValue;
+});
+
+watch(() => props.day, (newValue) => {
+  saveDate.value = newValue;
+});
+
+watch(() => props.tag, (newValue) => {
+  tags.value = [...newValue];
+});
+
 watch(saveName, (newValue) => {
-  emits("name", newValue);
+  emits("title", newValue);
 });
 
 watch(saveStatus, (newValue) => {
