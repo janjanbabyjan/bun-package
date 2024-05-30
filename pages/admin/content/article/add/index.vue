@@ -246,8 +246,8 @@ const getsave = async () => {
 
     <!-- เพิ่มตัวแปลด้วย ถ้าจะดึงจากลูก -->
     <AdminHeadingInputHeading
-      :name="saveName"
-      @name="handleSave"
+      :title="saveName"
+      @title="handleSave"
       @status="handleStatus"
       @day="handleDate"
       @tag="handleTag"
@@ -263,6 +263,7 @@ const getsave = async () => {
           <div id="editor" class="editor"></div>
         </div>
         <v-btn color="primary" class="ml-5 mb-6" @click="getsave">บันทึก</v-btn>
+      
       </v-card>
     </div>
   </div>
