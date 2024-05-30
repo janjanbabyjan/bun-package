@@ -9,7 +9,7 @@ const props = defineProps({
   name: { type: String, default: "" },
   status: { type: Boolean, default: true },
   day: { type: String, default: "" },
-  tag: { type: Array as () => string[], default: () => [] },
+  tag: { type: String, default: "" },
   addTag: { type: String, default: "" },
   removeTag: { type: String, default: "" },
 });
@@ -27,7 +27,8 @@ const emits = defineEmits([
 const saveName = ref(props.name);
 const saveStatus = ref(props.status);
 const saveDate = ref(props.day);
-const tags = ref<string[]>([...props.tag]);
+const inputText = ref(props.tag);
+const tags = ref<string[]>([]);
 const newTag = ref('');
 const editingIndex = ref<number | null>(null);
 
@@ -57,22 +58,6 @@ const editTag = (index: number) => {
   editingIndex.value = index;
 };
 
-watch(() => props.name, (newValue) => {
-  saveName.value = newValue;
-});
-
-watch(() => props.status, (newValue) => {
-  saveStatus.value = newValue;
-});
-
-watch(() => props.day, (newValue) => {
-  saveDate.value = newValue;
-});
-
-watch(() => props.tag, (newValue) => {
-  tags.value = [...newValue];
-});
-
 watch(saveName, (newValue) => {
   emits("name", newValue);
 });
@@ -85,29 +70,33 @@ watch(saveDate, (newValue) => {
   emits("day", newValue);
 });
 
+watch(inputText, (newValue) => {
+  emits("tag", newValue);
+});
+
 watch(tags, (newTags) => {
   emits("tag", newTags);
 }, { deep: true });
 
-// const getsave = async () => {
-//   const data = {
-//     title: saveName.value,
-//     status: saveStatus.value,
-//     day: saveDate.value,
-//     tag: tags.value.map(tag => ({ tag }))
-//   };
+const getsave = async () => {
+  const data = {
+    title: saveName.value,
+    status: saveStatus.value,
+    day: saveDate.value,
+    tag: tags.value.map(tag => ({ tag }))
+  };
 
-//   try {
-//     const result = await createSinglePage(data);
-//     if (result.statusCode === 200) {
-//       router.push("/admin/dashboard");
-//     } else {
-//       console.error("Error creating article:", result);
-//     }
-//   } catch (error) {
-//     console.error("Error creating article:", error);
-//   }
-// };
+  try {
+    const result = await createSinglePage(data);
+    if (result.statusCode === 200) {
+      router.push("/admin/dashboard");
+    } else {
+      console.error("Error creating article:", result);
+    }
+  } catch (error) {
+    console.error("Error creating article:", error);
+  }
+};
 </script>
 
 <template>
@@ -152,7 +141,6 @@ watch(tags, (newTags) => {
     </v-card>
   </div>
 </template>
-
 
 <style>
 .tags-container {
