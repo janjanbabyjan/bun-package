@@ -243,6 +243,7 @@ onMounted(() => {
             </div>
           </td>
           <td>
+            
             <h6 class="text-body-1 text-muted">
               {{ page.type ? page.type.typeName : "ไม่มีประเภท" }}
             </h6>
