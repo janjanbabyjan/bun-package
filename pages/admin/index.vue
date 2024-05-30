@@ -1,15 +1,23 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import { getAllSinglePages } from "@/plugins/api/authService";
+import { computed } from "vue";
+import { ref, onMounted, watch } from "vue";
+import {
+  getAllSinglePages,
+  getAllPageTypes,
+  updateSinglePageById,
+} from "@/plugins/api/authService";
 import Swal from "sweetalert2";
+
 const singlePages = ref<SinglePage[]>([]);
+const filteredPages = ref<SinglePage[]>([]);
 const searchQuery = ref("");
-// ประกาศตัวแปรแบบ ref สำหรับเก็บข้อมูล
+const selectedStatus = ref<boolean | null>(null);
+const selectedCategory = ref<string | null>(null);
+
 definePageMeta({
   layout: "admin",
 });
 
-// กำหนด interface สำหรับข้อมูล SinglePage และ PageType
 interface SinglePage {
   id: number;
   title: string;
@@ -24,34 +32,99 @@ interface PageType {
   typeName: string;
 }
 
-// สร้างฟังก์ชันเพื่อดึงข้อมูล
 const fetchSinglePages = async () => {
   try {
     const response = await getAllSinglePages();
-    console.log("🚀 ~ fetchSinglePages ~ response:", response);
     singlePages.value = response.result.singlePage;
-    console.log("🚀 ~ fetchSinglePages ~ singlePages.value:", singlePages.value);
+    filterPages();
   } catch (error) {
     console.error("Error fetching single pages:", error);
   }
 };
-const isOpen = ref(false); // เริ่มต้นเปิดปิด
 
-// ตัวป๊อปอัพ
+const filterPages = () => {
+  filteredPages.value = singlePages.value.filter((page) => {
+    const matchesQuery = page.title
+      .toLowerCase()
+      .includes(searchQuery.value.toLowerCase());
+    const matchesStatus =
+      selectedIsActive.value === "ทั้งหมด" ||
+      (selectedIsActive.value === "แสดงอยู่" && page.isActive) ||
+      (selectedIsActive.value === "ไม่แสดง" && !page.isActive);
+    const matchesCategory =
+      selectedCategory.value === null ||
+      (page.type && page.type.typeName === selectedCategory.value);
+    return matchesQuery && matchesStatus && matchesCategory;
+  });
+
+  // Update isActiveOptions based on the filtered pages
+  isActiveOptions.value = ["ทั้งหมด", "แสดงอยู่", "ไม่แสดง"];
+};
+const isActiveOptions = ref(["ทั้งหมด", "แสดงอยู่", "ไม่แสดง"]);
+const selectedIsActive = ref("ทั้งหมด");
+const selectedIsActives = ref<string | null>(null);
+
+watch([searchQuery, selectedIsActive, selectedCategory], filterPages);
+
+const isOpen = ref(false);
+
 const dialog = ref(false);
 
 const openDialog = () => {
-    dialog.value = true;
-};
-const closeDialog = () => {
-    dialog.value = false;
+  dialog.value = true;
 };
 
-// เรียกใช้งาน fetchSinglePages เมื่อคอมโพเนนต์ถูกโหลด
+const closeDialog = () => {
+  dialog.value = false;
+};
+
+const pageTypes = ref<string[]>([]);
+
+const fetchPageTypes = async () => {
+  try {
+    const response = await getAllPageTypes();
+    pageTypes.value = response.result.map(
+      (type: { typeName: string }) => type.typeName
+    );
+  } catch (error) {
+    console.error("Error fetching page types:", error);
+  }
+};
+
+const resetFilters = () => {
+  searchQuery.value = "";
+  selectedStatus.value = null;
+  selectedCategory.value = null;
+  filterPages();
+};
+
+const updateSinglePageByIds = async (pageId: number, updatedData: any) => {
+  try {
+    const response = await updateSinglePageById(pageId, updatedData);
+    console.log("Updated Single Page:", response);
+    // อัพเดทหรือดำเนินการตามต้องการ
+  } catch (error) {
+    console.error("Error updating single page:", error);
+  }
+};
+
+const saveSinglepage = async (pageId: number, isActive: boolean) => {
+  try {
+    // ทำการอัพเดตข้อมูล isActive ในฐานข้อมูล
+    const response = await updateSinglePageById(pageId, { isActive });
+    console.log("Updated Single Page:", response);
+    // อัพเดทหรือดำเนินการตามต้องการ
+  } catch (error) {
+    console.error("Error updating single page:", error);
+  }
+};
+
 onMounted(() => {
   fetchSinglePages();
+  fetchPageTypes();
 });
 </script>
+
 <template>
   <!-- Breadcrumb navigation -->
   <v-breadcrumbs>
@@ -99,12 +172,14 @@ onMounted(() => {
       <!-- Search inputs -->
       <v-row class="mt-2">
         <v-col cols="12" md="4" style="max-width: 200px">
-          <v-text-field label="ค้นหาชื่อ"></v-text-field>
+          <v-text-field label="ค้นหาชื่อ" v-model="searchQuery"></v-text-field>
         </v-col>
         <v-col cols="12" md="4" style="max-width: 200px">
           <v-select
-            :items="['หมวดหมู่ 1', 'หมวดหมู่ 2', 'หมวดหมู่ 3']"
+            v-model="selectedIsActive"
+            :items="isActiveOptions"
             label="สถานะ"
+            variant="outlined"
           ></v-select>
         </v-col>
         <v-col
@@ -114,18 +189,28 @@ onMounted(() => {
           style="max-width: 200px"
         >
           <v-select
-            :items="['หมวดหมู่ 1', 'หมวดหมู่ 2', 'หมวดหมู่ 3']"
             label="ประเภท"
+            :items="pageTypes"
+            v-model="selectedCategory"
+            variant="outlined"
           ></v-select>
         </v-col>
         <div
           class="d-flex justify-between align-center"
           style="margin-top: -5px"
         >
-          <v-btn style="margin-top: -1.2rem" color="primary" class="ml-3"
+          <v-btn
+            style="margin-top: -1.2rem"
+            color="primary"
+            class="ml-3"
+            @click="filterPages"
             >ค้นหา</v-btn
           >
-          <v-btn style="margin-top: -1.2rem" color="error" class="ml-3"
+          <v-btn
+            style="margin-top: -1.2rem"
+            color="error"
+            class="ml-3"
+            @click="resetFilters"
             >ล้าง</v-btn
           >
         </div>
@@ -136,48 +221,54 @@ onMounted(() => {
     <v-table class="month-table">
       <thead>
         <tr>
-          <th class="text-subtitle-1 font-weight-bold">#</th>
+          <th class="text-subtitle-1 font-weight-bold"></th>
           <th class="text-subtitle-1 font-weight-bold">หัวข้อ</th>
           <th class="text-subtitle-1 font-weight-bold">ประเภท</th>
           <th class="text-subtitle-1 font-weight-bold">สถานะ</th>
           <th class="text-subtitle-1 font-weight-bold">จัดการ</th>
         </tr>
       </thead>
+
       <tbody>
-  <tr v-for="page in singlePages" :key="page.id" class="month-item">
-    <td>
-      <p class="text-15 font-weight-medium">{{ page.id }}</p>
-    </td>
-    <td>
-      <div class="">
-        <h6 class="text-subtitle-1 font-weight-bold">{{ page.title }}</h6>
-        <div class="text-subtitle-2 mt-1 text-muted">
-          {{ page.pageLink }}
-        </div>
-      </div>
-    </td>
-    <td>
-      <h6 class="text-body-1 text-muted">
-        {{ page.type ? page.type.typeName : 'ไม่มีประเภท' }}
-      </h6>
-    </td>
-    <td>
-      <v-switch v-model="page.isActive" color="primary"></v-switch>
-    </td>
-    <td>
-      <router-link :to="`/admin/content/article/edit/${page.id}`">
-        <v-icon class="ml-3" style="color: red">mdi-pencil</v-icon>
-      </router-link>
-    </td>
-  </tr>
-</tbody>
-
-
+        <tr v-for="page in filteredPages" :key="page.id" class="month-item">
+          <td>
+            <!-- <p class="text-15 font-weight-medium">{{ page.id }}</p> -->
+          </td>
+          <td>
+            <div class="">
+              <h6 class="text-subtitle-1 font-weight-bold">{{ page.title }}</h6>
+              <div class="text-subtitle-2 mt-1 text-muted">
+                {{ page.pageLink }}
+              </div>
+            </div>
+          </td>
+          <td>
+            <h6 class="text-body-1 text-muted">
+              {{ page.type ? page.type.typeName : "ไม่มีประเภท" }}
+            </h6>
+          </td>
+          <td>
+            <v-switch
+              v-model="page.isActive"
+              color="primary"
+              @change="saveSinglepage(page.id, page.isActive)"
+            ></v-switch>
+          </td>
+          <td>
+            <router-link
+              :to="
+                page.typeId === 1
+                  ? `/admin/content/article/edit/${page.id}`
+                  : `/admin/content/gallery/edit/${page.id}`
+              "
+            >
+              <v-icon class="ml-3" style="color: red">mdi-pencil</v-icon>
+            </router-link>
+          </td>
+        </tr>
+      </tbody>
     </v-table>
   </v-card>
-  <!-- <v-btn color="primary" class="ml-auto" @click="showSuccessAlert"
-    >สร้าง Content ใหม่</v-btn
-  > -->
 </template>
 
 <style>
@@ -188,9 +279,7 @@ onMounted(() => {
 .buttons-container {
   display: flex;
   justify-content: center;
-  /* จัดวางตรงกลางแนวนอน */
   align-items: center;
-  /* จัดวางตรงกลางแนวตั้ง */
   height: 100%;
 }
 </style>
