@@ -46,7 +46,7 @@ const getsave = async () => {
     content: uploadedFiles.value,
     createdAt: currentDateTime,
     updatedAt: currentDateTime,
-    timestampCreate: currentDateTime,
+    timestampCreate: saveDate.value,
     titleImages: 'image-url',
     pageLink: '/new-page',
     isActive: status.value,
@@ -115,7 +115,7 @@ function emit(arg0: string, fullUrl: string) {
       </v-breadcrumbs-item>
     </v-breadcrumbs>
   </div>
-  <AdminHeadingInputHeading :name="saveName" @name="handleSave" @status="handleStatus" @day="handleDate"
+  <AdminHeadingInputHeading :title="saveName" :day="saveDate" @title="handleSave" @status="handleStatus" @day="handleDate"
     @tag="handleTag" />
   <div class="center-container">
     <v-card class="withbg mt-4" style="max-width: 1000px;">
