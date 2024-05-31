@@ -39,7 +39,7 @@ onMounted(() => { //เรียกใช้มั้ง ของตัวเ�
     fetchManageMenus();
     fetchPageTypes();
     fetchSinglePages();
-  
+
 });
 
 // ตัวบอกหน้าด้านบน
@@ -305,7 +305,32 @@ const saveSubMenu = async () => {
 
 
 <template>
-   
+    <div>
+        <h1>Manage Menus</h1>
+        <ul>
+            <template v-for="(mainMenu) in manageMenus" :key="mainMenu.id">
+                <li>
+                    {{ mainMenu.name }}
+                    <template v-if="mainMenu.children && mainMenu.children.length">
+                        <ul> <!--{{ mainMenu.children }} -->
+                            <template v-for="subMenu in mainMenu.children" :key="subMenu.id">
+                                <li>
+                                    {{ subMenu.name }}
+                                    <template v-if="subMenu.children && subMenu.children.length">
+                                        <ul>
+                                            <li v-for="subSubMenu in subMenu.children" :key="subSubMenu.id">
+                                                {{ subSubMenu.name }}
+                                            </li>
+                                        </ul>
+                                    </template>
+                                </li>
+                            </template>
+                        </ul>
+                    </template>
+                </li>
+            </template>
+        </ul>
+    </div>
 
 
     <!-- ตัวบอกหน้า -->
@@ -329,7 +354,7 @@ const saveSubMenu = async () => {
                     <v-card>
                         <v-card-title class="mt-2">{{
                             isEditMode ? "แก้ไขเมนู" : "เพิ่มเมนู"
-                        }}</v-card-title>
+                            }}</v-card-title>
                         <v-card-text>
                             <v-text-field v-model="newMenuName" label="ชื่อเมนู" outlined></v-text-field>
                             <v-row>
@@ -346,7 +371,7 @@ const saveSubMenu = async () => {
                         <v-card-actions>
                             <v-btn color="primary" @click="saveMenu">{{
                                 isEditMode ? "บันทึกการเปลี่ยนแปลง" : "เพิ่ม"
-                            }}</v-btn>
+                                }}</v-btn>
                             <v-btn color="error" @click="closeDialog">ยกเลิก</v-btn>
                         </v-card-actions>
                     </v-card>
@@ -376,7 +401,7 @@ const saveSubMenu = async () => {
                                         <v-list-item-title>{{ page.title }}</v-list-item-title>
                                         <v-list-item-subtitle v-if="page.pageLink">{{
                                             page.pageLink
-                                        }}</v-list-item-subtitle>
+                                            }}</v-list-item-subtitle>
                                     </v-list-item-content>
                                 </v-list-item>
                             </v-list>
@@ -403,6 +428,7 @@ const saveSubMenu = async () => {
                         {{ mainMenu.name }}
                         <template v-slot:append>
                             <v-icon class="icon-size" @click.stop="openSubMenuDialog(mainMenu.id)">mdi-plus</v-icon>
+                            <v-icon class="mr-1 icon-size" @click.stop="handleEditMenu(child)">mdi-pencil</v-icon>
                             <v-icon class="icon-size" @click.stop="handleDeleteMenu(mainMenu.id)">mdi-delete</v-icon>
                         </template>
                     </v-list-item>
@@ -415,8 +441,8 @@ const saveSubMenu = async () => {
                             <v-icon>{{ props.isOpen ? "mdi-menu-down" : "mdi-menu-right" }}</v-icon>
                             {{ subMenu.name }}
                             <template v-slot:append>
-                                <v-icon class="icon-size"
-                                    @click.stop="openSubMenuDialog(subMenu.id)">mdi-plus</v-icon>
+                                <v-icon class="icon-size" @click.stop="openSubMenuDialog(subMenu.id)">mdi-plus</v-icon>
+                                <!-- <v-icon class="mr-1 icon-size"@click.stop="handleEditSubMenu(subMenu)">mdi-pencil</v-icon> -->
                                 <v-icon class="icon-size" @click.stop="handleDeleteMenu(subMenu.id)">mdi-delete</v-icon>
                             </template>
 
@@ -430,8 +456,11 @@ const saveSubMenu = async () => {
                                 <v-icon>{{ props.isOpen ? "mdi-menu-down" : "mdi-menu-right" }}</v-icon>
                                 {{ subSubMenu.name }}
                                 <template v-slot:append>
+                                    <v-btn text @click.stop="handleEditSubSubMenu(subSubMenu)">
+                                        <v-icon class="mr-1 icon-size">mdi-pencil</v-icon> แก้ไข
+                                    </v-btn>
                                     <v-icon class="icon-size"
-                                        @click.stop="handleDeleteMenu(subSubMenu.id)">mdi-delete</v-icon>
+                                        @click.stop="handleDeleteMenu(subMenu.id)">mdi-delete</v-icon>
                                 </template>
                             </v-list-item>
                         </template>
@@ -446,7 +475,7 @@ const saveSubMenu = async () => {
         <v-card>
             <v-card-title class="mt-2">{{
                 isSubMenuEditMode ? " แก้ไขเมนูย่อย " : " เพิ่มเมนูย่อย "
-            }}</v-card-title>
+                }}</v-card-title>
             <v-card-text>
                 <v-text-field v-model="newSubMenuName" label="ชื่อเมนูย่อยที่ " outlined></v-text-field>
                 <v-row>
@@ -463,7 +492,7 @@ const saveSubMenu = async () => {
             <v-card-actions>
                 <v-btn color="primary" @click="saveSubMenu">{{
                     isSubMenuEditMode ? "บันทึกการเปลี่ยนแปลง" : "เพิ่ม"
-                }}</v-btn>
+                    }}</v-btn>
                 <v-btn color="error" @click="closeSubMenuDialog">ยกเลิก</v-btn>
             </v-card-actions>
         </v-card>
