@@ -18,7 +18,11 @@ import {
 interface ManageMenu { //ตัวเมนู
     id: number;
     name: string;
+    link?: string; // เพิ่ม '?' เพื่อระบุว่า 'link' เป็น optional property
+    isActive?: boolean; // Add isActive property
     children: ManageMenu[];
+    parent?: number; // Add the parent property for submenus and subsubmenus
+
 }
 
 const manageMenus = ref<ManageMenu[]>([]);  //ประกาศตัวแปล ของตัวเมนู
@@ -39,7 +43,7 @@ onMounted(() => { //เรียกใช้มั้ง ของตัวเ�
     fetchManageMenus();
     fetchPageTypes();
     fetchSinglePages();
-  
+
 });
 
 // ตัวบอกหน้าด้านบน
@@ -84,20 +88,23 @@ const closeDialog = () => {
 const saveMenu = async () => {
     try {
         if (isEditMode.value && currentMenuId.value !== null) {
+            // Update the existing menu item
             await updateMenu(currentMenuId.value, {
                 menuName: newMenuName.value,
-                pathMenu: newMenuLink.value,
+                link: newMenuLink.value,
                 isActive: isActive.value,
-                parentId: selectedParentId.value, // ใช้ parentId จาก selectedParentId
+                // Other properties you want to update
             });
         } else {
+            // Create a new menu item
             await createNewMenu(
                 newMenuName.value,
                 newMenuLink.value,
                 isActive.value,
-                selectedParentId.value // ใช้ parentId จาก selectedParentId
+                // Other properties for creating a new menu item
             );
         }
+        // Refresh the menu list and close the dialog
         fetchManageMenus();
         closeDialog();
     } catch (error) {
@@ -106,7 +113,6 @@ const saveMenu = async () => {
             icon: "error",
             title: "Oops...",
             text: "Error saving menu!",
-            footer: '<a href="#">Why do I have this issue?</a>',
         });
     }
 };
@@ -195,7 +201,7 @@ const selectLink = (page: SinglePage) => {
 };
 
 // ฟังก์ชันลบ
-const handleDeleteMenu = async (id: number, parentId?: number) => {
+const handleDeleteMenu = async (id: number) => {
     try {
         const result = await Swal.fire({
             title: "Are you sure?",
@@ -211,29 +217,6 @@ const handleDeleteMenu = async (id: number, parentId?: number) => {
             await deleteMenu(id);
             fetchManageMenus();
             Swal.fire("Deleted!", "The menu has been deleted.", "success");
-            if (parentId) {
-                const parentMenu = manageMenus.value.find(menu => menu.id === parentId);
-                if (parentMenu) {
-                    parentMenu.children = parentMenu.children.filter(menu => menu.id !== id);
-                    // ตรวจสอบและลบ subMenu และ subSubMenu ด้วย
-                    parentMenu.children.forEach(subMenu => {
-                        subMenu.children = subMenu.children.filter(sub => sub.id !== id);
-                        subMenu.children.forEach(subSubMenu => {
-                            subSubMenu.children = subSubMenu.children.filter(sub => sub.id !== id);
-                        });
-                    });
-                }
-            } else {
-                // ลบ mainMenu และ subMenu และ subSubMenu ที่เกี่ยวข้อง
-                manageMenus.value = manageMenus.value.filter(menu => {
-                    if (menu.id === id) return false;
-                    menu.children = menu.children.filter(sub => sub.id !== id);
-                    menu.children.forEach(subMenu => {
-                        subMenu.children = subMenu.children.filter(sub => sub.id !== id);
-                    });
-                    return true;
-                });
-            }
         }
     } catch (error) {
         console.error("Error deleting menu:", error);
@@ -268,11 +251,11 @@ const openSubMenuDialog = (parentId: number | string) => {
 //close SubMenuDialog ตัวที่ 2
 const closeSubMenuDialog = () => {
     subMenuDialog.value = false;
-    newSubMenuName.value = "";
-    newSubMenuLink.value = "";
-    isSubMenuActive.value = false;
-    isSubMenuEditMode.value = false;
-    currentSubMenuId.value = null;
+    // newSubMenuName.value = "";
+    // newSubMenuLink.value = "";
+    // isSubMenuActive.value = false;
+    // isSubMenuEditMode.value = false;
+    // currentSubMenuId.value = null;
 };
 
 //save SubMenuDialog ตัวที่ 2 คือตัวที่ 1 สร้าง 2
@@ -301,11 +284,47 @@ const saveSubMenu = async () => {
 };
 
 
+// EditMenu
+const handleEditMenu = (id: number) => {
+    const menuToEdit = manageMenus.value.find(menu => menu.id === id);
+    const subMenuToEdit = manageMenus.value.find(subMenu => subMenu.id === id && subMenu.parent === menuToEdit?.id);
+    const subsubMenuToEdit = manageMenus.value.find(subSubMenu => subSubMenu.id === id && subSubMenu.parent === subMenuToEdit?.id);
+
+    if (menuToEdit) {
+        newMenuName.value = menuToEdit.name;
+        newMenuLink.value = menuToEdit.link || "";
+        isActive.value = menuToEdit.isActive !== undefined ? menuToEdit.isActive : false;
+        isEditMode.value = true;
+        currentMenuId.value = id;
+        openDialog();
+    } else if (subMenuToEdit) {
+        newMenuName.value = subMenuToEdit.name;
+        newMenuLink.value = subMenuToEdit.link || "";
+        isActive.value = subMenuToEdit.isActive !== undefined ? subMenuToEdit.isActive : false;
+        isEditMode.value = true;
+        currentMenuId.value = id;
+        openDialog();
+    } else if (subsubMenuToEdit) {
+        newMenuName.value = subsubMenuToEdit.name;
+        newMenuLink.value = subsubMenuToEdit.link || "";
+        isActive.value = subsubMenuToEdit.isActive !== undefined ? subsubMenuToEdit.isActive : false;
+        isEditMode.value = true;
+        currentMenuId.value = id;
+        openDialog();
+    } else {
+        console.error("Menu not found for editing.");
+    }
+};
+
+
+
+
+
 </script>
 
 
 <template>
-   
+
 
 
     <!-- ตัวบอกหน้า -->
@@ -329,7 +348,7 @@ const saveSubMenu = async () => {
                     <v-card>
                         <v-card-title class="mt-2">{{
                             isEditMode ? "แก้ไขเมนู" : "เพิ่มเมนู"
-                        }}</v-card-title>
+                            }}</v-card-title>
                         <v-card-text>
                             <v-text-field v-model="newMenuName" label="ชื่อเมนู" outlined></v-text-field>
                             <v-row>
@@ -346,7 +365,7 @@ const saveSubMenu = async () => {
                         <v-card-actions>
                             <v-btn color="primary" @click="saveMenu">{{
                                 isEditMode ? "บันทึกการเปลี่ยนแปลง" : "เพิ่ม"
-                            }}</v-btn>
+                                }}</v-btn>
                             <v-btn color="error" @click="closeDialog">ยกเลิก</v-btn>
                         </v-card-actions>
                     </v-card>
@@ -376,7 +395,7 @@ const saveSubMenu = async () => {
                                         <v-list-item-title>{{ page.title }}</v-list-item-title>
                                         <v-list-item-subtitle v-if="page.pageLink">{{
                                             page.pageLink
-                                        }}</v-list-item-subtitle>
+                                            }}</v-list-item-subtitle>
                                     </v-list-item-content>
                                 </v-list-item>
                             </v-list>
@@ -403,6 +422,7 @@ const saveSubMenu = async () => {
                         {{ mainMenu.name }}
                         <template v-slot:append>
                             <v-icon class="icon-size" @click.stop="openSubMenuDialog(mainMenu.id)">mdi-plus</v-icon>
+                            <v-icon class="icon-size" @click.stop="handleEditMenu(mainMenu.id)">mdi-pencil</v-icon>
                             <v-icon class="icon-size" @click.stop="handleDeleteMenu(mainMenu.id)">mdi-delete</v-icon>
                         </template>
                     </v-list-item>
@@ -415,8 +435,8 @@ const saveSubMenu = async () => {
                             <v-icon>{{ props.isOpen ? "mdi-menu-down" : "mdi-menu-right" }}</v-icon>
                             {{ subMenu.name }}
                             <template v-slot:append>
-                                <v-icon class="icon-size"
-                                    @click.stop="openSubMenuDialog(subMenu.id)">mdi-plus</v-icon>
+                                <v-icon class="icon-size" @click.stop="openSubMenuDialog(subMenu.id)">mdi-plus</v-icon>
+                                <v-icon class="icon-size" @click.stop="handleEditMenu(subMenu.id)">mdi-pencil</v-icon>
                                 <v-icon class="icon-size" @click.stop="handleDeleteMenu(subMenu.id)">mdi-delete</v-icon>
                             </template>
 
@@ -430,8 +450,8 @@ const saveSubMenu = async () => {
                                 <v-icon>{{ props.isOpen ? "mdi-menu-down" : "mdi-menu-right" }}</v-icon>
                                 {{ subSubMenu.name }}
                                 <template v-slot:append>
-                                    <v-icon class="icon-size"
-                                        @click.stop="handleDeleteMenu(subSubMenu.id)">mdi-delete</v-icon>
+                                    <v-icon class="icon-size" @click.stop="handleEditMenu(subSubMenu.id)">mdi-pencil</v-icon>
+                                    <v-icon class="icon-size" @click.stop="handleDeleteMenu(subSubMenu.id)">mdi-delete</v-icon>
                                 </template>
                             </v-list-item>
                         </template>
@@ -441,14 +461,14 @@ const saveSubMenu = async () => {
         </v-list>
     </v-card>
 
-    <!-- dialog สร้างย่อยของ 1  -->
+    <!-- SubMenu Dialog -->
     <v-dialog v-model="subMenuDialog" class="custom-dialog">
         <v-card>
             <v-card-title class="mt-2">{{
-                isSubMenuEditMode ? " แก้ไขเมนูย่อย " : " เพิ่มเมนูย่อย "
-            }}</v-card-title>
+                isSubMenuEditMode ? "แก้ไขเมนูย่อย" : "เพิ่มเมนูย่อย"
+                }}</v-card-title>
             <v-card-text>
-                <v-text-field v-model="newSubMenuName" label="ชื่อเมนูย่อยที่ " outlined></v-text-field>
+                <v-text-field v-model="newSubMenuName" label="ชื่อเมนูย่อย" outlined></v-text-field>
                 <v-row>
                     <v-col cols="10">
                         <v-text-field v-model="newSubMenuLink" label="ลิงก์" outlined readonly
@@ -458,17 +478,16 @@ const saveSubMenu = async () => {
                         <v-btn color="primary" @click="openPathDialog">เลือก</v-btn>
                     </v-col>
                 </v-row>
-                <v-switch v-model="isSubMenuActive" label="แสดงเมนูย่อย" color="primary"></v-switch>
+                <v-switch v-model="isSubMenuActive" label="แสดงเมนู" color="primary"></v-switch>
             </v-card-text>
             <v-card-actions>
                 <v-btn color="primary" @click="saveSubMenu">{{
                     isSubMenuEditMode ? "บันทึกการเปลี่ยนแปลง" : "เพิ่ม"
-                }}</v-btn>
+                    }}</v-btn>
                 <v-btn color="error" @click="closeSubMenuDialog">ยกเลิก</v-btn>
             </v-card-actions>
         </v-card>
     </v-dialog>
-
 
 </template>
 

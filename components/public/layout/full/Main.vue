@@ -8,11 +8,13 @@ const sDrawer = ref(true);
 
 <template>
     <!------Sidebar-------->
-    <v-navigation-drawer class="v-navigation-drawer leftSidebar" left elevation="0" app  v-model="sDrawer" :style="{ borderRadius: '0' }">
+    <v-navigation-drawer class="v-navigation-drawer leftSidebar" left elevation="0" app v-model="sDrawer"
+        :style="{ borderRadius: '0' }">
         <!---Logo part -->
-        <div class="pa-3 logoes">
-            <img src="/images/logos/banpulogo.png" alt="">
-            <!-- <PublicLayoutFullLogo /> -->
+        <div>
+            <router-link  class="pa-3 logoes" to="/public/dashboard">
+                <img src="/images/logos/banpulogo.png" alt="Banpu Logo">
+            </router-link>
         </div>
         <!-- ---------------------------------------------- -->
         <!---Navigation -->
@@ -37,7 +39,8 @@ const sDrawer = ref(true);
     <v-app-bar elevation="0">
         <div class="d-flex align-center justify-space-between w-100">
             <div>
-                <v-btn class="hidden-lg-and-up ms-md-3 ms-sm-5 ms-3 text-muted" @click="sDrawer = !sDrawer" icon variant="flat" size="small">
+                <v-btn class="hidden-lg-and-up ms-md-3 ms-sm-5 ms-3 text-muted" @click="sDrawer = !sDrawer" icon
+                    variant="flat" size="small">
                     <Menu2Icon size="20" stroke-width="1.5" />
                 </v-btn>
                 <!-- Notification -->
