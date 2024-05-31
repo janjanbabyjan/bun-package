@@ -6,6 +6,8 @@ import { ref, onMounted } from 'vue';
 import AdminHeadingInputHeading from "@/components/admin/heading/input_heading.vue";
 import { useRoute } from 'vue-router';
 import axios from 'axios';
+import moment from 'moment'; // Import the moment library
+
 
 const route = useRoute();
 const id = route.params.id;
@@ -27,7 +29,7 @@ const fetchGalleryData = async () => {
     galleryData.value = {
       title: data.title,
       status: data.isActive,
-      day: data.createdAt,
+      day: moment(data.createdAt).format('YYYY/MM/DD'),
       tag: data.tag ? data.tag.map(t => t.tagName) : [],
       content: data.content ? data.content : []
     };
@@ -48,7 +50,7 @@ const handleStatus = (newStatus) => {
 };
 
 const handleDate = (newDate) => {
-  galleryData.value.day = newDate;
+  galleryData.value.day = moment(newDate).format('YYYY/MM/DD');
 };
 
 const handleTag = (newTag) => {

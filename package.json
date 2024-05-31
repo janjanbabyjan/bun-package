@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build": "nuxt build",
-    "dev": "nuxt dev", 
+    "dev": "nuxt dev",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
   },
@@ -40,6 +40,7 @@
     "date-fns": "^3.6.0",
     "dotenv": "^16.4.5",
     "editorjs-html": "^3.4.3",
+    "moment": "^2.30.1",
     "nuxt3": "^3.8.0-28284309.b3d3d7f4",
     "primevue": "3",
     "sass": "^1.49.9",
